@@ -285,8 +285,8 @@
 	     ("M-I" . sp-indent-defun)
 	     ("M-R" . sp-rewrap-sexp)
 	     ("M-W" . sp-swap-enclosing-sexp)
-	     ("M-[" . sp-select-next-thing)
-	     ("M-]" . sp-select-previous-thing-exchange)
+	     ("M-[" . sp-select-previous-thing-exchange)
+	     ("M-]" . sp-select-next-thing)
 	     ("M-(" . sp-extract-before-sexp)
 	     ("M-)" . sp-extract-after-sexp)
 	     ("C-<" . sp-indent-adjust-sexp) ;; cp. sp-add-to-previous-sexp
