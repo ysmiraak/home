@@ -24,6 +24,7 @@
  '(package-enable-at-startup nil)
  '(save-interprogram-paste-before-kill t)
  '(scroll-bar-mode nil)
+ '(sp-highlight-pair-overlay nil)
  '(split-height-threshold 60)
  '(split-width-threshold 90)
  '(tool-bar-mode nil)
@@ -184,8 +185,8 @@
       (add-hook 'cider-mode-hook 'ac-cider-setup)
       (eval-after-load "auto-complete"
 	'(progn (add-to-list 'ac-modes 'cider-mode)))))
-  (use-package clojure-cheatsheet :defer t
-    :commands (clojure-cheatsheet)))
+  (use-package clojure-cheatsheet
+    :bind ("C-c C-h" . clojure-cheatsheet)))
 
 (use-package js2-mode
   ;; defer until the mode is needed
@@ -271,32 +272,38 @@
   (bind-keys :map smartparens-mode-map
 	     ;; paredit stuff
 	     ("C-)" . sp-forward-slurp-sexp)
-	     ("C-}" . sp-forward-barf-sexp)
+	     ("C-}" . sp-dedent-adjust-sexp) ;; cp. sp-forward-barf-sexp
 	     ("C-(" . sp-backward-slurp-sexp)
 	     ("C-{" . sp-backward-barf-sexp)
 	     ("M-s" . sp-splice-sexp)
 	     ("M-S" . sp-split-sexp)
 	     ("M-J" . sp-join-sexp)
-	     ("M-C" . sp-convolute-sexp)
+	     ("M-C" . sp-convolute-sexp) ;; formerly M-?
 	     ;; more magic added by smartparens
 	     ("M-A" . sp-absorb-sexp)
 	     ("M-E" . sp-emit-sexp)
-	     ("M-U" . sp-unwrap-sexp) ;; C-- for backward
+	     ("M-I" . sp-indent-defun)
 	     ("M-R" . sp-rewrap-sexp)
 	     ("M-W" . sp-swap-enclosing-sexp)
-	     ("C-<" . sp-add-to-previous-sexp)
+	     ("M-[" . sp-select-next-thing)
+	     ("M-]" . sp-select-previous-thing-exchange)
+	     ("M-(" . sp-extract-before-sexp)
+	     ("M-)" . sp-extract-after-sexp)
+	     ("C-<" . sp-indent-adjust-sexp) ;; cp. sp-add-to-previous-sexp
 	     ("C->" . sp-add-to-next-sexp)
-	     ("M-[" . sp-extract-before-sexp)
-	     ("M-]" . sp-extract-after-sexp)
-	     ("M-(" . sp-beginning-of-next-sexp) ;; C-- for previous
-	     ("M-)" . sp-end-of-next-sexp)       ;; C-- for previous
-	     ("C-M-w" . sp-copy-sexp)	       ;; C-- for backward copy
-	     ("C-S-n" . sp-select-next-thing)
-	     ("C-S-p" . sp-select-previous-thing)
+	     ("C-M-w" . sp-copy-sexp) ;; C-- for backward copy
 	     ;; same as paredit/sp-raise-sexp, used to be bound to M-r
-	     ;; default behavior is the same as sp-splice-sexp-killing-backward
-	     ("C-<backspace>" . sp-splice-sexp-killing-around)
-	     ("C-M-<backspace>" . sp-splice-sexp-killing-forward)
+	     ;; default behavior: sp-splice-sexp-killing-backward
+	     ;; C-- for sp-splice-sexp-killing-forward
+	     ;; overrides backward-up-list, raise up!
+	     ("C-M-u" . sp-splice-sexp-killing-around)
+	     ;; navigation via parentheses
+	     ("C-S-f" . sp-down-sexp)
+	     ("C-S-b" . sp-backward-down-sexp)
+	     ("C-S-a" . sp-backward-up-sexp)
+	     ("C-S-e" . sp-up-sexp)
+	     ("C-S-p" . sp-end-of-previous-sexp) ;; C-- for next
+	     ("C-S-n" . sp-beginning-of-next-sexp) ;; C-- for previous
 	     ;; emacs stuff ;; overrides
 	     ("C-M-f" . sp-forward-sexp) ;; forward-sexp
 	     ("C-M-b" . sp-backward-sexp)
@@ -305,10 +312,10 @@
 	     ("C-M-n" . sp-next-sexp) ;; forward-list
 	     ("C-M-p" . sp-previous-sexp)
 	     ("C-j" . sp-newline)	    ;; electric-newline-and-maybe-indent
-	     ("C-M-d" . sp-down-sexp) ;; down-list ;; C-- for backward
-	     ("C-M-u" . sp-backward-up-sexp) ;; backward-up-list ;; C-- forward
-	     ("C-M-t"   . sp-transpose-sexp) ;; transpose-sexp
+	     ("C-M-t"   . sp-transpose-sexp)	       ;; transpose-sexp
 	     ("C-x C-t" . sp-transpose-hybrid-sexp) ;; transpose-lines
+	     ("<C-backspace>" . sp-backward-unwrap-sexp)
+	     ("C-M-d" . sp-unwrap-sexp) ;; down-list
 	     ("C-M-k"           . sp-kill-sexp)	  ;; kill-sexp
 	     ("<C-M-backspace>" . sp-backward-kill-sexp)
 	     ;; strict mode stuff
