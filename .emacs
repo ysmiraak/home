@@ -1,58 +1,47 @@
 (require 'cl)
 (defvar *emacs-load-time* (cdr (current-time)))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["#2d3743" "#ff4242" "#74af68" "#dbdb95" "#34cae2" "#008b8b" "#00ede1" "#e1e1e0"])
- '(auto-save-default nil)
- '(backup-directory-alist (quote (("." . "~/.emacs.d/backups"))))
- '(blink-cursor-mode nil)
- '(column-number-mode t)
- '(create-lockfiles nil)
- '(custom-enabled-themes (quote (misterioso)))
- '(custom-safe-themes
-   (quote
-    ("f641bdb1b534a06baa5e05ffdb5039fb265fde2764fbfd9a90b0d23b75f3936b" default)))
- '(default-frame-alist (quote ((width . 150) (height . 45))))
- '(electric-indent-mode nil)
- '(inhibit-startup-screen t)
- '(initial-frame-alist (quote ((top . 0) (left . 0) (width . 140) (height . 45))))
- '(package-enable-at-startup nil)
- '(save-interprogram-paste-before-kill t)
- '(scroll-bar-mode nil)
- '(sp-highlight-pair-overlay nil)
- '(split-height-threshold 60)
- '(split-width-threshold 90)
- '(tool-bar-mode nil)
- '(x-select-enable-clipboard t))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#181A26" :foreground "gray" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "nil" :family "Menlo"))))
- '(cursor ((t (:background "goldenrod"))))
- '(region ((t (:background "pale goldenrod" :foreground "black" :weight black))))
- '(sp-show-pair-match-face ((t (:background "pale goldenrod" :foreground "black" :weight black))))
- '(sp-show-pair-mismatch-face ((t (:background "#AA381E" :foreground "black" :weight black)))))
-
 ;;;;;;;;;;;;;;;;;;;;
 ;; customizations ;;
 ;;;;;;;;;;;;;;;;;;;;
 
+(setq
+ ;; bell
+ ring-bell-function 'ignore
+ ;; clipboard
+ save-interprogram-paste-before-kill t
+ x-select-enable-clipboard t 
+ ;; file
+ auto-save-default nil
+ backup-directory-alist (quote (("." . "~/.emacs.d/backups")))
+ create-lockfiles nil
+ ;; frame
+ default-frame-alist '((width . 150) (height . 45))
+ initial-frame-alist '((top . 0) (left . 0) (width . 140) (height . 45))
+ split-height-threshold 60
+ split-width-threshold 90
+ inhibit-startup-screen t
+ ;; package
+ package-enable-at-startup nil)
+
+(set-face-attribute 'default nil :height 140)
+(set-face-attribute 'cursor nil :background "goldenrod")
+
 (setq-default
- frame-title-format "%b (%f)" ;; full path in title bar
- cursor-type '(bar . 3) ;; I don't like my cursor fat
- cursor-in-non-selected-windows 'hollow)
+ ;; cursor
+ cursor-type '(bar . 3)
+ cursor-in-non-selected-windows 'hollow
+ ;; full path in title bar
+ frame-title-format "%b (%f)")
 
-(setq ring-bell-function 'ignore) ;; no bell
-
-(windmove-default-keybindings 'meta) ;; keys for switching windows
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(blink-cursor-mode -1)
+(electric-indent-mode -1)
+(column-number-mode 1)
+(global-hl-line-mode 1)
+;; keys for switching windows
+(windmove-default-keybindings 'meta)
 
 ;;;;;;;;;;;;;;
 ;; packages ;;
@@ -128,8 +117,6 @@
 ;;   evals EXPRS after loading package-name)		  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
 (use-package benchmark-init
   ;; benchmarking require and load functions
   ;; for finding out where time is being spent
@@ -140,18 +127,27 @@
 ;; misc ;;
 ;;;;;;;;;;
 
+(use-package exec-path-from-shell
+  ;; sets environment variables correctly for OS X
+  :if (memq window-system '(mac ns))
+  :config
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL"))
+  ;; fullscreen shortcut for mac, 's' is the right cmd key
+  (bind-key "C-s-f" 'toggle-frame-fullscreen))
+
+(use-package hc-zenburn-theme
+  ;; custom color theme
+  :config (load-theme 'hc-zenburn t))
+
+(use-package magit
+  ;; defer loading until the mode is called
+  :commands (magit-status))
+
 (use-package rainbow-mode
   ;; can be handy sometimes but rarely needed
   ;; defer loading until the mode is called
   :commands (rainbow-mode))
-
-(use-package exec-path-from-shell
-  ;; sets environment variables correctly for OS X
-  :if (memq window-system '(mac ns))
-  :config (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL"))
-  ;; fullscreen shortcut for mac, 's' is the right cmd key
-  (bind-key "C-s-f" 'toggle-frame-fullscreen))
 
 ;;;;;;;;;;;;;;;
 ;; languages ;;
@@ -159,12 +155,15 @@
 
 (use-package eldoc
   ;; defer until the mode is needed
-  :defer t :diminish eldoc-mode "EL"
-  :init (add-hook 'clojure-mode-hook 'eldoc-mode 1)
+  :defer t
+  :diminish eldoc-mode "EL"
+  :init
+  (add-hook 'clojure-mode-hook 'eldoc-mode 1)
   (add-hook 'lisp-interaction-mode-hook 'eldoc-mode 1)
   (add-hook 'emacs-lisp-mode-hook 'eldoc-mode 1)
   (add-hook 'ielm-mode-hook 'eldoc-mode 1)
-  :config ;; since C-j is shadowed by smartparens
+  :config
+  ;; since C-j is shadowed by smartparens
   (bind-key "RET" 'eval-print-last-sexp lisp-interaction-mode-map))
 
 (use-package clojure-mode
@@ -177,16 +176,17 @@
   ("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
   :config
   (use-package clojure-mode-extra-font-locking)
-  (use-package cider :diminish cider-mode "cider"
+  (use-package clojure-cheatsheet
+    :bind ("C-c C-h" . clojure-cheatsheet))
+  (use-package cider
+    :diminish cider-mode "cider"
     :config (setq cider-repl-history-file "~/.emacs.d/cider-history")
-    (use-package ac-cider :defer t
+    (use-package ac-cider
       :config
       (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
       (add-hook 'cider-mode-hook 'ac-cider-setup)
       (eval-after-load "auto-complete"
-	'(progn (add-to-list 'ac-modes 'cider-mode)))))
-  (use-package clojure-cheatsheet
-    :bind ("C-c C-h" . clojure-cheatsheet)))
+	'(progn (add-to-list 'ac-modes 'cider-mode))))))
 
 (use-package js2-mode
   ;; defer until the mode is needed
@@ -204,8 +204,7 @@
   ("C-x b" . ido-switch-buffer) 
   :config
   (ido-mode 1)
-  (setq ido-use-faces t
-	ido-enable-flex-matching t
+  (setq ido-enable-flex-matching t
 	ido-use-filename-at-point nil
 	ido-use-virtual-buffers 'auto)
   (use-package ido-ubiquitous
@@ -213,16 +212,7 @@
   (use-package ido-vertical-mode
     :config (ido-vertical-mode 1)
     (setq ido-vertical-show-count t)
-    (setq ido-vertical-define-keys 'C-n-and-C-p-only)
-    (set-face-attribute
-     'ido-vertical-first-match-face nil
-     :background "light goldenrod" :foreground "#181A26")
-    (set-face-attribute
-     'ido-vertical-only-match-face nil
-     :background nil :foreground "goldenrod")
-    (set-face-attribute
-     'ido-vertical-match-face nil
-     :background nil :foreground "#AA381E"))
+    (setq ido-vertical-define-keys 'C-n-and-C-p-only))
   (use-package ido-complete-space-or-hyphen)
   (use-package recentf
     :init (setq recentf-max-saved-items 30)
@@ -237,20 +227,17 @@
 ;; editing ;;
 ;;;;;;;;;;;;;
 
-;; It's a mode for abbreviations, right?
-;; not a package, cannot use use-packge for this
-(eval-after-load "abbrev" '(diminish 'abbrev-mode "."))
-
 (use-package smartparens-config
-
-  ;; some reason for the defer
-  
+  ;; defer loading til idle for one sec
   ;; :ensure smartparens
   :defer 1
   :config
+  (set-face-attribute 'sp-show-pair-match-face nil
+		      :background "black" :foreground "firebrick" :weight 'black)
+  (set-face-attribute 'sp-show-pair-mismatch-face nil
+		      :background "firebrick" :foreground "black" :weight 'black)
   (smartparens-global-mode t)
   (show-smartparens-global-mode t)
-  (setq sp-highlight-pair-overlay nil)
   ;; code by Rommel M. Martinez, see link below
   (defmacro def-pairs (pairs)
     `(progn
@@ -298,6 +285,7 @@
 	     ;; overrides backward-up-list, raise up!
 	     ("C-M-u" . sp-splice-sexp-killing-around)
 	     ;; navigation via parentheses
+	     ;; overrides default navigation with selection behavior
 	     ("C-S-f" . sp-down-sexp)
 	     ("C-S-b" . sp-backward-down-sexp)
 	     ("C-S-a" . sp-backward-up-sexp)
@@ -357,35 +345,30 @@
 	     try-expand-line
 	     try-expand-line-all-buffers
 	     try-expand-whole-kill) t))
-    (bind-keys ("<tab>" . hippie-expand)
-	       ;; sometimes tab gets shadowed
-	       ("<M-tab>" . hippie-expand)
+    (bind-keys ("<C-tab>" . hippie-expand)
 	       ("M-/" . crazy-hippie-expand))))
 
 (use-package yasnippet
-  ;; I use <C-tab> for yas and <tab> for hippie-expand
-  ;; cuz I use the later more often
-  ;; defer loading until <C-tab> is calld
+  ;; I use <M-tab> for yas and <C-tab> for hippie-expand
+  ;; <tab> sometimes gets shadowed
+  ;; defer loading until <M-tab> is calld
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
-  :bind ("<C-tab>" . yas-global-mode)
-  :config (diminish 'yas-minor-mode " Y")
-  (unbind-key "<C-tab>" global-map)
-  (bind-key "<C-tab>" 'yas-expand yas-minor-mode-map))
+  :bind ("<M-tab>" . yas-global-mode)
+  :config
+  (diminish 'yas-minor-mode " Y")
+  (unbind-key "<M-tab>" global-map)
+  (bind-key "<M-tab>" 'yas-expand yas-minor-mode-map))
 
 (use-package auto-complete-config
   ;; de/activate ac mode with <S-tab>
-  ;; when ac pops up, use <S-tab> for selection
   ;; defer loading until <S-tab> is called
   ;; :ensure auto-complete
   :bind ("<S-tab>" . global-auto-complete-mode)
-  :config (ac-config-default)
-  (bind-key "<S-tab>" 'ac-next ac-mode-map))
+  :config (ac-config-default))
 
 (use-package rainbow-delimiters
   ;; lightweight and fun, why not
   :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; custom functions ;;
@@ -399,7 +382,6 @@
   (comment-or-uncomment-region (line-beginning-position)
 			       (line-end-position)))
 (bind-key "C-;" 'toggle-comment-on-line)
-
 
 
 
