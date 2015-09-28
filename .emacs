@@ -58,7 +58,7 @@
 ;; now we initialize packages but activate them not
 (package-initialize nil)
 
-;; use use-package for managing packages
+;; use use-package package for managing packages
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -66,6 +66,8 @@
 (setq use-package-always-ensure t)
 ;; for checking when which package is loaded
 ;; (setq use-package-verbose t)
+
+;; these two are needed for use-package
 (use-package diminish)
 (use-package bind-key)
 
@@ -212,13 +214,16 @@
   (setq ido-enable-flex-matching t
 	ido-use-filename-at-point nil
 	ido-use-virtual-buffers 'auto)
+  (use-package ido-complete-space-or-hyphen)
+  
   (use-package ido-ubiquitous
     :config (ido-ubiquitous-mode 1))
+
   (use-package ido-vertical-mode
     :config (ido-vertical-mode 1)
     (setq ido-vertical-show-count t)
     (setq ido-vertical-define-keys 'C-n-and-C-p-only))
-  (use-package ido-complete-space-or-hyphen)
+
   (use-package recentf
     :init (setq recentf-max-saved-items 30)
     :config (recentf-mode 1)))
