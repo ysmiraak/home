@@ -1,5 +1,8 @@
 (require 'cl)
-(defvar *emacs-load-time* (cdr (current-time)))
+
+(defvar *emacs-load-time*
+  ;; for recording load time
+  (cdr (current-time)))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; customizations ;;
@@ -38,8 +41,9 @@
 (scroll-bar-mode -1)
 (blink-cursor-mode -1)
 (electric-indent-mode -1)
-(column-number-mode 1)
 (global-hl-line-mode 1)
+(column-number-mode 1)
+;; (global-linum-mode 1)
 ;; keys for switching windows
 (windmove-default-keybindings 'meta)
 
@@ -58,16 +62,12 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-;; uncomment all lines with the word "ensure" for automatic installation
-;; but of course not all of them
-;; you know what I mean
-;; hopefully
-;; (setq use-package-always-ensure t)
 (eval-when-compile (require 'use-package))
-(use-package diminish)
-(use-package bind-key)
+(setq use-package-always-ensure t)
 ;; for checking when which package is loaded
 ;; (setq use-package-verbose t)
+(use-package diminish)
+(use-package bind-key)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; usage:						  ;;
@@ -83,8 +83,8 @@
 ;;   :ensure package-name				  ;;
 ;;   installs package-name if missing			  ;;
 ;; 							  ;;
-;;   :diminish mode-name				  ;;
-;;   hides mode-name in mode line			  ;;
+;;   :diminish mode-name &optional name-string		  ;;
+;;   reduces mode-name to name-string in mode line	  ;;
 ;; 							  ;;
 ;;   :init &rest EXPRS					  ;;
 ;;   evals EXPRS before loading package-name		  ;;
@@ -100,9 +100,11 @@
 ;; 							  ;;
 ;;   :mode ("extension" . mode-name)			  ;;
 ;;   adds mode-name to auto-mode-alist			  ;;
+;;   takes multiple dotted pairs			  ;;
 ;; 							  ;;
 ;;   :interpreter ("extension" . interpreter-mode-alist)  ;;
 ;;   adds mode-name to interpreter-mode-alist		  ;;
+;;   takes multiple dotted pairs			  ;;
 ;; 							  ;;
 ;;   :bind &rest ARGS					  ;;
 ;;   works like bind-keys, with autoloads		  ;;
@@ -223,13 +225,19 @@
   ;; defer until main functions are called
   :bind ("M-x" . smex) ("M-X" . smex-major-mode-commands))
 
+(use-package ace-jump-mode
+  ;; defer until main functions are called
+  :bind ("C-c j" . ace-jump-mode)
+  ("C-x j" . ace-jump-mode-pop-mark)
+  :config (ace-jump-mode-enable-mark-sync))
+
 ;;;;;;;;;;;;;
 ;; editing ;;
 ;;;;;;;;;;;;;
 
 (use-package smartparens-config
   ;; defer loading til idle for one sec
-  ;; :ensure smartparens
+  :ensure smartparens
   :defer 1
   :config
   (set-face-attribute 'sp-show-pair-match-face nil
@@ -362,7 +370,7 @@
 (use-package auto-complete-config
   ;; de/activate ac mode with <S-tab>
   ;; defer loading until <S-tab> is called
-  ;; :ensure auto-complete
+  :ensure auto-complete
   :bind ("<S-tab>" . global-auto-complete-mode)
   :config (ac-config-default))
 
@@ -386,6 +394,7 @@
 
 
 (destructuring-bind (HIGH LOW USEC PSEC) (current-time)
+  ;; loading finished
   (setq *emacs-load-time*
 	(+ (- LOW (car *emacs-load-time*))
 	   (/ (- USEC (cadr *emacs-load-time*)) 1000000.0)))
