@@ -178,11 +178,14 @@
   ("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
   :config
   (use-package clojure-mode-extra-font-locking)
+
   (use-package clojure-cheatsheet
     :bind ("C-c C-h" . clojure-cheatsheet))
+
   (use-package cider
     :diminish cider-mode "cider"
     :config (setq cider-repl-history-file "~/.emacs.d/cider-history")
+
     (use-package ac-cider
       :config
       (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
@@ -333,6 +336,7 @@
 	     ("C-c \"" . wrap-with-double-quotes)
 	     ("C-c _"  . wrap-with-underscores)
 	     ("C-c `"  . wrap-with-back-quotes))
+
   (use-package hippie-exp
     ;; this package always gets loaded at startup even with defer
     ;; had to hide it here
