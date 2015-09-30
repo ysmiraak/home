@@ -168,7 +168,13 @@
   (add-hook 'ielm-mode-hook 'eldoc-mode 1)
   :config
   ;; since C-j is shadowed by smartparens
-  (bind-key "RET" 'eval-print-last-sexp lisp-interaction-mode-map))
+  (bind-keys :map lisp-mode-shared-map
+	     ("<C-return>" . eval-last-sexp)
+	     ("<M-return>" . eval-print-last-sexp)
+	     ("<C-M-return>" . eval-defun)
+	     ("<C-S-return>" . eval-region)
+	     ("<M-S-return>" . eval-buffer)
+	     ("<C-M-S-return>" . load-file)))
 
 (use-package clojure-mode
   ;; defer until the mode is needed
@@ -187,6 +193,14 @@
   (use-package cider
     :diminish cider-mode "cider"
     :config (setq cider-repl-history-file "~/.emacs.d/cider-history")
+    (bind-keys :map cider-mode-map
+	       ("<C-return>" . cider-eval-last-sexp)
+	       ("<M-return>" . cider-eval-print-last-sexp)
+	       ("<S-return>" . cider-eval-last-sexp-and-replace)
+	       ("<C-M-return>" . cider-eval-defun-at-point)
+	       ("<C-S-return>" . cider-eval-region)
+	       ("<M-S-return>" . cider-eval-buffer)
+	       ("<C-M-S-return>" . cider-load-file))
 
     (use-package ac-cider
       :config
@@ -278,7 +292,10 @@
 	     ("C-}" . sp-dedent-adjust-sexp) ;; cp. sp-forward-barf-sexp
 	     ("C-(" . sp-backward-slurp-sexp)
 	     ("C-{" . sp-backward-barf-sexp)
-	     ("M-s" . sp-splice-sexp)
+	     ("<C-backspace>" . sp-splice-sexp-killing-backward)
+	     ("C-M-d" . sp-splice-sexp-killing-forward) ;; overrides down-list
+             ("M-s" . sp-splice-sexp)
+	     ;; <---??? maybe reconsider these key cords
 	     ("M-S" . sp-split-sexp)
 	     ("M-J" . sp-join-sexp)
 	     ("M-C" . sp-convolute-sexp) ;; formerly M-?
@@ -288,51 +305,40 @@
 	     ("M-I" . sp-indent-defun)
 	     ("M-R" . sp-rewrap-sexp)
 	     ("M-W" . sp-swap-enclosing-sexp)
-	     ("M-[" . sp-select-previous-thing-exchange)
-	     ("M-]" . sp-select-next-thing)
 	     ("M-(" . sp-extract-before-sexp)
 	     ("M-)" . sp-extract-after-sexp)
 	     ("C-<" . sp-indent-adjust-sexp) ;; cp. sp-add-to-previous-sexp
 	     ("C->" . sp-add-to-next-sexp)
-	     ("C-M-w" . sp-copy-sexp) ;; C-- for backward copy
-	     ;; same as paredit/sp-raise-sexp, used to be bound to M-r
-	     ;; default behavior: sp-splice-sexp-killing-backward
-	     ;; C-- for sp-splice-sexp-killing-forward
-	     ;; overrides backward-up-list, raise up!
-	     ("C-M-u" . sp-splice-sexp-killing-around)
+	     ;; they are kinda hard to remember ???--->
+	     ("M-[" . sp-select-previous-thing-exchange)
+	     ("M-]" . sp-select-next-thing)
+	     ("C-M-w" . sp-copy-sexp)
+	     ("C-M-S-w" . sp-backward-copy-sexp)
+	     ("C-M-u" . sp-unwrap-sexp) ;; overrides backward-up-list
+	     ("C-M-S-u" . sp-backward-unwrap-sexp)
 	     ;; navigation via parentheses
-	     ;; overrides default navigation with selection behavior
-	     ("C-S-f" . sp-down-sexp)
-	     ("C-S-b" . sp-backward-down-sexp)
-	     ("C-S-a" . sp-backward-up-sexp)
-	     ("C-S-e" . sp-up-sexp)
-	     ("C-S-p" . sp-end-of-previous-sexp) ;; C-- for next
-	     ("C-S-n" . sp-beginning-of-next-sexp) ;; C-- for previous
+	     ("M-n" . sp-down-sexp)
+	     ("M-P" . sp-backward-down-sexp)
+	     ("M-p" . sp-backward-up-sexp)
+	     ("M-N" . sp-up-sexp)
 	     ;; emacs stuff ;; overrides
-	     ("C-M-f" . sp-forward-sexp) ;; forward-sexp
-	     ("C-M-b" . sp-backward-sexp)
+	     ("C-M-f" . sp-forward-sexp)  ;; forward-sexp
+	     ("C-M-b" . sp-backward-sexp) ;; backward-sexp
 	     ("C-M-a" . sp-beginning-of-sexp) ;; beginning-of-defun
-	     ("C-M-e" . sp-end-of-sexp)
-	     ("C-M-n" . sp-next-sexp) ;; forward-list
-	     ("C-M-p" . sp-previous-sexp)
-	     ("C-j" . sp-newline)	    ;; electric-newline-and-maybe-indent
-	     ("C-M-t"   . sp-transpose-sexp)	       ;; transpose-sexp
+	     ("C-M-e" . sp-end-of-sexp)       ;; end-of-defun
+	     ("C-M-n" . sp-next-sexp)     ;; forward-list
+	     ("C-M-p" . sp-previous-sexp) ;; backward-list
+	     ("C-j" . sp-newline) ;; electric-newline-and-maybe-indent
+	     ("C-M-t"   . sp-transpose-sexp)	    ;; transpose-sexp
 	     ("C-x C-t" . sp-transpose-hybrid-sexp) ;; transpose-lines
-	     ("<C-backspace>" . sp-backward-unwrap-sexp)
-	     ("C-M-d" . sp-unwrap-sexp) ;; down-list
-	     ("C-M-k"           . sp-kill-sexp)	  ;; kill-sexp
-	     ("<C-M-backspace>" . sp-backward-kill-sexp)
+	     ("C-M-k"           . sp-kill-sexp)	         ;; kill-sexp
+	     ("<C-M-backspace>" . sp-backward-kill-sexp) ;; backward-kill-sexp
 	     ;; strict mode stuff
-	     ("C-d"   . sp-delete-char) ;; delete-char
-	     ("DEL"   . sp-backward-delete-char)
-	     ("M-d"   . sp-kill-word) ;; kill-word
-	     ("M-DEL" . sp-backward-kill-word)
+	     ("C-d"   . sp-delete-char)          ;; delete-char
+	     ("DEL"   . sp-backward-delete-char) ;; backward-delete-char
+	     ("M-d"   . sp-kill-word)          ;; kill-word
+	     ("M-DEL" . sp-backward-kill-word) ;; backward-kill-word
 	     ("C-k"   . sp-kill-hybrid-sexp) ;; kill-line
-	     ;; for symbols, analogous to meta cords for words
-	     ("M-F" . sp-forward-symbol)
-	     ("M-B" . sp-backward-symbol)
-	     ("M-D" . sp-kill-symbol)
-	     ("<M-S-backspace>" . sp-backward-kill-symbol)
 	     ;; https://ebzzry.github.io/emacs-pairs.html
 	     ("C-c ("  . wrap-with-parens)
 	     ("C-c ["  . wrap-with-brackets)
