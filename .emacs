@@ -47,6 +47,9 @@
 ;; keys for switching windows
 (windmove-default-keybindings 'meta)
 
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
 ;;;;;;;;;;;;;;
 ;; packages ;;
 ;;;;;;;;;;;;;;
@@ -258,14 +261,16 @@
 ;;;;;;;;;;;;;
 
 (use-package smartparens-config
-  ;; defer loading til idle for one sec
+  ;; defer loading til idle for one sec---although these editing aids
+  ;; are surely needed if I'm doing editing---I may not do editing
+  ;; if I just want to click open some file
   :ensure smartparens
   :defer 1
   :config
-  (set-face-attribute 'sp-show-pair-match-face nil
-		      :background "black" :foreground "firebrick" :weight 'black)
-  (set-face-attribute 'sp-show-pair-mismatch-face nil
-		      :background "firebrick" :foreground "black" :weight 'black)
+  (set-face-attribute 'sp-show-pair-match-face nil :weight 'black
+		      :background "black" :foreground "firebrick")
+  (set-face-attribute 'sp-show-pair-mismatch-face nil :weight 'black
+		      :background "firebrick" :foreground "black")
   (smartparens-global-mode t)
   (show-smartparens-global-mode t)
   ;; code by Rommel M. Martinez, see link below
@@ -322,12 +327,12 @@
 	     ("M-p" . sp-backward-up-sexp)
 	     ("M-N" . sp-up-sexp)
 	     ;; emacs stuff ;; overrides
-	     ("C-M-f" . sp-forward-sexp)  ;; forward-sexp
-	     ("C-M-b" . sp-backward-sexp) ;; backward-sexp
+	     ("C-M-f" . sp-forward-sexp)      ;; forward-sexp
+	     ("C-M-b" . sp-backward-sexp)     ;; backward-sexp
 	     ("C-M-a" . sp-beginning-of-sexp) ;; beginning-of-defun
 	     ("C-M-e" . sp-end-of-sexp)       ;; end-of-defun
-	     ("C-M-n" . sp-next-sexp)     ;; forward-list
-	     ("C-M-p" . sp-previous-sexp) ;; backward-list
+	     ("C-M-n" . sp-next-sexp)	      ;; forward-list
+	     ("C-M-p" . sp-previous-sexp)     ;; backward-list
 	     ("C-j" . sp-newline) ;; electric-newline-and-maybe-indent
 	     ("C-M-t"   . sp-transpose-sexp)	    ;; transpose-sexp
 	     ("C-x C-t" . sp-transpose-hybrid-sexp) ;; transpose-lines
@@ -336,9 +341,9 @@
 	     ;; strict mode stuff
 	     ("C-d"   . sp-delete-char)          ;; delete-char
 	     ("DEL"   . sp-backward-delete-char) ;; backward-delete-char
-	     ("M-d"   . sp-kill-word)          ;; kill-word
-	     ("M-DEL" . sp-backward-kill-word) ;; backward-kill-word
-	     ("C-k"   . sp-kill-hybrid-sexp) ;; kill-line
+	     ("M-d"   . sp-kill-word)		 ;; kill-word
+	     ("M-DEL" . sp-backward-kill-word)	 ;; backward-kill-word
+	     ("C-k"   . sp-kill-hybrid-sexp)	 ;; kill-line
 	     ;; https://ebzzry.github.io/emacs-pairs.html
 	     ("C-c ("  . wrap-with-parens)
 	     ("C-c ["  . wrap-with-brackets)
@@ -369,7 +374,55 @@
 	     try-expand-line-all-buffers
 	     try-expand-whole-kill) t))
     (bind-keys ("<C-tab>" . hippie-expand)
-	       ("M-/" . crazy-hippie-expand))))
+	       ("M-/" . crazy-hippie-expand)))
+
+  (use-package region-bindings-mode
+    ;; hide some more goodies here
+    :config (region-bindings-mode-enable)
+    (bind-keys :map region-bindings-mode-map
+	       ("q" . keyboard-quit)          ;; quit
+	       ("k" . kill-region)            ;; kill
+	       ("z" . delete-region)          ;; zehen
+	       ("c" . kill-ring-save)         ;; copy
+	       ("r" . replace-string)         ;; replace
+	       ("u" . upcase-initials-region) ;; upcase
+	       ("w" . comment-box)            ;; wrap
+	       ("g" . comment-or-uncomment-region) ;; gloss
+	       ("n" . mc/mark-next-like-this)       ;; next
+	       ("j" . mc/unmark-next-like-this)     ;; jerk
+	       ("p" . mc/mark-previous-like-this)   ;; prev
+	       ("o" . mc/unmark-previous-like-this) ;; off
+               ("f" . mc/skip-to-next-like-this)     ;; forward
+	       ("b" . mc/skip-to-previous-like-this) ;; backward
+	       ("a" . mc/edit-beginnings-of-lines) ;; anfang
+	       ("e" . mc/edit-ends-of-lines)       ;; ende
+	       ("l" . mc/edit-lines)		   ;; line
+	       ("x" . mc/mark-all-like-this-dwim)     ;; x
+	       ("m" . mc/mark-all-in-region)	      ;; mark
+	       ("t" . mc/mark-sgml-tag-pair)          ;; tag
+	       ("d" . mc/mark-all-like-this-in-defun) ;; defun
+	       ("h" . mc/mark-all-like-this)	      ;; (w)hole
+	       ("i" . mc/insert-numbers)  ;; index
+	       ("s" . mc/sort-regions)    ;; sort
+	       ("v" . mc/reverse-regions) ;; vert
+	       )
+    (use-package multiple-cursors
+      ;; defer until main functions are called from here
+      ;; or from the region-bindings-mode-map
+      :bind
+      ("C-'"  . mc/mark-pop) ;; also runs mc-hide-unmatched-lines-mode
+      ("C-\"" . mc/mark-all-dwim)
+      ("<C-right>" . mc/mark-next-like-this)
+      ("<C-up>"    . mc/mark-previous-like-this)
+      ("<C-down>"  . mc/unmark-previous-like-this)
+      ("<C-left>"  . mc/unmark-next-like-this)
+      :config
+      (set-face-attribute 'mc/cursor-face nil :weight 'black
+			  :background "goldenrod" :foreground "black"))
+
+    (use-package expand-region
+      ;; defer until the main function is called
+      :bind ("S-SPC" . er/expand-region))))
 
 (use-package yasnippet
   ;; I use <M-tab> for yas and <C-tab> for hippie-expand
