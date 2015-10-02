@@ -1,5 +1,5 @@
 (require 'cl)
-
+  
 (defvar *emacs-load-time*
   ;; for recording load time
   (cdr (current-time)))
@@ -29,6 +29,7 @@
 
 (set-face-attribute 'default nil :height 140)
 (set-face-attribute 'cursor nil :background "goldenrod")
+(set-face-attribute 'region nil :background "black")
 
 (setq-default
  ;; cursor
@@ -143,9 +144,9 @@
   ;; fullscreen shortcut for mac, 's' is the right cmd key
   (bind-key "C-s-f" 'toggle-frame-fullscreen))
 
-(use-package hc-zenburn-theme
+(use-package zenburn-theme
   ;; custom color theme
-  :config (load-theme 'hc-zenburn t))
+  :config (load-theme 'zenburn t))
 
 (use-package magit
   ;; defer loading until the mode is called
