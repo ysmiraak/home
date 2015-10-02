@@ -27,10 +27,6 @@
  ;; package
  package-enable-at-startup nil)
 
-(set-face-attribute 'default nil :height 140)
-(set-face-attribute 'cursor nil :background "goldenrod")
-(set-face-attribute 'region nil :background "black")
-
 (setq-default
  ;; cursor
  cursor-type '(bar . 3)
@@ -146,7 +142,10 @@
 
 (use-package zenburn-theme
   ;; custom color theme
-  :config (load-theme 'zenburn t))
+  :config (load-theme 'zenburn t)
+  (set-face-attribute 'region nil :background "black")
+  (set-face-attribute 'cursor nil :background "goldenrod")
+  (set-face-attribute 'default nil :height 140))
 
 (use-package magit
   ;; defer loading until the mode is called
@@ -215,7 +214,7 @@
 
 (use-package js2-mode
   ;; defer until the mode is needed
-  :mode ("\\.js\\'" . js-mode))
+  :mode ("\\.js\\'" . js2-mode))
 
 ;;;;;;;;;;;;;;;;
 ;; navigation ;;
