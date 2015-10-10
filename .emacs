@@ -9,6 +9,11 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 (setq
+ ;; frame
+ default-frame-alist '((width . 150) (height . 45))
+ split-height-threshold 60
+ split-width-threshold 90
+ inhibit-startup-screen t
  ;; bell
  ring-bell-function 'ignore
  ;; clipboard
@@ -18,12 +23,6 @@
  auto-save-default nil
  backup-directory-alist (quote (("." . "~/.emacs.d/backups")))
  create-lockfiles nil
- ;; frame
- default-frame-alist '((width . 150) (height . 45))
- initial-frame-alist '((top . 0) (left . 0) (width . 140) (height . 45))
- split-height-threshold 60
- split-width-threshold 90
- inhibit-startup-screen t
  ;; package
  package-enable-at-startup nil)
 
@@ -31,6 +30,9 @@
  ;; cursor
  cursor-type '(bar . 3)
  cursor-in-non-selected-windows 'hollow
+ ;; always uses spaces for tabs (for real tabs, use C-q)
+ ;; see also tab-width, tabify, untabify 
+ indent-tabs-mode nil
  ;; full path in title bar
  frame-title-format "%b (%f)")
 
@@ -140,9 +142,9 @@
   ;; fullscreen shortcut for mac, 's' is the right cmd key
   (bind-key "C-s-f" 'toggle-frame-fullscreen))
 
-(use-package zenburn-theme
+(use-package hc-zenburn-theme
   ;; custom color theme
-  :config (load-theme 'zenburn t)
+  :config (load-theme 'hc-zenburn t)
   (set-face-attribute 'region nil :background "black")
   (set-face-attribute 'cursor nil :background "goldenrod")
   (set-face-attribute 'default nil :height 140))
@@ -228,9 +230,9 @@
   ("C-x b" . ido-switch-buffer) 
   :config
   (ido-mode 1)
+  (ido-everywhere 1)
   (setq ido-enable-flex-matching t
-	ido-use-filename-at-point nil
-	ido-use-virtual-buffers 'auto)
+        ido-use-filename-at-point 'guess)
   (use-package ido-complete-space-or-hyphen)
   
   (use-package ido-ubiquitous
@@ -240,6 +242,11 @@
     :config (ido-vertical-mode 1)
     (setq ido-vertical-show-count t)
     (setq ido-vertical-define-keys 'C-n-and-C-p-only))
+
+  (use-package flx-ido
+    :config (flx-ido-mode 1)
+    (setq ido-use-faces nil) ;; meaning flx-ido-use-faces t
+    (setq gc-cons-threshold 20000000))
 
   (use-package recentf
     :init (setq recentf-max-saved-items 30)
@@ -255,6 +262,11 @@
   :bind ("C-c j" . ace-jump-mode)
   ("C-x j" . ace-jump-mode-pop-mark)
   :config (ace-jump-mode-enable-mark-sync))
+
+(use-package projectile
+  ;; defer loading until the mode is called
+  :bind ("C-c C-p" . projectile-mode)
+  ("C-x p" . projectile-global-mode))
 
 ;;;;;;;;;;;;;
 ;; editing ;;
