@@ -8,44 +8,49 @@
 ;; customizations ;;
 ;;;;;;;;;;;;;;;;;;;;
 
-(setq
+;; custom-set-variables works better than setq and setq-default,
+;; and custom-set-faces better than set-face-attributes;
+;; But if you let Custom edit them, it will mess the comments.
+
+(custom-set-variables
  ;; frame
- default-frame-alist '((width . 150) (height . 45))
- split-height-threshold 60
- split-width-threshold 90
- inhibit-startup-screen t
- ;; bell
- ring-bell-function 'ignore
+ '(default-frame-alist (quote ((width . 150) (height . 45))))
+ '(split-height-threshold 60)
+ '(split-width-threshold 90)
+ '(frame-title-format "%b (%f)" t) ;; full path in title bar
+ '(inhibit-startup-screen t)
+ '(tool-bar-mode nil)
+ '(scroll-bar-mode nil)
+ '(column-number-mode t)
+ '(global-hl-line-mode t)
+ '(ring-bell-function (quote ignore) t)
  ;; clipboard
- save-interprogram-paste-before-kill t
- x-select-enable-clipboard t 
- ;; file
- auto-save-default nil
- backup-directory-alist (quote (("." . "~/.emacs.d/backups")))
- create-lockfiles nil
- ;; package
- package-enable-at-startup nil)
-
-(setq-default
+ '(x-select-enable-clipboard t)
+ '(save-interprogram-paste-before-kill t)
  ;; cursor
- cursor-type '(bar . 3)
- cursor-in-non-selected-windows 'hollow
+ '(blink-cursor-mode nil)
+ '(cursor-type (quote (bar . 3)))
+ '(cursor-in-non-selected-windows (quote hollow))
  ;; always uses spaces for tabs (for real tabs, use C-q)
- ;; see also tab-width, tabify, untabify 
- indent-tabs-mode nil
- ;; full path in title bar
- frame-title-format "%b (%f)")
+ ;; see also tabify, untabify, and tab-width
+ '(indent-tabs-mode nil)
+ '(electric-indent-mode nil)
+ ;; file
+ '(create-lockfiles nil)
+ '(auto-save-default nil)
+ '(backup-directory-alist (quote (("." . "~/.emacs.d/backups"))))
+ '(package-enable-at-startup nil))
 
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(blink-cursor-mode -1)
-(electric-indent-mode -1)
-(global-hl-line-mode 1)
-(column-number-mode 1)
-;; (global-linum-mode 1)
+(custom-set-faces
+ '(region ((t (:background "black"))))
+ '(cursor ((t (:background "goldenrod"))))
+ '(mc/cursor-face ((t (:background "goldenrod" :foreground "black" :weight black))))
+ '(default ((t (:height 140)))))
+
 ;; keys for switching windows
 (windmove-default-keybindings 'meta)
 
+;; enable some disabled commands
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
@@ -144,10 +149,7 @@
 
 (use-package hc-zenburn-theme
   ;; custom color theme
-  :config (load-theme 'hc-zenburn t)
-  (set-face-attribute 'region nil :background "black")
-  (set-face-attribute 'cursor nil :background "goldenrod")
-  (set-face-attribute 'default nil :height 140))
+  :config (load-theme 'hc-zenburn t))
 
 (use-package magit
   ;; defer loading until the mode is called
@@ -165,7 +167,7 @@
 (use-package eldoc
   ;; defer until the mode is needed
   :defer t
-  :diminish eldoc-mode "EL"
+  :diminish eldoc-mode "Eld"
   :init
   (add-hook 'clojure-mode-hook 'eldoc-mode 1)
   (add-hook 'lisp-interaction-mode-hook 'eldoc-mode 1)
@@ -187,7 +189,7 @@
   ("\\(?:build\\|profile\\)\\.boot\\'" . clojure-mode)
   ("\\.cljs\\'" . clojurescript-mode)
   ("\\.cljx\\'" . clojurex-mode)
-  ("\\.cljc\\'" . mode)
+  ("\\.cljc\\'" . clojurec-mode)
   ("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
   :config
   (use-package clojure-mode-extra-font-locking)
@@ -226,7 +228,7 @@
   ;; don't need ido if I just want to click open some file
   ;; slow to load, defer until main functions are called
   :bind
-  ("C-x C-f" . ido-find-file)
+  ("C-x C-f" . ido-find-file) ;; C-f again for normal find
   ("C-x b" . ido-switch-buffer) 
   :config
   (ido-mode 1)
@@ -285,6 +287,7 @@
 		      :background "firebrick" :foreground "black")
   (smartparens-global-mode t)
   (show-smartparens-global-mode t)
+  (diminish 'smartparens-mode "<>")
   ;; code by Rommel M. Martinez, see link below
   (defmacro def-pairs (pairs)
     `(progn
@@ -427,10 +430,7 @@
       ("<C-right>" . mc/mark-next-like-this)
       ("<C-up>"    . mc/mark-previous-like-this)
       ("<C-down>"  . mc/unmark-previous-like-this)
-      ("<C-left>"  . mc/unmark-next-like-this)
-      :config
-      (set-face-attribute 'mc/cursor-face nil :weight 'black
-			  :background "goldenrod" :foreground "black"))
+      ("<C-left>"  . mc/unmark-next-like-this))
 
     (use-package expand-region
       ;; defer until the main function is called
