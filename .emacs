@@ -185,6 +185,7 @@
 
 (use-package clojure-mode
   ;; defer until the mode is needed
+  ;; see mode info: C-h v auto-mode-alist
   :mode
   ("\\(?:build\\|profile\\)\\.boot\\'" . clojure-mode)
   ("\\.cljs\\'" . clojurescript-mode)
@@ -219,6 +220,10 @@
 (use-package js2-mode
   ;; defer until the mode is needed
   :mode ("\\.js\\'" . js2-mode))
+
+(use-package ess
+  ;; defer until the main function is called
+  :commands (R))
 
 ;;;;;;;;;;;;;;;;
 ;; navigation ;;
