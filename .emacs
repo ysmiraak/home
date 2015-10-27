@@ -1,5 +1,5 @@
 (require 'cl)
-  
+
 (defvar *emacs-load-time*
   ;; for recording load time
   (cdr (current-time)))
@@ -221,9 +221,72 @@
   ;; defer until the mode is needed
   :mode ("\\.js\\'" . js2-mode))
 
-(use-package ess
+(use-package ess-site
   ;; defer until the main function is called
-  :commands (R))
+  :ensure ess
+  :commands R)
+
+(use-package tex
+  ;; defer until the mode is needed
+  :ensure auctex
+  :mode
+  ("\\.hva\\'" . latex-mode)
+  ("\\.drv\\'" . latex-mode)
+  ("\\.[tT]e[xX]\\'" . tex-mode)
+  ("\\.ins\\'" . tex-mode)
+  ("\\.ltx\\'" . latex-mode)
+  ("\\.dtx\\'" . doctex-mode)
+  ("\\.sty\\'" . latex-mode)
+  ("\\.cl[so]\\'" . latex-mode)
+  ("\\.bbl\\'" . latex-mode)
+  ("\\.bib\\'" . bibtex-mode)
+  ("\\.bst\\'" . bibtex-style-mode)
+  :config
+  (setq-default TeX-master nil)
+  (setq TeX-auto-save t
+        TeX-parse-self t
+        reftex-plug-into-AUCTeX t)
+  
+  (use-package latex-preview-pane)
+  (use-package cdlatex)
+  (use-package ac-math)
+
+  (eval-after-load "auto-complete"
+    '(progn (add-to-list 'ac-modes 'latex-mode)
+            (use-package auto-complete-auctex)))
+
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (visual-line-mode 1)
+              (TeX-PDF-mode 1) ;; ???
+              ;; (flyspell-mode 1) ???
+              (latex-preview-pane-enable)
+              (push
+               ;; notes on ~/.latexmkrc for SyncTeX setup
+               ;; notes about skim preference settings
+               '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+                 :help "Run latexmk on file")
+               TeX-command-list)
+              (server-start)
+              (setq TeX-command-default "latexmk")
+              (turn-on-reftex)
+              (LaTeX-math-mode 1)
+              (turn-on-cdlatex)
+              (setq ac-sources
+                    (append '(ac-source-math-unicode
+                              ac-source-math-latex
+                              ac-source-latex-commands)
+                            ac-sources))))
+
+  (when (eq system-type 'darwin)
+    (setq TeX-view-program-selection
+          '((output-dvi "DVI Viewer")
+            (output-pdf "PDF Viewer")
+            (output-html "HTML Viewer")))
+    (setq TeX-view-program-list
+          '(("DVI Viewer" "open %o")
+            ("PDF Viewer" "/opt/homebrew-cask/Caskroom/skim/1.4.14/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
+            ("HTML Viewer" "open %o")))))
 
 ;;;;;;;;;;;;;;;;
 ;; navigation ;;
@@ -239,6 +302,7 @@
   (ido-mode 1)
   (ido-everywhere 1)
   (setq ido-enable-flex-matching t
+        ido-create-new-buffer 'always
         ido-use-filename-at-point 'guess)
   (use-package ido-complete-space-or-hyphen)
   
