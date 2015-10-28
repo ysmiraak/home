@@ -208,14 +208,7 @@
 	       ("<C-M-return>" . cider-eval-defun-at-point)
 	       ("<C-S-return>" . cider-eval-region)
 	       ("<M-S-return>" . cider-eval-buffer)
-	       ("<C-M-S-return>" . cider-load-file))
-
-    (use-package ac-cider
-      :config
-      (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
-      (add-hook 'cider-mode-hook 'ac-cider-setup)
-      (eval-after-load "auto-complete"
-	'(progn (add-to-list 'ac-modes 'cider-mode))))))
+	       ("<C-M-S-return>" . cider-load-file))))
 
 (use-package js2-mode
   ;; defer until the mode is needed
@@ -246,37 +239,32 @@
   (setq TeX-auto-save t
         TeX-parse-self t
         reftex-plug-into-AUCTeX t)
-  
-  (use-package latex-preview-pane)
+
+  (with-eval-after-load 'company
+    (use-package company-auctex
+      :config (company-auctex-init))
+    (use-package company-math
+      :config
+      (add-to-list 'company-backends
+                   'company-math-symbols-unicode)))
   (use-package cdlatex)
-  (use-package ac-math)
-
-  (eval-after-load "auto-complete"
-    '(progn (add-to-list 'ac-modes 'latex-mode)
-            (use-package auto-complete-auctex)))
-
+  (use-package latex-preview-pane)
+  
   (add-hook 'LaTeX-mode-hook
             (lambda ()
               (visual-line-mode 1)
-              (TeX-PDF-mode 1) ;; ???
               ;; (flyspell-mode 1) ???
+              (LaTeX-math-mode 1)
+              (turn-on-reftex)
+              (turn-on-cdlatex)
               (latex-preview-pane-enable)
+              (TeX-PDF-mode 1)
               (push
-               ;; notes on ~/.latexmkrc for SyncTeX setup
-               ;; notes about skim preference settings
                '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
                  :help "Run latexmk on file")
                TeX-command-list)
-              (server-start)
               (setq TeX-command-default "latexmk")
-              (turn-on-reftex)
-              (LaTeX-math-mode 1)
-              (turn-on-cdlatex)
-              (setq ac-sources
-                    (append '(ac-source-math-unicode
-                              ac-source-math-latex
-                              ac-source-latex-commands)
-                            ac-sources))))
+              (server-start)))
 
   (when (eq system-type 'darwin)
     (setq TeX-view-program-selection
@@ -285,6 +273,7 @@
             (output-html "HTML Viewer")))
     (setq TeX-view-program-list
           '(("DVI Viewer" "open %o")
+            ;; http://www.stefanom.org/setting-up-a-nice-auctex-environment-on-mac-os-x/
             ("PDF Viewer" "/opt/homebrew-cask/Caskroom/skim/1.4.14/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
             ("HTML Viewer" "open %o")))))
 
@@ -342,6 +331,10 @@
 ;;;;;;;;;;;;;
 ;; editing ;;
 ;;;;;;;;;;;;;
+
+(use-package rainbow-delimiters
+  ;; lightweight and fun, why not
+  :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable))
 
 (use-package smartparens-config
   ;; defer loading til idle for one sec---although these editing aids
@@ -420,7 +413,7 @@
 	     ("C-j" . sp-newline) ;; electric-newline-and-maybe-indent
 	     ("C-M-t"   . sp-transpose-sexp)	    ;; transpose-sexp
 	     ("C-x C-t" . sp-transpose-hybrid-sexp) ;; transpose-lines
-	     ("C-M-k"           . sp-kill-sexp)	         ;; kill-sexp
+	     ("C-M-k"           . sp-kill-sexp)     ;; kill-sexp
 	     ("<C-M-backspace>" . sp-backward-kill-sexp) ;; backward-kill-sexp
 	     ;; strict mode stuff
 	     ("C-d"   . sp-delete-char)          ;; delete-char
@@ -457,38 +450,38 @@
 	     try-expand-line
 	     try-expand-line-all-buffers
 	     try-expand-whole-kill) t))
-    (bind-keys ("<C-tab>" . hippie-expand)
+    (bind-keys ("<M-tab>" . hippie-expand)
 	       ("M-/" . crazy-hippie-expand)))
 
   (use-package region-bindings-mode
     ;; hide some more goodies here
     :config (region-bindings-mode-enable)
     (bind-keys :map region-bindings-mode-map
-	       ("q" . keyboard-quit)          ;; quit
-	       ("k" . kill-region)            ;; kill
-	       ("z" . delete-region)          ;; zehen
-	       ("c" . kill-ring-save)         ;; copy
-	       ("r" . replace-string)         ;; replace
-	       ("u" . upcase-initials-region) ;; upcase
-	       ("w" . comment-box)            ;; wrap
-	       ("g" . comment-or-uncomment-region) ;; gloss
-	       ("n" . mc/mark-next-like-this)       ;; next
-	       ("j" . mc/unmark-next-like-this)     ;; jerk
-	       ("p" . mc/mark-previous-like-this)   ;; prev
-	       ("o" . mc/unmark-previous-like-this) ;; off
-               ("f" . mc/skip-to-next-like-this)     ;; forward
-	       ("b" . mc/skip-to-previous-like-this) ;; backward
-	       ("a" . mc/edit-beginnings-of-lines) ;; anfang
-	       ("e" . mc/edit-ends-of-lines)       ;; ende
-	       ("l" . mc/edit-lines)		   ;; line
+	       ("q" . keyboard-quit)                  ;; quit
+	       ("k" . kill-region)                    ;; kill
+	       ("z" . delete-region)                  ;; zehen
+	       ("c" . kill-ring-save)                 ;; copy
+	       ("r" . replace-string)                 ;; replace
+	       ("u" . upcase-initials-region)         ;; upcase
+	       ("w" . comment-box)                    ;; wrap
+	       ("g" . comment-or-uncomment-region)    ;; gloss
+	       ("n" . mc/mark-next-like-this)         ;; next
+	       ("j" . mc/unmark-next-like-this)       ;; jerk
+	       ("p" . mc/mark-previous-like-this)     ;; prev
+	       ("o" . mc/unmark-previous-like-this)   ;; off
+               ("f" . mc/skip-to-next-like-this)      ;; forward
+	       ("b" . mc/skip-to-previous-like-this)  ;; backward
+	       ("a" . mc/edit-beginnings-of-lines)    ;; anfang
+	       ("e" . mc/edit-ends-of-lines)          ;; ende
+	       ("l" . mc/edit-lines)                  ;; line
 	       ("x" . mc/mark-all-like-this-dwim)     ;; x
 	       ("m" . mc/mark-all-in-region)	      ;; mark
 	       ("t" . mc/mark-sgml-tag-pair)          ;; tag
 	       ("d" . mc/mark-all-like-this-in-defun) ;; defun
 	       ("h" . mc/mark-all-like-this)	      ;; (w)hole
-	       ("i" . mc/insert-numbers)  ;; index
-	       ("s" . mc/sort-regions)    ;; sort
-	       ("v" . mc/reverse-regions) ;; vert
+	       ("i" . mc/insert-numbers)              ;; index
+	       ("s" . mc/sort-regions)                ;; sort
+	       ("v" . mc/reverse-regions)             ;; vert
 	       )
     (use-package multiple-cursors
       ;; defer until main functions are called from here
@@ -506,26 +499,30 @@
       :bind ("S-SPC" . er/expand-region))))
 
 (use-package yasnippet
-  ;; I use <M-tab> for yas and <C-tab> for hippie-expand
-  ;; <tab> sometimes gets shadowed
-  ;; defer loading until <M-tab> is calld
+  ;; defer loading until the mode is called
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
-  :bind ("<M-tab>" . yas-global-mode)
+  :bind ("<C-S-tab>" . yas-mode)
   :config
   (diminish 'yas-minor-mode " Y")
-  (unbind-key "<M-tab>" global-map)
-  (bind-key "<M-tab>" 'yas-expand yas-minor-mode-map))
+  (unbind-key "<tab>" yas-minor-mode-map)
+  (unbind-key "TAB" yas-minor-mode-map)
+  (bind-key "<S-tab>" 'yas-expand yas-minor-mode-map))
 
-(use-package auto-complete-config
-  ;; de/activate ac mode with <S-tab>
-  ;; defer loading until <S-tab> is called
-  :ensure auto-complete
-  :bind ("<S-tab>" . global-auto-complete-mode)
-  :config (ac-config-default))
-
-(use-package rainbow-delimiters
-  ;; lightweight and fun, why not
-  :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable))
+(use-package company
+  ;; defer loading until the mode is called
+  :bind ("<C-tab>" . company-mode)
+  :config
+  (diminish 'company-mode " K")
+  (unbind-key "TAB" company-active-map)
+  (setq company-idle-delay 0
+        company-tooltip-align-annotations t)
+        
+  (use-package company-quickhelp
+    :config (company-quickhelp-mode 1))
+  
+  (use-package company-flx
+    ;; defer until the mode is needed
+    :bind ("<C-M-tab>" . company-flx-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; custom functions ;;
