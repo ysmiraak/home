@@ -242,7 +242,9 @@
 
   (with-eval-after-load 'company
     (use-package company-auctex
-      :config (company-auctex-init)))
+      :config
+      (company-auctex-init)
+      (yas-minor-mode-on)))
 
   (use-package cdlatex)
 
@@ -499,18 +501,20 @@
 (use-package yasnippet
   ;; defer loading until the mode is called
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
-  :bind ("<C-S-tab>" . yas-mode)
+  :bind ("<C-S-tab>" . yas-minor-mode)
   :config
   (diminish 'yas-minor-mode " Y")
+  (add-hook 'yas-minor-mode-hook (lambda () (yas-reload-all)))
+  (bind-key "<S-tab>" 'yas-expand yas-minor-mode-map)
   (unbind-key "<tab>" yas-minor-mode-map)
-  (unbind-key "TAB" yas-minor-mode-map)
-  (bind-key "<S-tab>" 'yas-expand yas-minor-mode-map))
+  (unbind-key "TAB" yas-minor-mode-map))
 
 (use-package company
   ;; defer loading until the mode is called
   :bind ("<C-tab>" . company-mode)
   :config
   (diminish 'company-mode " K")
+  (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
   (setq company-idle-delay 0
         company-tooltip-align-annotations t)
