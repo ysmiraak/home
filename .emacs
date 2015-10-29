@@ -60,7 +60,7 @@
 
 (require 'package)
 (add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+	     '("melpa" . "http://melpa.org/packages/") t)
 ;; I have set package-enable-at-startup to nil
 ;; now we initialize packages but activate them not
 (package-initialize nil)
@@ -242,12 +242,10 @@
 
   (with-eval-after-load 'company
     (use-package company-auctex
-      :config (company-auctex-init))
-    (use-package company-math
-      :config
-      (add-to-list 'company-backends
-                   'company-math-symbols-unicode)))
+      :config (company-auctex-init)))
+
   (use-package cdlatex)
+
   (use-package latex-preview-pane)
   
   (add-hook 'LaTeX-mode-hook
@@ -516,6 +514,11 @@
   (unbind-key "TAB" company-active-map)
   (setq company-idle-delay 0
         company-tooltip-align-annotations t)
+
+  (use-package company-math
+    :config
+    (add-to-list 'company-backends
+                 'company-math-symbols-unicode))
         
   (use-package company-quickhelp
     :config (company-quickhelp-mode 1))
