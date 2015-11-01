@@ -11,11 +11,11 @@
 ;; But if you let Custom edit them, it will mess up the comments.
 
 (custom-set-variables
- ;; frame
+ ;; The Scarab: City-Face
  '(default-frame-alist (quote ((width . 150) (height . 45))))
  '(split-height-threshold 60)
  '(split-width-threshold 90)
- '(frame-title-format "%b (%f)" t) ;; full path in title bar
+ '(frame-title-format "%b [%f]" t)
  '(uniquify-buffer-name-style 'forward)
  '(inhibit-startup-screen t)
  '(tool-bar-mode nil)
@@ -41,7 +41,9 @@
 
 (custom-set-faces
  '(region ((t (:background "black"))))
+ ;; I bow not yet before the Iron Crown,
  '(cursor ((t (:background "goldenrod"))))
+ ;; nor cast my own small golden sceptre down.
  '(mc/cursor-face ((t (:background "goldenrod" :foreground "black" :weight black))))
  '(default ((t (:height 140)))))
 
@@ -287,11 +289,11 @@
 (use-package neotree
   ;; defer loading until the mode is called
   :bind ("<C-M-S-tab>" . neotree-toggle)
-  :config
-  (set-face-attribute 'neo-root-dir-face nil :foreground "azure" :height 120)
-  (set-face-attribute 'neo-expand-btn-face nil :foreground "azure" :height 120)
-  (set-face-attribute 'neo-dir-link-face nil :foreground "ivory" :height 120)
-  (set-face-attribute 'neo-file-link-face nil :foreground "ivory" :height 120 :slant 'oblique)
+  :config ;; The Lunar Lattice: Moon Axle
+  (set-face-attribute 'neo-root-dir-face nil :foreground "gray" :height 120 :inverse-video t :box "snow")
+  (set-face-attribute 'neo-expand-btn-face nil :foreground "ivory" :height 120)
+  (set-face-attribute 'neo-dir-link-face nil :foreground "linen" :height 120)
+  (set-face-attribute 'neo-file-link-face nil :foreground "azure" :height 120 :slant 'oblique)
   (setq neo-theme 'nerd
         neo-window-width 20
         neo-window-fixed-size nil
@@ -303,6 +305,8 @@
 (use-package ido
   ;; don't need ido if I just want to click open some file
   ;; slow to load, defer until main functions are called
+  ;; or til idle for one sec
+  :defer 1
   :bind
   ("C-x C-f" . ido-find-file) ;; C-f again for normal find
   ("C-x b" . ido-switch-buffer) 
@@ -362,10 +366,10 @@
   :ensure smartparens
   :defer 1
   :config
-  (set-face-attribute 'sp-show-pair-match-face nil :weight 'black
-		      :background "black" :foreground "firebrick")
-  (set-face-attribute 'sp-show-pair-mismatch-face nil :weight 'black
-		      :background "firebrick" :foreground "black")
+  (set-face-attribute 'sp-show-pair-match-face nil ;; ELEGENT WEAPONS
+                      :weight 'black :background "black" :foreground "firebrick")
+  (set-face-attribute 'sp-show-pair-mismatch-face nil ;; FOR A MORE... CIVILIZED AGE.
+                      :weight 'black :background "firebrick" :foreground "black")
   (smartparens-global-mode t)
   (show-smartparens-global-mode t)
   (diminish 'smartparens-mode "<>")
