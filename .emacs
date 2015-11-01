@@ -1,16 +1,14 @@
 (require 'cl)
 
-(defvar *emacs-load-time*
-  ;; for recording load time
-  (cdr (current-time)))
+(defvar *emacs-load-time* (float-time))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; customizations ;;
 ;;;;;;;;;;;;;;;;;;;;
 
-;; custom-set-variables works better than setq and setq-default,
-;; and custom-set-faces better than set-face-attributes;
-;; But if you let Custom edit them, it will mess the comments.
+;; custom-set-variables and custom-set-face work better
+;; than setq/setq-default and set-face-attributes;
+;; But if you let Custom edit them, it will mess up the comments.
 
 (custom-set-variables
  ;; frame
@@ -18,11 +16,11 @@
  '(split-height-threshold 60)
  '(split-width-threshold 90)
  '(frame-title-format "%b (%f)" t) ;; full path in title bar
+ '(uniquify-buffer-name-style 'forward)
  '(inhibit-startup-screen t)
  '(tool-bar-mode nil)
  '(scroll-bar-mode nil)
  '(column-number-mode t)
- '(global-hl-line-mode t)
  '(ring-bell-function (quote ignore) t)
  ;; clipboard
  '(x-select-enable-clipboard t)
@@ -53,6 +51,8 @@
 ;; enable some disabled commands
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
 
 ;;;;;;;;;;;;;;
 ;; packages ;;
@@ -149,7 +149,10 @@
 
 (use-package hc-zenburn-theme
   ;; custom color theme
-  :config (load-theme 'hc-zenburn t))
+  :config (load-theme 'hc-zenburn t)
+  
+  (use-package hl-line
+    :config (global-hl-line-mode 1)))
 
 (use-package magit
   ;; defer loading until the mode is called
@@ -280,6 +283,22 @@
 ;;;;;;;;;;;;;;;;
 ;; navigation ;;
 ;;;;;;;;;;;;;;;;
+
+(use-package neotree
+  ;; defer loading until the mode is called
+  :bind ("<C-M-S-tab>" . neotree-toggle)
+  :config
+  (set-face-attribute 'neo-root-dir-face nil :foreground "azure" :height 120)
+  (set-face-attribute 'neo-expand-btn-face nil :foreground "azure" :height 120)
+  (set-face-attribute 'neo-dir-link-face nil :foreground "ivory" :height 120)
+  (set-face-attribute 'neo-file-link-face nil :foreground "ivory" :height 120 :slant 'oblique)
+  (setq neo-theme 'nerd
+        neo-window-width 20
+        neo-window-fixed-size nil
+        neo-show-updir-line nil
+        neo-show-hidden-files t 
+        neo-create-file-auto-open t
+        neo-smart-open t))
 
 (use-package ido
   ;; don't need ido if I just want to click open some file
@@ -474,8 +493,8 @@
 	       ("a" . mc/edit-beginnings-of-lines)    ;; anfang
 	       ("e" . mc/edit-ends-of-lines)          ;; ende
 	       ("l" . mc/edit-lines)                  ;; line
-	       ("x" . mc/mark-all-like-this-dwim)     ;; x
-	       ("m" . mc/mark-all-in-region)	      ;; mark
+	       ("m" . mc/mark-all-like-this-dwim)     ;; mark
+	       ("x" . mc/mark-all-in-region)	      ;; x
 	       ("t" . mc/mark-sgml-tag-pair)          ;; tag
 	       ("d" . mc/mark-all-like-this-in-defun) ;; defun
 	       ("h" . mc/mark-all-like-this)	      ;; (w)hole
@@ -535,20 +554,52 @@
 ;; custom functions ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-;; a very handy function from
-;; https://github.com/flyingmachine/emacs-for-clojure
-(defun toggle-comment-on-line ()
-  "Comment or uncomment current line."
+;; https://github.com/rdallasgray/graphene/blob/master/graphene-helper-functions.el
+
+(defun insert-semicolon-at-end-of-line ()
+  "Add a closing semicolon from anywhere in the line."
   (interactive)
-  (comment-or-uncomment-region (line-beginning-position)
-			       (line-end-position)))
-(bind-key "C-;" 'toggle-comment-on-line)
+  (save-excursion
+    (end-of-line)
+    (insert ";")))
+
+(defun comment-current-line-dwim ()
+  "Comment or uncomment the current line."
+  (interactive)
+  (save-excursion
+    (push-mark (beginning-of-line) t t)
+    (end-of-line)
+    (comment-dwim nil)))
+
+(bind-keys ("C-;" . insert-semicolon-at-end-of-line)
+           ("C-M-;" . comment-current-line-dwim))
+
+(defun increase-window-height (&optional arg)
+  "Make the window taller by one line. Useful when bound to a repeatable key combination."
+  (interactive "p")
+  (enlarge-window arg))
+
+(defun decrease-window-height (&optional arg)
+  "Make the window shorter by one line. Useful when bound to a repeatable key combination."
+  (interactive "p")
+  (enlarge-window (- 0 arg)))
+
+(defun decrease-window-width (&optional arg)
+  "Make the window narrower by one column. Useful when bound to a repeatable key combination."
+  (interactive "p")
+  (enlarge-window (- 0 arg) t))
+
+(defun increase-window-width (&optional arg)
+  "Make the window wider by one column. Useful when bound to a repeatable key combination."
+  (interactive "p")
+  (enlarge-window arg t))
+
+(bind-keys ("<S-up>" . increase-window-height)
+           ("<S-down>" . decrease-window-height)
+           ("<S-right>" . increase-window-width)
+           ("<S-left>" . decrease-window-width))
 
 
 
-(destructuring-bind (HIGH LOW USEC PSEC) (current-time)
-  ;; loading finished
-  (setq *emacs-load-time*
-	(+ (- LOW (car *emacs-load-time*))
-	   (/ (- USEC (cadr *emacs-load-time*)) 1000000.0)))
-  (message ".emacs loaded in %fs" *emacs-load-time*))
+(setq *emacs-load-time* (- (float-time) *emacs-load-time*))
+(message ".emacs loaded in %fs" *emacs-load-time*)
