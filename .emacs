@@ -148,13 +148,13 @@
 (use-package hc-zenburn-theme
   ;; custom color theme
   :config (load-theme 'hc-zenburn t)
-  
+
   (use-package hl-line
     :config (global-hl-line-mode 1))
 
   (use-package powerline
     :config (powerline-center-theme))
-  
+
   (use-package rainbow-delimiters
     :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable)))
 
@@ -261,7 +261,7 @@
   (use-package cdlatex)
 
   (use-package latex-preview-pane)
-  
+
   (add-hook 'LaTeX-mode-hook
             (lambda ()
               (visual-line-mode 1)
@@ -303,35 +303,35 @@
         neo-window-width 20
         neo-window-fixed-size nil
         neo-show-updir-line nil
-        neo-show-hidden-files t 
+        neo-show-hidden-files t
         neo-create-file-auto-open t
         neo-smart-open t))
 
 (use-package ido
-  :init (setq ad-redefinition-action 'accept)
-  :config (setq ad-redefinition-action 'warn)
-  (ido-mode 1)
+  ;; defer til the end of start-up
+  :init
+  (add-hook 'window-setup-hook 'ido-mode)
+  (setq ad-redefinition-action 'accept)
+  :config
+  (setq ad-redefinition-action 'warn)
   (ido-everywhere 1)
   (setq ido-enable-flex-matching t
         ido-create-new-buffer 'always
         ido-use-filename-at-point 'guess)
+
   (use-package ido-complete-space-or-hyphen)
-  
+
   (use-package ido-ubiquitous
     :config (ido-ubiquitous-mode 1))
 
   (use-package ido-vertical-mode
     :config (ido-vertical-mode 1)
-    (setq ido-vertical-show-count t)
-    (setq ido-vertical-define-keys 'C-n-and-C-p-only))
+    (setq ido-vertical-show-count t))
 
   (use-package flx-ido
     :config (flx-ido-mode 1)
-    (setq ido-use-faces nil) ;; (setq flx-ido-use-faces nil)
-    (setq gc-cons-threshold 20000000))
-
-  (use-package recentf
-    :config (recentf-mode 1)))
+    (setq ido-use-faces nil
+          gc-cons-threshold 20000000)))
 
 (use-package smex
   ;; defer til the main functions are called
@@ -440,7 +440,7 @@
              try-expand-whole-kill) t))
     (bind-keys ("<M-tab>" . hippie-expand)
                ("M-/" . crazy-hippie-expand)))
-  
+
   (use-package region-bindings-mode
     ;; hide some more goodies here
     :config (region-bindings-mode-enable)
@@ -508,10 +508,10 @@
 
   (use-package company-math
     :config (add-to-list 'company-backends 'company-math-symbols-unicode))
-  
+
   (use-package company-quickhelp
     :config (company-quickhelp-mode 1))
-  
+
   (use-package company-flx
     ;; defer til the mode is called
     :bind ("<C-M-tab>" . company-flx-mode)))
