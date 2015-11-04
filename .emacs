@@ -231,6 +231,16 @@
   :ensure ess
   :commands R)
 
+(use-package markdown-mode
+  ;; defer til the mode is needed
+  :mode
+  ("\\.text\\'" . markdown-mode)
+  ("\\.markdown\\'" . markdown-mode)
+  ("\\.md\\'" . markdown-mode)
+  ("README\\.md\\'" . gfm-mode)
+  :config (use-package markdown-mode+)
+  (setq markdown-enable-math t))
+
 (use-package tex
   ;; defer til the mode is needed
   :ensure auctex
@@ -418,6 +428,10 @@
              ("M-DEL" . sp-backward-kill-word)   ;; backward-kill-word
              ("C-k"   . sp-kill-hybrid-sexp)     ;; kill-line
              )
+  (use-package undo-tree
+    :diminish ""
+    :config (global-undo-tree-mode 1))
+  
   (use-package hippie-exp
     ;; this package always gets loaded at startup even with defer
     ;; had to hide it here
