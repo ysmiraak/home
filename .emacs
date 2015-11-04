@@ -576,3 +576,10 @@
            ("<S-down>" . decrease-window-height)
            ("<S-right>" . increase-window-width)
            ("<S-left>" . decrease-window-width))
+
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq initial-scratch-message
+                  (concat initial-scratch-message
+                          (format ";; Emacs initialized in %.2f seconds.\n\n"
+                                  (float-time (time-subtract after-init-time before-init-time)))))))
