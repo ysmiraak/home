@@ -266,7 +266,8 @@
     (use-package company-auctex
       :config
       (company-auctex-init)
-      (yas-minor-mode-on)))
+      (yas-minor-mode-on)
+      (yas-reload-all)))
 
   (use-package cdlatex)
 
@@ -294,7 +295,7 @@
     (setq TeX-view-program-list
           '(("DVI Viewer" "open %o")
             ;; http://www.stefanom.org/setting-up-a-nice-auctex-environment-on-mac-os-x/
-            ("PDF Viewer" "/opt/homebrew-cask/Caskroom/skim/1.4.14/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
+            ("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
             ("HTML Viewer" "open %o")))))
 
 ;;;;;;;;;;;;;;;;
@@ -354,7 +355,7 @@
 
 (use-package projectile
   ;; defer til the mode is called
-  :bind ("C-c C-p" . projectile-mode) ("C-x p" . projectile-global-mode))
+  :bind ("C-c C-p" . projectile-global-mode))
 
 ;;;;;;;;;;;;;
 ;; editing ;;
@@ -502,17 +503,16 @@
 
 (use-package yasnippet
   ;; defer til the mode is called
-  :bind ("<C-S-tab>" . yas-minor-mode)
+  :bind ("<C-S-tab>" . yas-global-mode)
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
   :config (diminish 'yas-minor-mode " Y")
-  (add-hook 'yas-minor-mode-hook 'yas-reload-all)
   (bind-key "<S-tab>" 'yas-expand yas-minor-mode-map)
   (unbind-key "<tab>" yas-minor-mode-map)
   (unbind-key "TAB" yas-minor-mode-map))
 
 (use-package company
   ;; defer til the mode is called
-  :bind ("<C-tab>" . company-mode)
+  :bind ("<C-tab>" . global-company-mode)
   :diminish " K"
   :config
   (unbind-key "<tab>" company-active-map)
@@ -532,7 +532,7 @@
 
 (use-package flycheck
   ;; defer til the mode is called
-  :bind ("<C-M-S-tab>" . flycheck-mode)
+  :bind ("<C-M-S-tab>" . global-flycheck-mode)
   :config (use-package flycheck-pos-tip
             :config (setq flycheck-display-errors-function
                           #'flycheck-pos-tip-error-messages)))
