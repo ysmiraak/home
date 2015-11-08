@@ -8,7 +8,7 @@
 
 (custom-set-variables
  ;; The Scarab: City-Face
- '(default-frame-alist (quote ((width . 150) (height . 45))))
+ '(default-frame-alist '((width . 150) (height . 45)))
  '(split-height-threshold 60)
  '(split-width-threshold 90)
  '(frame-title-format "%b [%f]" t)
@@ -17,14 +17,14 @@
  '(tool-bar-mode nil)
  '(scroll-bar-mode nil)
  '(column-number-mode t)
- '(ring-bell-function (quote ignore) t)
+ '(ring-bell-function 'ignore t)
  ;; clipboard
  '(x-select-enable-clipboard t)
  '(save-interprogram-paste-before-kill t)
  ;; cursor
  '(blink-cursor-mode nil)
- '(cursor-type (quote (bar . 3)))
- '(cursor-in-non-selected-windows (quote hollow))
+ '(cursor-type '(bar . 3))
+ '(cursor-in-non-selected-windows 'hollow)
  ;; always uses spaces for tabs (for real tabs, use C-q)
  ;; see also tabify, untabify, and tab-width
  '(indent-tabs-mode nil)
@@ -32,7 +32,8 @@
  ;; file
  '(create-lockfiles nil)
  '(auto-save-default nil)
- '(backup-directory-alist (quote (("." . "~/.emacs.d/backups"))))
+ '(version-control t)
+ '(backup-directory-alist `(("." . ,temporary-file-directory)))
  '(package-enable-at-startup nil))
 
 (custom-set-faces
@@ -432,7 +433,7 @@
   (use-package undo-tree
     :diminish ""
     :config (global-undo-tree-mode 1))
-  
+
   (use-package hippie-exp
     ;; this package always gets loaded at startup even with defer
     ;; had to hide it here
