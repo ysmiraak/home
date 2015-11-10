@@ -238,9 +238,45 @@
   ("\\.text\\'" . markdown-mode)
   ("\\.markdown\\'" . markdown-mode)
   ("\\.md\\'" . markdown-mode)
+  ("\\.[rR]md" . markdown-mode)
   ("README\\.md\\'" . gfm-mode)
-  :config (use-package markdown-mode+)
-  (setq markdown-enable-math t))
+  :config
+  (setq markdown-enable-math t)
+  (add-hook 'markdown-mode-hook 'visual-line-mode)
+
+  ;; https://gist.github.com/chlalanne/7403341
+
+  (defun rmarkdown-new-chunk (name)
+    "Insert a new R chunk."
+    (interactive "sChunk name: ")
+    (insert "\n```{r " name "}\n")
+    (save-excursion
+      (newline)
+      (insert "```\n")
+      (previous-line)))
+
+  (defun rmarkdown-weave-file ()
+    "Run knitr on the current file and weave it as MD and HTML."
+    (interactive)
+    (shell-command
+     (format "knit.sh -c %s"
+             (shell-quote-argument (buffer-file-name)))))
+
+  (defun rmarkdown-tangle-file ()
+    "Run knitr on the current file and tangle its R code."
+    (interactive)
+    (shell-command
+     (format "knit.sh -t %s"
+             (shell-quote-argument (buffer-file-name)))))
+
+  (defun rmarkdown-preview-file ()
+    "Run knitr on the current file and display output in a browser."
+    (interactive)
+    (shell-command
+     (format "knit.sh -b %s"
+             (shell-quote-argument (buffer-file-name)))))
+
+  (use-package markdown-mode+))
 
 (use-package tex
   ;; defer til the mode is needed
@@ -356,7 +392,7 @@
 
 (use-package projectile
   ;; defer til the mode is called
-  :bind ("C-c C-p" . projectile-global-mode))
+  :bind ("C-x p" . projectile-global-mode))
 
 ;;;;;;;;;;;;;
 ;; editing ;;
@@ -519,6 +555,7 @@
   (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
   (setq company-idle-delay 0
+        company-selection-wrap-around t
         company-tooltip-align-annotations t)
 
   (use-package company-math
