@@ -144,7 +144,8 @@
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL"))
   ;; fullscreen shortcut for mac, 's' is the right cmd key
-  (bind-key "C-s-f" 'toggle-frame-fullscreen))
+  (bind-keys ("<C-s-f>" . toggle-frame-fullscreen)
+             ("<C-s-268632070>" . toggle-frame-fullscreen)))
 
 (use-package hc-zenburn-theme
   ;; custom color theme
@@ -244,10 +245,8 @@
   (setq markdown-enable-math t)
   (add-hook 'markdown-mode-hook 'visual-line-mode)
 
-  ;; https://gist.github.com/chlalanne/7403341
-
   (defun rmarkdown-new-chunk (name)
-    "Insert a new R chunk."
+    "Insert a new R chunk. https://gist.github.com/chlalanne/7403341"
     (interactive "sChunk name: ")
     (insert "\n```{r " name "}\n")
     (save-excursion
@@ -255,26 +254,22 @@
       (insert "```\n")
       (previous-line)))
 
-  (defun rmarkdown-weave-file ()
-    "Run knitr on the current file and weave it as MD and HTML."
+  (defun rmarkdown-render-html ()
+    "Run rmarkdown::render on the current file and display output in a browser."
     (interactive)
     (shell-command
-     (format "knit.sh -c %s"
-             (shell-quote-argument (buffer-file-name)))))
-
-  (defun rmarkdown-tangle-file ()
-    "Run knitr on the current file and tangle its R code."
+     (format "Rscript -e 'library(rmarkdown); render(\"%s\", html_document())'"
+             (shell-quote-argument (buffer-file-name))))
+    (browse-url-of-file
+     (concat (file-name-sans-extension (buffer-file-name)) ".html")))
+  
+  (defun rmarkdown-render-pdf ()
+    "Run rmarkdown::render on the current file and display output in a pdf viewer."
     (interactive)
     (shell-command
-     (format "knit.sh -t %s"
-             (shell-quote-argument (buffer-file-name)))))
-
-  (defun rmarkdown-preview-file ()
-    "Run knitr on the current file and display output in a browser."
-    (interactive)
-    (shell-command
-     (format "knit.sh -b %s"
-             (shell-quote-argument (buffer-file-name)))))
+     (format "Rscript -e 'library(rmarkdown); render(\"%s\", pdf_document())' && open %s.pdf"
+             (shell-quote-argument (buffer-file-name))
+             (file-name-base))))
 
   (use-package markdown-mode+))
 
