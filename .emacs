@@ -245,7 +245,7 @@
   (setq markdown-enable-math t)
   (add-hook 'markdown-mode-hook 'visual-line-mode)
 
-  (defun rmarkdown-new-chunk (name)
+  (defun rmarkdown-new-chunk (&optional name)
     "Insert a new R chunk. https://gist.github.com/chlalanne/7403341"
     (interactive "sChunk name: ")
     (insert "\n```{r " name "}\n")
@@ -253,23 +253,22 @@
       (newline)
       (insert "```\n")
       (previous-line)))
-
-  (defun rmarkdown-render-html ()
+  
+  (defun rmarkdown-render-html (&optional args)
     "Run rmarkdown::render on the current file and display output in a browser."
-    (interactive)
+    (interactive "sArguments for html_document: ")
     (shell-command
-     (format "Rscript -e 'library(rmarkdown); render(\"%s\", html_document())'"
-             (shell-quote-argument (buffer-file-name))))
+     (format "Rscript -e 'library(rmarkdown); render(\"%s\", html_document(%s))'"
+             (shell-quote-argument (buffer-file-name)) args))
     (browse-url-of-file
      (concat (file-name-sans-extension (buffer-file-name)) ".html")))
   
-  (defun rmarkdown-render-pdf ()
+  (defun rmarkdown-render-pdf (&optional args)
     "Run rmarkdown::render on the current file and display output in a pdf viewer."
-    (interactive)
+    (interactive "sArguments for pdf_document: ")
     (shell-command
-     (format "Rscript -e 'library(rmarkdown); render(\"%s\", pdf_document())' && open %s.pdf"
-             (shell-quote-argument (buffer-file-name))
-             (file-name-base))))
+     (format "Rscript -e 'library(rmarkdown); render(\"%s\", pdf_document(%s))' && open %s.pdf"
+             (shell-quote-argument (buffer-file-name)) args (file-name-base))))
 
   (use-package markdown-mode+))
 
