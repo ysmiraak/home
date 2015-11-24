@@ -254,21 +254,15 @@
       (insert "```\n")
       (previous-line)))
   
-  (defun rmarkdown-render-html (&optional args)
-    "Run rmarkdown::render on the current file and display output in a browser."
-    (interactive "sArguments for html_document: ")
+  (defun rmarkdown-render-current-file-then-display (&optional EXTENSION)
+    "Output format should be specified correspondingly in YAML."
+    (interactive "sOutput filename extension (default pdf): ")
     (shell-command
-     (format "Rscript -e 'library(rmarkdown); render(\"%s\", html_document(%s))'"
-             (shell-quote-argument (buffer-file-name)) args))
-    (browse-url-of-file
-     (concat (file-name-sans-extension (buffer-file-name)) ".html")))
-  
-  (defun rmarkdown-render-pdf (&optional args)
-    "Run rmarkdown::render on the current file and display output in a pdf viewer."
-    (interactive "sArguments for pdf_document: ")
-    (shell-command
-     (format "Rscript -e 'library(rmarkdown); render(\"%s\", pdf_document(%s))' && open %s.pdf"
-             (shell-quote-argument (buffer-file-name)) args (file-name-base))))
+     (format "Rscript -e 'rmarkdown::render(\"%s\")' && open %s"
+             (shell-quote-argument (buffer-file-name))
+             (shell-quote-argument
+              (concat (file-name-sans-extension (buffer-file-name)) "."
+                      (if (zerop (length EXTENSION)) "pdf" EXTENSION))))))
 
   (use-package markdown-mode+))
 
