@@ -33,6 +33,7 @@
  '(create-lockfiles nil)
  '(auto-save-default nil)
  '(version-control t)
+ '(delete-old-versions t)
  '(backup-directory-alist `(("." . ,temporary-file-directory)))
  '(package-enable-at-startup nil))
 
@@ -253,9 +254,9 @@
       (newline)
       (insert "```\n")
       (previous-line)))
-  
+
   (defun rmarkdown-render-current-file-then-display (&optional EXTENSION)
-    "Output format should be specified correspondingly in YAML."
+    "Output format should be specified accordingly in YAML."
     (interactive "sOutput filename extension (default pdf): ")
     (shell-command
      (format "Rscript -e 'rmarkdown::render(\"%s\")' && open %s"
