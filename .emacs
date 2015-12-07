@@ -543,7 +543,8 @@
   :config
   (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
-  (setq company-idle-delay 0
+  (setq company-idle-delay 0.2
+        company-minimum-prefix-length 2
         company-selection-wrap-around t
         company-tooltip-align-annotations t)
 
