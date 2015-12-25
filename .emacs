@@ -353,8 +353,8 @@
   (setq ad-redefinition-action 'warn)
   (ido-everywhere 1)
   (setq ido-enable-flex-matching t
-        ido-create-new-buffer 'always
-        ido-use-filename-at-point 'guess)
+        ido-max-work-directory-list 0
+        ido-enable-last-directory-history nil)
 
   (use-package ido-complete-space-or-hyphen)
 
