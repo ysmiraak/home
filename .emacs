@@ -215,7 +215,9 @@
 
   (use-package cider
     :diminish "cider"
-    :config (setq cider-repl-history-file "~/.emacs.d/cider-history")
+    :config
+    (setq cider-repl-display-help-banner nil
+          cider-repl-history-file "~/.emacs.d/cider-history")
     (bind-keys :map cider-mode-map
                ("<C-return>" . cider-eval-last-sexp)
                ("<M-return>" . cider-eval-print-last-sexp)
@@ -259,7 +261,7 @@
     "Output format should be specified accordingly in YAML."
     (interactive "sOutput filename extension (default pdf): ")
     (shell-command
-     (format "Rscript -e 'rmarkdown::render(\"%s\")' && open %s"
+     (format "Rscript -e 'rmarkdown::render(\"%s\")'; and open %s"
              (shell-quote-argument (buffer-file-name))
              (shell-quote-argument
               (concat (file-name-sans-extension (buffer-file-name)) "."
@@ -561,9 +563,11 @@
 (use-package flycheck
   ;; defer til the mode is called
   :bind ("<C-M-S-tab>" . global-flycheck-mode)
-  :config (use-package flycheck-pos-tip
-            :config (setq flycheck-display-errors-function
-                          #'flycheck-pos-tip-error-messages)))
+  :config
+  (use-package flycheck-pos-tip
+    :config
+    (setq flycheck-display-errors-function
+          #'flycheck-pos-tip-error-messages)))
 
 (use-package flyspell
   ;; defer til the mode is called
