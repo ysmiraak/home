@@ -218,6 +218,9 @@
   (use-package ediprolog
     ;; defer with :bind somehow does not work properly for ediprolog
     :config (bind-key "<C-return>" 'ediprolog-dwim prolog-mode-map)))
+(setq auto-mode-alist
+      (append '(("\\.pl$" . prolog-mode) ("\\.m$" . mercury-mode))
+              auto-mode-alist))
 
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode))
