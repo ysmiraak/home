@@ -365,10 +365,12 @@
   :bind (("M-x" . smex)
          ("M-X" . smex-major-mode-commands)))
 
-(use-package ace-jump-mode
-  :bind (("C-c j" . ace-jump-mode)
-         ("C-x j" . ace-jump-mode-pop-mark))
-  :config (ace-jump-mode-enable-mark-sync))
+(use-package avy
+  :bind (("C-c j" . avy-goto-word-1) ;; same as ace-jump
+         ("C-c l" . avy-goto-char)   ;; letter
+         ("C-c k" . avy-goto-char-2) ;; keys
+         ("M-g g" . avy-goto-line))
+  :config (avy-setup-default))
 
 (use-package projectile
   :bind ("C-x p" . projectile-global-mode))
