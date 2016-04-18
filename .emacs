@@ -38,13 +38,12 @@
  '(package-enable-at-startup nil))
 
 (custom-set-faces
- '(region ((t (:background "black"))))
  ;; I bow not yet before the Iron Crown,
- '(cursor ((t (:background "goldenrod"))))
+ '(region ((t (:background "#242424")))) ;; Nirn gray
  ;; nor cast my own small golden sceptre down.
- '(mc/cursor-face ((t (:background "goldenrod" :foreground "black" :weight black))))
+ '(cursor ((t (:background "#DAA520")))) ;; goldenrod
  ;; Ink and gold.
- '(default ((t (:height 140)))))
+ '(mc/cursor-face ((t (:background "#DAA520" :foreground "#242424")))))
 
 ;; keys for switching windows
 (windmove-default-keybindings 'meta)
@@ -91,7 +90,7 @@
 ;;   :ensure package-name                                 ;;
 ;;   installs package-name if missing                     ;;
 ;;                                                        ;;
-;;   :diminish name-string                                ;;
+;;   :diminish (mode-name . name-string)                  ;;
 ;;   reduces mode name to name-string in mode line        ;;
 ;;                                                        ;;
 ;;   :init &rest EXPRS                                    ;;
@@ -148,8 +147,8 @@
   :bind (("<C-s-f>" . toggle-frame-fullscreen)
          ("<C-s-268632070>" . toggle-frame-fullscreen)))
 
-(use-package hc-zenburn-theme
-  :config (load-theme 'hc-zenburn t)
+(use-package zenburn-theme
+  :config (load-theme 'zenburn t)
   (use-package hl-line
     :config (global-hl-line-mode 1))
   (use-package powerline
@@ -321,21 +320,6 @@
 ;; navigation ;;
 ;;;;;;;;;;;;;;;;
 
-(use-package neotree
-  :bind ("<f8>" . neotree-toggle)
-  :config ;; The Lunar Lattice: Moon Axle
-  (set-face-attribute 'neo-root-dir-face nil :foreground "gray" :height 120 :inverse-video t :box "snow")
-  (set-face-attribute 'neo-expand-btn-face nil :foreground "ivory" :height 120)
-  (set-face-attribute 'neo-dir-link-face nil :foreground "linen" :height 120)
-  (set-face-attribute 'neo-file-link-face nil :foreground "azure" :height 120 :slant 'oblique)
-  (setq neo-theme 'nerd
-        neo-window-width 20
-        neo-window-fixed-size nil
-        neo-show-updir-line nil
-        neo-show-hidden-files t
-        neo-create-file-auto-open t
-        neo-smart-open t))
-
 (use-package ido
   :init
   (add-hook 'window-setup-hook 'ido-mode) ;; defer til the end of start-up
@@ -385,15 +369,19 @@
   ;; if I just want to click open some file
   :ensure smartparens
   :defer 1
+  :diminish (smartparens-mode . "<>") ;; red diamond
   :config
   (set-face-attribute 'sp-show-pair-match-face nil ;; ELEGENT WEAPONS
-                      :weight 'black :background "black" :foreground "firebrick")
+                      :background "#181818"        ;; Star Wound
+                      :foreground "#A41210" ;; Tamriel-Aetherius-Oblivion
+                      :weight 'bold)
   (set-face-attribute 'sp-show-pair-mismatch-face nil ;; FOR A MORE... CIVILIZED AGE.
-                      :weight 'black :background "firebrick" :foreground "black")
+                      :background "#161616" ;; the void unknown
+                      :foreground "#003B6F" ;; Tardis blue, Mnemoli
+                      :weight 'black)
   (smartparens-global-mode t)
   (show-smartparens-global-mode t)
-  (diminish 'smartparens-mode "<>")
-
+  
   (use-package hippie-exp
     ;; this package always gets loaded at startup even with defer
     ;; had to hide it here
@@ -524,8 +512,9 @@
   :bind (("<C-S-tab>" . yas-global-mode)
          :map yas-minor-mode-map
          ("<S-tab>" . yas-expand))
+  :diminish (yas-minor-mode . " Y")
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
-  :config (diminish 'yas-minor-mode " Y")
+  :config
   (unbind-key "<tab>" yas-minor-mode-map)
   (unbind-key "TAB" yas-minor-mode-map))
 
