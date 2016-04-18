@@ -381,7 +381,7 @@
                       :weight 'black)
   (smartparens-global-mode t)
   (show-smartparens-global-mode t)
-  
+
   (use-package hippie-exp
     ;; this package always gets loaded at startup even with defer
     ;; had to hide it here
@@ -411,7 +411,7 @@
 
   (use-package expand-region
     :bind ("S-SPC" . er/expand-region))
-    
+
   (use-package centered-cursor-mode
     :config (global-centered-cursor-mode 1))
 
