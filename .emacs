@@ -29,6 +29,7 @@
  ;; see also tabify, untabify, and tab-width
  '(indent-tabs-mode nil)
  '(electric-indent-mode nil)
+ '(python-shell-interpreter "python3")
  ;; file
  '(create-lockfiles nil)
  '(auto-save-default nil)
