@@ -29,7 +29,6 @@
  ;; see also tabify, untabify, and tab-width
  '(indent-tabs-mode nil)
  '(electric-indent-mode nil)
- '(python-shell-interpreter "python3")
  ;; file
  '(create-lockfiles nil)
  '(auto-save-default nil)
@@ -222,6 +221,14 @@
       (append '(("\\.pl$" . prolog-mode) ("\\.m$" . mercury-mode))
               auto-mode-alist))
 
+(use-package python
+  :bind (:map python-mode-map
+              ("<C-return>" . python-shell-send-region)
+              ("<C-M-return>" . python-shell-send-defun)
+              ("<M-S-return>" . python-shell-send-buffer)
+              ("<C-M-S-return>" . python-shell-send-file))
+  :config (setq python-shell-interpreter "python3"))
+
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode))
 
@@ -350,6 +357,10 @@
   :bind (("M-x" . smex)
          ("M-X" . smex-major-mode-commands)))
 
+(use-package centered-cursor-mode
+    :bind ("C-x c" . global-centered-cursor-mode)
+    :config (global-centered-cursor-mode 1))
+
 (use-package avy
   :bind (("C-c j" . avy-goto-word-1) ;; same as ace-jump
          ("C-c l" . avy-goto-char)   ;; letter
@@ -363,6 +374,18 @@
 ;;;;;;;;;;;;;
 ;; editing ;;
 ;;;;;;;;;;;;;
+
+(use-package expand-region
+  :bind ("S-SPC" . er/expand-region))
+
+(use-package multiple-cursors
+  :bind
+  (("C-'"  . mc/mark-pop) ;; also runs mc-hide-unmatched-lines-mode
+   ("C-\"" . mc/mark-all-dwim)
+   ("<C-right>" . mc/mark-next-like-this)
+   ("<C-up>"    . mc/mark-previous-like-this)
+   ("<C-down>"  . mc/unmark-previous-like-this)
+   ("<C-left>"  . mc/unmark-next-like-this)))
 
 (use-package smartparens-config
   ;; defer loading til idle for one sec---although these editing aids
@@ -409,21 +432,6 @@
   (use-package undo-tree
     :diminish " ψ"
     :config (global-undo-tree-mode 1))
-
-  (use-package expand-region
-    :bind ("S-SPC" . er/expand-region))
-
-  (use-package centered-cursor-mode
-    :config (global-centered-cursor-mode 1))
-
-  (use-package multiple-cursors
-    :bind
-    (("C-'"  . mc/mark-pop) ;; also runs mc-hide-unmatched-lines-mode
-     ("C-\"" . mc/mark-all-dwim)
-     ("<C-right>" . mc/mark-next-like-this)
-     ("<C-up>"    . mc/mark-previous-like-this)
-     ("<C-down>"  . mc/unmark-previous-like-this)
-     ("<C-left>"  . mc/unmark-next-like-this)))
 
   (use-package region-bindings-mode
     :config (region-bindings-mode-enable)
