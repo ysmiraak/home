@@ -358,8 +358,9 @@
          ("M-X" . smex-major-mode-commands)))
 
 (use-package centered-cursor-mode
-    :bind ("C-x c" . global-centered-cursor-mode)
-    :config (global-centered-cursor-mode 1))
+  :demand
+  :bind ("C-x c" . global-centered-cursor-mode)
+  :config (global-centered-cursor-mode 1))
 
 (use-package avy
   :bind (("C-c j" . avy-goto-word-1) ;; same as ace-jump
