@@ -8,9 +8,9 @@
 
 (custom-set-variables
  ;; The Scarab: City-Face
- '(default-frame-alist '((width . 150) (height . 45)))
- '(split-height-threshold 60)
- '(split-width-threshold 90)
+ ;; '(default-frame-alist '((width . 150) (height . 45)))
+ ;; '(split-height-threshold 60)
+ ;; '(split-width-threshold 90)
  '(frame-title-format "%b [%f]" t)
  '(uniquify-buffer-name-style 'forward)
  '(inhibit-startup-screen t)
@@ -140,12 +140,13 @@
   ;; sets environment variables correctly for OS X
   :if (memq window-system '(mac ns))
   :demand
-  :config
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL"))
   ;; fullscreen shortcut for mac, 's' is the cmd key
   :bind (("<C-s-f>" . toggle-frame-fullscreen)
-         ("<C-s-268632070>" . toggle-frame-fullscreen)))
+         ("<C-s-268632070>" . toggle-frame-fullscreen))
+  :config
+  (toggle-frame-fullscreen)
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL")))
 
 (use-package zenburn-theme
   :config (load-theme 'zenburn t)
@@ -346,7 +347,8 @@
 
   (use-package ido-vertical-mode
     :config (ido-vertical-mode 1)
-    (setq ido-vertical-show-count t))
+    (setq ido-vertical-show-count t)
+    (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right))
 
   (use-package flx-ido
     :config (flx-ido-mode 1)
