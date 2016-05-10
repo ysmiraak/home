@@ -224,8 +224,8 @@
 
 (use-package python
   :bind (:map python-mode-map
-              ("<C-return>" . python-shell-send-region)
               ("<C-M-return>" . python-shell-send-defun)
+              ("<C-S-return>" . python-shell-send-region)
               ("<M-S-return>" . python-shell-send-buffer)
               ("<C-M-S-return>" . python-shell-send-file))
   :config (setq python-shell-interpreter "python3"))
@@ -235,7 +235,12 @@
 
 (use-package ess-site
   :ensure ess
-  :commands R)
+  :commands R
+  :bind (:map ess-mode-map
+              ("<C-return>" . ess-eval-line)
+              ("<C-M-return>" . ess-eval-function-or-paragraph)
+              ("<C-S-return>" . ess-eval-region)
+              ("<M-S-return>" . ess-eval-buffer)))
 
 (use-package markdown-mode
   :mode
