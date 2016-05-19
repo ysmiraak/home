@@ -146,7 +146,7 @@
   :config
   (toggle-frame-fullscreen)
   (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL")))
+  (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL")))
 
 (use-package zenburn-theme
   :config (load-theme 'zenburn t)
@@ -242,6 +242,14 @@
               ("<C-S-return>" . ess-eval-region)
               ("<M-S-return>" . ess-eval-buffer)))
 
+(use-package org
+  :mode ("\\.org\\'" . org-mode)
+  :config
+  (setq org-src-fontify-natively t)
+  (setq org-latex-listings 'minted)
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (use-package htmlize))
+
 (use-package markdown-mode
   :mode
   ("\\.text\\'" . markdown-mode)
@@ -314,7 +322,8 @@
               (turn-on-cdlatex)
               (latex-preview-pane-enable)
               (TeX-PDF-mode 1)
-              (push '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t :help "Run latexmk on file")
+              (push '("latexmk" "latexmk -latexoption=-shell-escape -pdf %s"
+                      TeX-run-TeX nil t :help "Run latexmk on file")
                     TeX-command-list)
               (setq TeX-command-default "latexmk")
               (server-start)))
