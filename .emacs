@@ -214,6 +214,19 @@
                 ("<M-S-return>" . cider-eval-buffer)
                 ("<C-M-S-return>" . cider-load-file))))
 
+(use-package geiser
+  :mode ("\\.scm\\'" . scheme-mode)
+  :config
+  (setq geiser-default-implementation 'guile)
+  (bind-keys :map scheme-mode-map
+             ("<C-return>" . geiser-eval-last-sexp)
+             ("<C-M-return>" . geiser-eval-definition)
+             ("<C-S-return>" . geiser-eval-region)
+             ("<M-S-return>" . geiser-eval-buffer)
+             ("<C-M-S-return>" . geiser-load-file))
+
+  (use-package quack))
+
 (with-eval-after-load 'prolog
   (use-package ediprolog
     ;; defer with :bind somehow does not work properly for ediprolog
@@ -244,8 +257,11 @@
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
+  :init
+  (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
   :config
   (setq org-log-done 'time
+        org-latex-create-formula-image-program 'imagemagick
         org-src-fontify-natively t
         org-latex-listings 'minted
         org-confirm-babel-evaluate nil)
@@ -325,7 +341,7 @@
               (turn-on-cdlatex)
               (latex-preview-pane-enable)
               (TeX-PDF-mode 1)
-              (push '("latexmk" "latexmk -latexoption=-shell-escape -pdf %s"
+              (push '("latexmk" "latexmk -shell-escape -pdf %s"
                       TeX-run-TeX nil t :help "Run latexmk on file")
                     TeX-command-list)
               (setq TeX-command-default "latexmk")
