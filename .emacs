@@ -245,9 +245,12 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :config
-  (setq org-src-fontify-natively t)
-  (setq org-latex-listings 'minted)
+  (setq org-log-done 'time
+        org-src-fontify-natively t
+        org-latex-listings 'minted
+        org-confirm-babel-evaluate nil)
   (add-to-list 'org-latex-packages-alist '("" "minted"))
+  
   (use-package htmlize))
 
 (use-package markdown-mode
