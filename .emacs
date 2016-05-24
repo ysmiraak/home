@@ -260,7 +260,9 @@
   :init
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
   :config
-  (setq org-log-done 'time
+  (setq org-directory "~/Sotha_Sil/Emacs/org"
+        org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
+        org-log-done 'time
         org-latex-create-formula-image-program 'imagemagick
         org-src-fontify-natively t
         org-latex-listings 'minted
