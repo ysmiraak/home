@@ -262,6 +262,7 @@
   :config
   (setq org-directory "~/Sotha_Sil/Emacs/org"
         org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
+        org-archive-location "~/Sotha_Sil/Emacs/org/archive.org::"
         org-log-done 'time
         org-latex-create-formula-image-program 'imagemagick
         org-src-fontify-natively t
