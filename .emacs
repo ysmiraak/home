@@ -69,7 +69,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (eval-when-compile (require 'use-package))
-(setq use-package-always-ensure t)
+;; (setq use-package-always-ensure t)
 ;; (setq use-package-verbose t)
 
 (use-package benchmark-init
@@ -104,10 +104,10 @@
     :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable)))
 
 (use-package magit
-  :commands magit-status)
+  :bind ("C-c m m" . magit-status))
 
 (use-package rainbow-mode
-  :commands rainbow-mode)
+  :bind ("C-c m r" . rainbow-mode))
 
 ;;;;;;;;;;;;;;;
 ;; languages ;;
@@ -137,13 +137,10 @@
   ("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
   :config
   (use-package clojure-mode-extra-font-locking)
-
   (use-package clojure-cheatsheet :defer)
-
   (with-eval-after-load 'flycheck
     (use-package flycheck-clojure
       :config (flycheck-clojure-setup)))
-
   (use-package cider
     :diminish "cider"
     :config (setq cider-repl-display-help-banner nil
@@ -164,7 +161,6 @@
              ("<M-return>" . geiser-eval-definition)
              ("<S-return>" . geiser-eval-region)
              ("<C-M-return>" . geiser-eval-buffer))
-
   (use-package quack))
 
 (with-eval-after-load 'prolog
@@ -219,6 +215,7 @@
   :config
   (setq markdown-enable-math t)
   (add-hook 'markdown-mode-hook 'visual-line-mode)
+  (use-package markdown-mode+)
 
   (defun rmarkdown-new-chunk (&optional name)
     "Insert a new R chunk. https://gist.github.com/chlalanne/7403341"
@@ -228,7 +225,6 @@
       (newline)
       (insert "```\n")
       (previous-line)))
-
   (defun rmarkdown-render-current-file-then-display (&optional EXTENSION)
     "Output format should be specified accordingly in YAML."
     (interactive "sOutput filename extension (default pdf): ")
@@ -237,9 +233,7 @@
              (shell-quote-argument (buffer-file-name))
              (shell-quote-argument
               (concat (file-name-sans-extension (buffer-file-name)) "."
-                      (if (zerop (length EXTENSION)) "pdf" EXTENSION))))))
-
-  (use-package markdown-mode+))
+                      (if (zerop (length EXTENSION)) "pdf" EXTENSION)))))))
 
 (use-package tex
   :ensure auctex
@@ -260,18 +254,14 @@
   (setq TeX-auto-save t
         TeX-parse-self t
         reftex-plug-into-AUCTeX t)
-
   (with-eval-after-load 'company
     (use-package company-auctex
       :config
       (company-auctex-init)
       (yas-minor-mode-on)
       (yas-reload-all)))
-
   (use-package cdlatex)
-
   (use-package latex-preview-pane)
-
   (add-hook 'LaTeX-mode-hook
             (lambda ()
               (visual-line-mode 1)
@@ -286,7 +276,6 @@
                     TeX-command-list)
               (setq TeX-command-default "latexmk")
               (server-start)))
-
   (when (eq system-type 'darwin)
     (setq TeX-view-program-selection
           '((output-dvi "DVI Viewer")
@@ -312,18 +301,14 @@
   (setq ido-enable-flex-matching t
         ido-max-work-directory-list 0
         ido-enable-last-directory-history nil)
-
   (use-package ido-complete-space-or-hyphen)
-
   (use-package ido-ubiquitous
     :config (ido-ubiquitous-mode 1))
-
   (use-package ido-vertical-mode
     :config
     (ido-vertical-mode 1)
     (setq ido-vertical-show-count t)
     (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right))
-
   (use-package flx-ido
     :config
     (flx-ido-mode 1)
@@ -435,16 +420,16 @@
                ("w" . kill-ring-save)
                ("x" . mc/mark-all-in-region)
                (";" . comment-box)))
-
+  
   (use-package centered-cursor-mode
     :demand
     :bind ("C-c m l" . global-centered-cursor-mode)
     :config (global-centered-cursor-mode 1))
-
+  
   (use-package undo-tree
     :diminish " ψ"
     :config (global-undo-tree-mode 1))
-
+  
   (use-package hippie-exp
     ;; this package always gets loaded at startup even with defer
     ;; had to hide it here
@@ -488,13 +473,10 @@
         company-minimum-prefix-length 2
         company-selection-wrap-around t
         company-tooltip-align-annotations t)
-
   (use-package company-flx
     :config (company-flx-mode 1))
-
   (use-package company-math
     :config (add-to-list 'company-backends 'company-math-symbols-unicode))
-
   (use-package company-quickhelp
     :config
     (company-quickhelp-mode 1)
