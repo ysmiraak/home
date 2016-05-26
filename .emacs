@@ -122,9 +122,10 @@
               ("<C-M-return>" . eval-buffer)
               ("<C-S-return>" . eval-print-last-sexp))
   :init
-  (add-hook 'clojure-mode-hook 'eldoc-mode 1)
-  (add-hook 'lisp-interaction-mode-hook 'eldoc-mode 1)
   (add-hook 'emacs-lisp-mode-hook 'eldoc-mode 1)
+  (add-hook 'lisp-interaction-mode-hook 'eldoc-mode 1)
+  (add-hook 'clojure-mode-hook 'eldoc-mode 1)
+  (add-hook 'cider-repl-mode-hook 'eldoc-mode 1)
   (add-hook 'ielm-mode-hook 'eldoc-mode 1))
 
 (use-package clojure-mode
@@ -143,14 +144,16 @@
       :config (flycheck-clojure-setup)))
   (use-package cider
     :diminish "cider"
-    :config (setq cider-repl-display-help-banner nil
-                  cider-repl-history-file "~/.emacs.d/cider-history")
     :bind (:map cider-mode-map
                 ("<C-return>" . cider-eval-last-sexp)
                 ("<M-return>" . cider-eval-defun-at-point)
                 ("<S-return>" . cider-eval-region)
                 ("<C-M-return>" . cider-eval-buffer)
-                ("<C-S-return>" . cider-eval-print-last-sexp))))
+                ("<C-S-return>" . cider-eval-print-last-sexp))
+    :config
+    (unbind-key "C-M-i" cider-mode-map)
+    (setq cider-repl-display-help-banner nil
+          cider-repl-history-file "~/.emacs.d/cider-history")))
 
 (use-package geiser
   :mode ("\\.scm\\'" . scheme-mode)
