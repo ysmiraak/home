@@ -69,62 +69,8 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (eval-when-compile (require 'use-package))
-;; (setq use-package-always-ensure t)
+(setq use-package-always-ensure t)
 ;; (setq use-package-verbose t)
-
-;; these two are needed for use-package
-(use-package diminish)
-(use-package bind-key)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; usage:                                                 ;;
-;; see "C-h f use-package" for more                       ;;
-;; (use-package package-name                              ;;
-;;                                                        ;;
-;;   :disabled                                            ;;
-;;   ignores this altogether                              ;;
-;;                                                        ;;
-;;   :if EXPR                                             ;;
-;;   ignores this if EXPR evals to nil                    ;;
-;;                                                        ;;
-;;   :ensure package-name                                 ;;
-;;   installs package-name if missing                     ;;
-;;                                                        ;;
-;;   :diminish (mode-name . name-string)                  ;;
-;;   reduces mode name to name-string in mode line        ;;
-;;                                                        ;;
-;;   :init &rest EXPRS                                    ;;
-;;   evals EXPRS before loading package-name              ;;
-;;                                                        ;;
-;;   :defer                                               ;;
-;;   defers loading package-name                          ;;
-;;   implied by :commands :bind :bind* :mode :interpreter ;;
-;;   t can also be an integer,                            ;;
-;;   to force loading after t seconds of idle time        ;;
-;;                                                        ;;
-;;   :commands (&rest commands)                           ;;
-;;   defines autoloads for commands                       ;;
-;;                                                        ;;
-;;   :mode ("extension" . mode-name)                      ;;
-;;   adds mode-name to auto-mode-alist                    ;;
-;;   takes multiple dotted pairs                          ;;
-;;                                                        ;;
-;;   :interpreter ("extension" . interpreter-mode-alist)  ;;
-;;   adds mode-name to interpreter-mode-alist             ;;
-;;   takes multiple dotted pairs                          ;;
-;;                                                        ;;
-;;   :bind &rest ARGS                                     ;;
-;;   works like bind-keys, with autoloads                 ;;
-;;                                                        ;;
-;;   :bind* &rest ARGS                                    ;;
-;;   works like bind-keys* with autoloads                 ;;
-;;                                                        ;;
-;;   :demand                                              ;;
-;;   prevents deferred loading in all cases               ;;
-;;                                                        ;;
-;;   :config &rest EXPRS                                  ;;
-;;   evals EXPRS after loading package-name)              ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package benchmark-init
   ;; benchmarking require and load functions
@@ -168,15 +114,13 @@
 ;;;;;;;;;;;;;;;
 
 (use-package eldoc
-  :bind ;; since C-j is shadowed by smartparens
-  (:map lisp-mode-shared-map
-        ("<C-return>" . eval-last-sexp)
-        ("<M-return>" . eval-print-last-sexp)
-        ("<C-M-return>" . eval-defun)
-        ("<C-S-return>" . eval-region)
-        ("<M-S-return>" . eval-buffer)
-        ("<C-M-S-return>" . load-file))
   :diminish "Eld"
+  :bind (:map lisp-mode-shared-map
+              ("<C-return>" . eval-last-sexp)
+              ("<M-return>" . eval-defun)
+              ("<S-return>" . eval-region)
+              ("<C-M-return>" . eval-buffer)
+              ("<C-S-return>" . eval-print-last-sexp))
   :init
   (add-hook 'clojure-mode-hook 'eldoc-mode 1)
   (add-hook 'lisp-interaction-mode-hook 'eldoc-mode 1)
@@ -202,17 +146,14 @@
 
   (use-package cider
     :diminish "cider"
-    :config
-    (setq cider-repl-display-help-banner nil
-          cider-repl-history-file "~/.emacs.d/cider-history")
+    :config (setq cider-repl-display-help-banner nil
+                  cider-repl-history-file "~/.emacs.d/cider-history")
     :bind (:map cider-mode-map
                 ("<C-return>" . cider-eval-last-sexp)
-                ("<M-return>" . cider-eval-print-last-sexp)
-                ("<S-return>" . cider-eval-last-sexp-and-replace)
-                ("<C-M-return>" . cider-eval-defun-at-point)
-                ("<C-S-return>" . cider-eval-region)
-                ("<M-S-return>" . cider-eval-buffer)
-                ("<C-M-S-return>" . cider-load-file))))
+                ("<M-return>" . cider-eval-defun-at-point)
+                ("<S-return>" . cider-eval-region)
+                ("<C-M-return>" . cider-eval-buffer)
+                ("<C-S-return>" . cider-eval-print-last-sexp))))
 
 (use-package geiser
   :mode ("\\.scm\\'" . scheme-mode)
@@ -220,10 +161,9 @@
   (setq geiser-default-implementation 'guile)
   (bind-keys :map scheme-mode-map
              ("<C-return>" . geiser-eval-last-sexp)
-             ("<C-M-return>" . geiser-eval-definition)
-             ("<C-S-return>" . geiser-eval-region)
-             ("<M-S-return>" . geiser-eval-buffer)
-             ("<C-M-S-return>" . geiser-load-file))
+             ("<M-return>" . geiser-eval-definition)
+             ("<S-return>" . geiser-eval-region)
+             ("<C-M-return>" . geiser-eval-buffer))
 
   (use-package quack))
 
@@ -237,10 +177,9 @@
 
 (use-package python
   :bind (:map python-mode-map
-              ("<C-M-return>" . python-shell-send-defun)
-              ("<C-S-return>" . python-shell-send-region)
-              ("<M-S-return>" . python-shell-send-buffer)
-              ("<C-M-S-return>" . python-shell-send-file))
+              ("<M-return>" . python-shell-send-defun)
+              ("<S-return>" . python-shell-send-region)
+              ("<C-M-return>" . python-shell-send-buffer))
   :config (setq python-shell-interpreter "python3"))
 
 (use-package js2-mode
@@ -251,26 +190,24 @@
   :commands R
   :bind (:map ess-mode-map
               ("<C-return>" . ess-eval-line)
-              ("<C-M-return>" . ess-eval-function-or-paragraph)
-              ("<C-S-return>" . ess-eval-region)
-              ("<M-S-return>" . ess-eval-buffer)))
+              ("<M-return>" . ess-eval-function-or-paragraph)
+              ("<S-return>" . ess-eval-region)
+              ("<C-M-return>" . ess-eval-buffer)))
 
-(use-package org
-  :mode ("\\.org\\'" . org-mode)
+(use-package org-agenda
+  :ensure org
+  :bind ("C-c m a" . org-agenda)
   :init
-  (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
-  :config
   (setq org-directory "~/Sotha_Sil/Emacs/org"
         org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
         org-archive-location "~/Sotha_Sil/Emacs/org/archive.org::"
         org-log-done 'time
+        org-latex-packages-alist '("" "minted")
         org-latex-create-formula-image-program 'imagemagick
         org-src-fontify-natively t
         org-latex-listings 'minted
         org-confirm-babel-evaluate nil)
-  (add-to-list 'org-latex-packages-alist '("" "minted"))
-  
-  (use-package htmlize))
+  (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
 
 (use-package markdown-mode
   :mode
@@ -382,23 +319,20 @@
     :config (ido-ubiquitous-mode 1))
 
   (use-package ido-vertical-mode
-    :config (ido-vertical-mode 1)
+    :config
+    (ido-vertical-mode 1)
     (setq ido-vertical-show-count t)
     (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right))
 
   (use-package flx-ido
-    :config (flx-ido-mode 1)
+    :config
+    (flx-ido-mode 1)
     (setq ido-use-faces nil
           gc-cons-threshold 20000000)))
 
 (use-package smex
   :bind (("M-x" . smex)
          ("M-X" . smex-major-mode-commands)))
-
-(use-package centered-cursor-mode
-  :demand
-  :bind ("C-x c" . global-centered-cursor-mode)
-  :config (global-centered-cursor-mode 1))
 
 (use-package avy
   :bind (("C-c j" . avy-goto-word-1) ;; same as ace-jump
@@ -408,7 +342,7 @@
   :config (avy-setup-default))
 
 (use-package projectile
-  :bind ("C-x p" . projectile-global-mode))
+  :bind ("C-c m p" . projectile-global-mode))
 
 ;;;;;;;;;;;;;
 ;; editing ;;
@@ -418,13 +352,9 @@
   :bind ("S-SPC" . er/expand-region))
 
 (use-package multiple-cursors
-  :bind
-  (("C-'"  . mc/mark-pop) ;; also runs mc-hide-unmatched-lines-mode
-   ("C-\"" . mc/mark-all-dwim)
-   ("<C-right>" . mc/mark-next-like-this)
-   ("<C-up>"    . mc/mark-previous-like-this)
-   ("<C-down>"  . mc/unmark-previous-like-this)
-   ("<C-left>"  . mc/unmark-next-like-this)))
+  :bind (("C-c m c" . mc/mark-more-like-this-extended)
+         ("C-\"" . mc/mark-all-dwim)
+         ("C-'" . mc-hide-unmatched-lines-mode)))
 
 (use-package smartparens-config
   ;; defer loading til idle for one sec---although these editing aids
@@ -444,6 +374,76 @@
                       :weight 'black)
   (smartparens-global-mode t)
   (show-smartparens-global-mode t)
+  (bind-keys :map smartparens-mode-map
+             ;; paredit bindings
+             ("C-)" . sp-forward-slurp-sexp)
+             ("C-}" . sp-dedent-adjust-sexp)
+             ("C-(" . sp-backward-slurp-sexp)
+             ("C-{" . sp-backward-barf-sexp)
+             ("M-s" . sp-splice-sexp)
+             ("M-S" . sp-split-sexp)
+             ("M-J" . sp-join-sexp)
+             ("M-?" . sp-convolute-sexp)
+             ;; more magic added by smartparens
+             ("M-(" . sp-indent-adjust-sexp) ; mimic C-(
+             ("M-)" . sp-add-to-next-sexp)   ; mimic C-)
+             ("M-/" . sp-rewrap-sexp)
+             ("C-<" . sp-extract-before-sexp)
+             ("C->" . sp-extract-after-sexp)
+             ;; navigation via parentheses
+             ("M-n" . sp-down-sexp)
+             ("M-p" . sp-backward-down-sexp)
+             ("M-[" . sp-backward-up-sexp) ; mimic M-< and M-{
+             ("M-]" . sp-up-sexp)          ; also replace M-)
+             ("<C-left>" . sp-select-previous-thing-exchange)
+             ("<C-right>" . sp-select-next-thing)
+             ;; emacs stuff ; overrides
+             ("C-M-f" . sp-forward-sexp)      ; forward-sexp
+             ("C-M-b" . sp-backward-sexp)     ; backward-sexp
+             ("C-M-a" . sp-beginning-of-sexp) ; beginning-of-defun
+             ("C-M-e" . sp-end-of-sexp)       ; end-of-defun
+             ("C-M-n" . sp-next-sexp)         ; forward-list
+             ("C-M-p" . sp-previous-sexp)     ; backward-list
+             ("C-j" . sp-newline)  ; electric-newline-and-maybe-indent
+             ("C-M-t"   . sp-transpose-sexp)        ; transpose-sexp
+             ("C-x C-t" . sp-transpose-hybrid-sexp) ; transpose-lines
+             ("C-M-k"           . sp-kill-sexp)     ; kill-sexp
+             ("<C-M-backspace>" . sp-backward-kill-sexp) ; backward-kill-sexp
+             ("<C-backspace>" . sp-splice-sexp-killing-backward)
+             ("C-M-d" . sp-splice-sexp-killing-forward) ; down-list
+             ("C-M-u" . sp-unwrap-sexp)          ; backward-up-list
+             ("C-M-i" . sp-indent-defun)         ; completion-at-point
+             ;; strict mode stuff
+             ("C-d"   . sp-delete-char)          ; delete-char
+             ("DEL"   . sp-backward-delete-char) ; backward-delete-char
+             ("M-DEL" . sp-backward-kill-word)   ; backward-kill-word
+             ("M-d"   . sp-kill-word)            ; kill-word
+             ("C-k"   . sp-kill-hybrid-sexp)     ; kill-line
+             )
+  (use-package region-bindings-mode
+    :config
+    (region-bindings-mode-enable)
+    (bind-keys :map region-bindings-mode-map
+               ("d" . delete-region)
+               ("g" . keyboard-quit)
+               ("i" . indent-region)
+               ("k" . kill-region)
+               ("l" . downcase-region)
+               ("m" . mc/edit-lines)
+               ("r" . replace-string)
+               ("u" . upcase-region)
+               ("w" . kill-ring-save)
+               ("x" . mc/mark-all-in-region)
+               (";" . comment-box)))
+
+  (use-package centered-cursor-mode
+    :demand
+    :bind ("C-c m l" . global-centered-cursor-mode)
+    :config (global-centered-cursor-mode 1))
+
+  (use-package undo-tree
+    :diminish " ψ"
+    :config (global-undo-tree-mode 1))
 
   (use-package hippie-exp
     ;; this package always gets loaded at startup even with defer
@@ -465,101 +465,13 @@
              try-expand-line
              try-expand-line-all-buffers
              try-expand-whole-kill) t))
-    :bind (("<M-tab>" . hippie-expand)
-           ("M-/" . crazy-hippie-expand)))
-
-  (use-package undo-tree
-    :diminish " ψ"
-    :config (global-undo-tree-mode 1))
-
-  (use-package region-bindings-mode
-    :config (region-bindings-mode-enable)
-    (bind-keys :map region-bindings-mode-map
-               ("q" . keyboard-quit)                  ;; quit
-               ("k" . kill-region)                    ;; kill
-               ("z" . delete-region)                  ;; zehen
-               ("c" . kill-ring-save)                 ;; copy
-               ("r" . replace-string)                 ;; replace
-               ("u" . upcase-initials-region)         ;; upcase
-               ("w" . comment-box)                    ;; wrap
-               ("g" . comment-or-uncomment-region)    ;; gloss
-               ("n" . mc/mark-next-like-this)         ;; next
-               ("j" . mc/unmark-next-like-this)       ;; jerk
-               ("p" . mc/mark-previous-like-this)     ;; prev
-               ("o" . mc/unmark-previous-like-this)   ;; off
-               ("f" . mc/skip-to-next-like-this)      ;; forward
-               ("b" . mc/skip-to-previous-like-this)  ;; backward
-               ("a" . mc/edit-beginnings-of-lines)    ;; anfang
-               ("e" . mc/edit-ends-of-lines)          ;; ende
-               ("l" . mc/edit-lines)                  ;; line
-               ("m" . mc/mark-all-like-this-dwim)     ;; mark
-               ("x" . mc/mark-all-in-region)          ;; x
-               ("t" . mc/mark-sgml-tag-pair)          ;; tag
-               ("d" . mc/mark-all-like-this-in-defun) ;; defun
-               ("h" . mc/mark-all-like-this)          ;; (w)hole
-               ("i" . mc/insert-numbers)              ;; index
-               ("s" . mc/sort-regions)                ;; sort
-               ("v" . mc/reverse-regions)             ;; vert
-               ))
-  (bind-keys :map smartparens-mode-map
-             ;; paredit stuff
-             ("C-)" . sp-forward-slurp-sexp)
-             ("C-}" . sp-dedent-adjust-sexp) ;; cp. sp-forward-barf-sexp
-             ("C-(" . sp-backward-slurp-sexp)
-             ("C-{" . sp-backward-barf-sexp)
-             ("<C-backspace>" . sp-splice-sexp-killing-backward)
-             ("C-M-d" . sp-splice-sexp-killing-forward) ;; overrides down-list
-             ("M-s" . sp-splice-sexp)
-             ;; <---??? maybe reconsider these key cords
-             ("M-S" . sp-split-sexp)
-             ("M-J" . sp-join-sexp)
-             ("M-C" . sp-convolute-sexp) ;; formerly M-?
-             ;; more magic added by smartparens
-             ("M-A" . sp-absorb-sexp)
-             ("M-E" . sp-emit-sexp)
-             ("M-I" . sp-indent-defun)
-             ("M-R" . sp-rewrap-sexp)
-             ("M-W" . sp-swap-enclosing-sexp)
-             ("M-(" . sp-extract-before-sexp)
-             ("M-)" . sp-extract-after-sexp)
-             ("C-<" . sp-indent-adjust-sexp) ;; cp. sp-add-to-previous-sexp
-             ("C->" . sp-add-to-next-sexp)
-             ;; they are kinda hard to remember ???--->
-             ("M-[" . sp-select-previous-thing-exchange)
-             ("M-]" . sp-select-next-thing)
-             ("C-M-w" . sp-copy-sexp)
-             ("C-M-S-w" . sp-backward-copy-sexp)
-             ("C-M-u" . sp-unwrap-sexp) ;; overrides backward-up-list
-             ("C-M-S-u" . sp-backward-unwrap-sexp)
-             ;; navigation via parentheses
-             ("M-n" . sp-down-sexp)
-             ("M-P" . sp-backward-down-sexp)
-             ("M-p" . sp-backward-up-sexp)
-             ("M-N" . sp-up-sexp)
-             ;; emacs stuff ;; overrides
-             ("C-M-f" . sp-forward-sexp)      ;; forward-sexp
-             ("C-M-b" . sp-backward-sexp)     ;; backward-sexp
-             ("C-M-a" . sp-beginning-of-sexp) ;; beginning-of-defun
-             ("C-M-e" . sp-end-of-sexp)       ;; end-of-defun
-             ("C-M-n" . sp-next-sexp)         ;; forward-list
-             ("C-M-p" . sp-previous-sexp)     ;; backward-list
-             ("C-j" . sp-newline) ;; electric-newline-and-maybe-indent
-             ("C-M-t"   . sp-transpose-sexp)        ;; transpose-sexp
-             ("C-x C-t" . sp-transpose-hybrid-sexp) ;; transpose-lines
-             ("C-M-k"           . sp-kill-sexp)     ;; kill-sexp
-             ("<C-M-backspace>" . sp-backward-kill-sexp) ;; backward-kill-sexp
-             ;; strict mode stuff
-             ("C-d"   . sp-delete-char)          ;; delete-char
-             ("DEL"   . sp-backward-delete-char) ;; backward-delete-char
-             ("M-d"   . sp-kill-word)            ;; kill-word
-             ("M-DEL" . sp-backward-kill-word)   ;; backward-kill-word
-             ("C-k"   . sp-kill-hybrid-sexp)     ;; kill-line
-             ))
+    :bind (("<C-tab>" . hippie-expand)
+           ("<M-tab>" . crazy-hippie-expand))))
 
 (use-package yasnippet
-  :bind (("<C-S-tab>" . yas-global-mode)
+  :bind (("C-c m y" . yas-global-mode)
          :map yas-minor-mode-map
-         ("<S-tab>" . yas-expand))
+         ("<C-tab>" . yas-expand))
   :diminish (yas-minor-mode . " Y")
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
   :config
@@ -567,7 +479,7 @@
   (unbind-key "TAB" yas-minor-mode-map))
 
 (use-package company
-  :bind ("<C-tab>" . global-company-mode)
+  :bind ("C-c m k" . global-company-mode)
   :diminish " K"
   :config
   (unbind-key "<tab>" company-active-map)
@@ -577,17 +489,19 @@
         company-selection-wrap-around t
         company-tooltip-align-annotations t)
 
+  (use-package company-flx
+    :config (company-flx-mode 1))
+
   (use-package company-math
     :config (add-to-list 'company-backends 'company-math-symbols-unicode))
 
   (use-package company-quickhelp
-    :config (company-quickhelp-mode 1))
-
-  (use-package company-flx
-    :bind ("<C-M-tab>" . company-flx-mode)))
+    :config
+    (company-quickhelp-mode 1)
+    (setq company-quickhelp-delay 1)))
 
 (use-package flycheck
-  :bind ("<C-M-S-tab>" . global-flycheck-mode)
+  :bind ("C-c m f" . global-flycheck-mode)
   :config
   (use-package flycheck-pos-tip
     :config
@@ -596,20 +510,13 @@
 
 (use-package flyspell
   :diminish " $"
-  :bind ("C-$" . flyspell-mode))
+  :bind ("C-c m $" . flyspell-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; custom functions ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
 ;; https://github.com/rdallasgray/graphene/blob/master/graphene-helper-functions.el
-
-(defun insert-semicolon-at-end-of-line ()
-  "Add a closing semicolon from anywhere in the line."
-  (interactive)
-  (save-excursion
-    (end-of-line)
-    (insert ";")))
 
 (defun comment-current-line-dwim ()
   "Comment or uncomment the current line."
@@ -618,9 +525,6 @@
     (push-mark (beginning-of-line) t t)
     (end-of-line)
     (comment-dwim nil)))
-
-(bind-keys ("C-;" . insert-semicolon-at-end-of-line)
-           ("C-M-;" . comment-current-line-dwim))
 
 (defun increase-window-height (&optional arg)
   "Make the window taller by one line. Useful when bound to a repeatable key combination."
@@ -642,7 +546,8 @@
   (interactive "p")
   (enlarge-window arg t))
 
-(bind-keys ("<S-up>" . increase-window-height)
+(bind-keys ("C-;" . comment-current-line-dwim)
+           ("<S-up>" . increase-window-height)
            ("<S-down>" . decrease-window-height)
            ("<S-right>" . increase-window-width)
            ("<S-left>" . decrease-window-width))
