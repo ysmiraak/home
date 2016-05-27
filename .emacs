@@ -274,11 +274,12 @@
               (turn-on-cdlatex)
               (latex-preview-pane-enable)
               (TeX-PDF-mode 1)
-              (push '("latexmk" "latexmk -shell-escape -pdf %s"
+              (push '("latexmk" "latexmk -pdf -latexoption=-shell-escape %s"
                       TeX-run-TeX nil t :help "Run latexmk on file")
                     TeX-command-list)
-              (setq TeX-command-default "latexmk")
+              ;; (setq TeX-command-default "latexmk")
               (server-start)))
+  (add-hook 'TeX-mode-hook (lambda () (setq TeX-command-default "latexmk")))
   (when (eq system-type 'darwin)
     (setq TeX-view-program-selection
           '((output-dvi "DVI Viewer")
