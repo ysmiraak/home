@@ -201,7 +201,7 @@
         org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
         org-archive-location "~/Sotha_Sil/Emacs/org/archive.org::"
         org-log-done 'time
-        org-latex-packages-alist '("" "minted")
+        org-latex-packages-alist '(("" . "minted"))
         org-latex-create-formula-image-program 'imagemagick
         org-src-fontify-natively t
         org-latex-listings 'minted
@@ -454,12 +454,14 @@
              try-expand-line-all-buffers
              try-expand-whole-kill) t))
     :bind (("<C-tab>" . hippie-expand)
-           ("<M-tab>" . crazy-hippie-expand))))
+           ("<M-tab>" . crazy-hippie-expand)))
+
+  (global-company-mode 1))
 
 (use-package yasnippet
   :bind (("C-c m y" . yas-global-mode)
          :map yas-minor-mode-map
-         ("<C-tab>" . yas-expand))
+         ("<S-tab>" . yas-expand))
   :diminish (yas-minor-mode . " Y")
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
   :config
