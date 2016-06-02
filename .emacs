@@ -201,9 +201,9 @@
         org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
         org-archive-location "~/Sotha_Sil/Emacs/org/archive.org::"
         org-log-done 'time
-        org-latex-packages-alist '(("" . "minted"))
         org-latex-create-formula-image-program 'imagemagick
         org-src-fontify-natively t
+        org-latex-packages-alist '(("" "minted"))
         org-latex-listings 'minted
         org-confirm-babel-evaluate nil)
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
@@ -344,6 +344,9 @@
          ("C-\"" . mc/mark-all-dwim)
          ("C-'" . mc-hide-unmatched-lines-mode)))
 
+(use-package centered-cursor-mode
+  :bind ("C-c m l" . global-centered-cursor-mode))
+
 (use-package smartparens-config
   ;; defer loading til idle for one sec---although these editing aids
   ;; are surely needed if I'm doing editing---I may not do editing
@@ -424,11 +427,6 @@
                ("x" . mc/mark-all-in-region)
                (";" . comment-box)))
   
-  (use-package centered-cursor-mode
-    :demand
-    :bind ("C-c m l" . global-centered-cursor-mode)
-    :config (global-centered-cursor-mode 1))
-  
   (use-package undo-tree
     :diminish " ψ"
     :config (global-undo-tree-mode 1))
@@ -456,7 +454,8 @@
     :bind (("<C-tab>" . hippie-expand)
            ("<M-tab>" . crazy-hippie-expand)))
 
-  (global-company-mode 1))
+  (global-company-mode 1)
+  (projectile-global-mode 1))
 
 (use-package yasnippet
   :bind (("C-c m y" . yas-global-mode)
