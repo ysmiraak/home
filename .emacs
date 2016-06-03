@@ -149,7 +149,9 @@
                 ("<M-return>" . cider-eval-defun-at-point)
                 ("<S-return>" . cider-eval-region)
                 ("<C-M-return>" . cider-eval-buffer)
-                ("<C-S-return>" . cider-eval-print-last-sexp))
+                ("<C-S-return>" . cider-eval-print-last-sexp)
+                :map cider-repl-mode-map
+                ("C-c C-k" . cider-repl-clear-buffer))
     :config
     (unbind-key "C-M-i" cider-mode-map)
     (setq cider-repl-display-help-banner nil
