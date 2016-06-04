@@ -151,7 +151,7 @@
                 ("<C-M-return>" . cider-eval-buffer)
                 ("<C-S-return>" . cider-eval-print-last-sexp)
                 :map cider-repl-mode-map
-                ("C-c C-k" . cider-repl-clear-buffer))
+                ("C-c M-o" . cider-repl-clear-buffer))
     :config
     (unbind-key "C-M-i" cider-mode-map)
     (setq cider-repl-display-help-banner nil
@@ -160,7 +160,7 @@
 (use-package geiser
   :mode ("\\.scm\\'" . scheme-mode)
   :config
-  (setq geiser-default-implementation 'guile)
+  (setq geiser-active-implementations '(racket))
   (bind-keys :map scheme-mode-map
              ("<C-return>" . geiser-eval-last-sexp)
              ("<M-return>" . geiser-eval-definition)
