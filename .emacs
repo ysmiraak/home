@@ -208,6 +208,7 @@
         org-latex-packages-alist '(("" "minted"))
         org-latex-listings 'minted
         org-confirm-babel-evaluate nil)
+  (add-hook 'org-mode-hook 'turn-on-auto-fill)
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
 
 (use-package markdown-mode
