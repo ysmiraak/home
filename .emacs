@@ -137,8 +137,6 @@
   ("\\.cljc\\'" . clojurec-mode)
   ("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
   :config
-  (use-package clojure-mode-extra-font-locking)
-  (use-package clojure-cheatsheet :defer)
   (with-eval-after-load 'flycheck
     (use-package flycheck-clojure
       :config (flycheck-clojure-setup)))
@@ -154,7 +152,10 @@
                 ("C-c M-o" . cider-repl-clear-buffer))
     :config
     (unbind-key "C-M-i" cider-mode-map)
-    (setq cider-repl-display-help-banner nil
+    (setq nrepl-hide-special-buffers t
+          cider-prefer-local-resources t
+          cider-font-lock-dynamically t
+          cider-repl-display-help-banner nil
           cider-repl-history-file "~/.emacs.d/cider-history")))
 
 (use-package geiser
@@ -429,6 +430,13 @@
                ("w" . kill-ring-save)
                ("x" . mc/mark-all-in-region)
                (";" . comment-box)))
+
+  (use-package which-key
+    :diminish " W"
+    :config (which-key-mode 1))
+
+  (use-package aggressive-indent
+    :config (global-aggressive-indent-mode 1))
   
   (use-package undo-tree
     :diminish " ψ"
