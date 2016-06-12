@@ -142,16 +142,16 @@
       :config (flycheck-clojure-setup)))
   (use-package cider
     :diminish "cider"
-    :bind (:map cider-mode-map
-                ("<C-return>" . cider-eval-last-sexp)
-                ("<M-return>" . cider-eval-defun-at-point)
-                ("<S-return>" . cider-eval-region)
-                ("<C-M-return>" . cider-eval-buffer)
-                ("<C-S-return>" . cider-eval-print-last-sexp)
-                :map cider-repl-mode-map
-                ("C-c M-o" . cider-repl-clear-buffer))
+    :bind (("C-c m s" . cider-scratch)
+           :map cider-mode-map
+           ("<C-return>" . cider-eval-last-sexp)
+           ("<M-return>" . cider-eval-defun-at-point)
+           ("<S-return>" . cider-eval-region)
+           ("<C-M-return>" . cider-eval-buffer)
+           ("<C-S-return>" . cider-eval-print-last-sexp)
+           :map cider-repl-mode-map
+           ("C-c M-o" . cider-repl-clear-buffer))
     :config
-    (unbind-key "C-M-i" cider-mode-map)
     (setq nrepl-hide-special-buffers t
           cider-prefer-local-resources t
           cider-font-lock-dynamically t
@@ -380,6 +380,7 @@
              ("M-J" . sp-join-sexp)
              ("M-?" . sp-convolute-sexp)
              ;; more magic added by smartparens
+             ("M-I" . sp-indent-defun)
              ("M-(" . sp-indent-adjust-sexp) ; mimic C-(
              ("M-)" . sp-add-to-next-sexp)   ; mimic C-)
              ("M-/" . sp-rewrap-sexp)
@@ -407,7 +408,6 @@
              ("<C-backspace>" . sp-splice-sexp-killing-backward)
              ("C-M-d" . sp-splice-sexp-killing-forward) ; down-list
              ("C-M-u" . sp-unwrap-sexp)          ; backward-up-list
-             ("C-M-i" . sp-indent-defun)         ; completion-at-point
              ;; strict mode stuff
              ("C-d"   . sp-delete-char)          ; delete-char
              ("DEL"   . sp-backward-delete-char) ; backward-delete-char
@@ -436,6 +436,8 @@
     :config (which-key-mode 1))
 
   (use-package aggressive-indent
+    :demand
+    :bind ("C-c m i" . global-aggressive-indent-mode)
     :config (global-aggressive-indent-mode 1))
   
   (use-package undo-tree
