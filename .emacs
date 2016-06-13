@@ -127,14 +127,17 @@
               ("<C-M-return>" . eval-buffer)
               ("<C-S-return>" . eval-print-last-sexp))
   :init
-  (add-hook 'emacs-lisp-mode-hook 'eldoc-mode 1)
-  (add-hook 'lisp-interaction-mode-hook 'eldoc-mode 1)
-  (add-hook 'clojure-mode-hook 'eldoc-mode 1)
-  (add-hook 'cider-repl-mode-hook 'eldoc-mode 1)
-  (add-hook 'ielm-mode-hook 'eldoc-mode 1))
+  (add-hook 'emacs-lisp-mode-hook #'eldoc-mode 1)
+  (add-hook 'lisp-interaction-mode-hook #'eldoc-mode 1)
+  (add-hook 'clojure-mode-hook #'eldoc-mode 1)
+  (add-hook 'cider-repl-mode-hook #'eldoc-mode 1)
+  (add-hook 'ielm-mode-hook #'eldoc-mode 1))
 
 (use-package cider
   :ensure clojure-mode
+  :init
+  (add-hook 'clojure-mode-hook #'clj-refactor-mode)
+  (add-hook 'clojure-mode-hook #'yas-minor-mode)
   :bind (("H-m s" . cider-scratch)
          :map cider-mode-map
          ("<C-return>" . cider-eval-last-sexp)
@@ -144,11 +147,14 @@
          ("<C-S-return>" . cider-eval-print-last-sexp))
   :config
   (setq nrepl-hide-special-buffers t
-        cider-prefer-local-resources t
         cider-font-lock-dynamically t
+        cider-prefer-local-resources t
+        cider-repl-use-pretty-printing t
         cider-repl-display-help-banner nil
         cider-repl-pop-to-buffer-on-connect nil
         cider-repl-history-file "~/.emacs.d/cider-history")
+  (use-package clj-refactor
+    :config (cljr-add-keybindings-with-prefix "H-m H-m"))
   (with-eval-after-load 'flycheck
     (use-package flycheck-clojure
       :config (flycheck-clojure-setup))))
@@ -204,8 +210,8 @@
         org-latex-packages-alist '(("" "minted"))
         org-latex-listings 'minted
         org-confirm-babel-evaluate nil)
-  (add-hook 'org-mode-hook 'turn-on-auto-fill)
-  (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
+  (add-hook 'org-mode-hook #'turn-on-auto-fill)
+  (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 (use-package markdown-mode
   :mode
@@ -216,7 +222,7 @@
   ("README\\.md\\'" . gfm-mode)
   :config
   (setq markdown-enable-math t)
-  (add-hook 'markdown-mode-hook 'visual-line-mode)
+  (add-hook 'markdown-mode-hook #'visual-line-mode)
   (use-package markdown-mode+)
 
   (defun rmarkdown-new-chunk (&optional name)
@@ -295,7 +301,7 @@
 
 (use-package ido
   :init
-  (add-hook 'window-setup-hook 'ido-mode) ;; defer til the end of start-up
+  (add-hook 'window-setup-hook #'ido-mode) ;; defer til the end of start-up
   (setq ad-redefinition-action 'accept)
   :config
   (setq ad-redefinition-action 'warn)
@@ -320,6 +326,10 @@
 (use-package smex
   :bind (("M-x" . smex)
          ("M-X" . smex-major-mode-commands)))
+
+(use-package which-key
+  :diminish ""
+  :config (which-key-mode 1))
 
 (use-package avy
   :bind (("C-c j" . avy-goto-word-1) ;; same as ace-jump
@@ -426,19 +436,15 @@
                ("x" . mc/mark-all-in-region)
                (";" . comment-box)))
 
-  (use-package which-key
-    :diminish ""
-    :config (which-key-mode 1))
-
   (use-package aggressive-indent
     :demand
     :bind ("H-m i" . global-aggressive-indent-mode)
     :config (global-aggressive-indent-mode 1))
-  
+
   (use-package undo-tree
     :diminish " ψ"
     :config (global-undo-tree-mode 1))
-  
+
   (use-package hippie-exp
     ;; this package always gets loaded at startup even with defer
     ;; had to hide it here
@@ -472,8 +478,9 @@
   :diminish (yas-minor-mode . " Y")
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
   :config
-  (unbind-key "<tab>" yas-minor-mode-map)
-  (unbind-key "TAB" yas-minor-mode-map))
+  ;; (unbind-key "<tab>" yas-minor-mode-map)
+  ;; (unbind-key "TAB" yas-minor-mode-map)
+  )
 
 (use-package company
   :bind ("H-m k" . global-company-mode)
