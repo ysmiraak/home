@@ -128,35 +128,24 @@
   (add-hook 'cider-repl-mode-hook 'eldoc-mode 1)
   (add-hook 'ielm-mode-hook 'eldoc-mode 1))
 
-(use-package clojure-mode
-  ;; see mode info: C-h v auto-mode-alist
-  :mode
-  ("\\(?:build\\|profile\\)\\.boot\\'" . clojure-mode)
-  ("\\.cljs\\'" . clojurescript-mode)
-  ("\\.cljx\\'" . clojurex-mode)
-  ("\\.cljc\\'" . clojurec-mode)
-  ("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
+(use-package cider
+  :ensure clojure-mode
+  :bind (("C-c m s" . cider-scratch)
+         :map cider-mode-map
+         ("<C-return>" . cider-eval-last-sexp)
+         ("<M-return>" . cider-eval-defun-at-point)
+         ("<S-return>" . cider-eval-region)
+         ("<C-M-return>" . cider-eval-buffer)
+         ("<C-S-return>" . cider-eval-print-last-sexp))
   :config
+  (setq nrepl-hide-special-buffers t
+        cider-prefer-local-resources t
+        cider-font-lock-dynamically t
+        cider-repl-display-help-banner nil
+        cider-repl-history-file "~/.emacs.d/cider-history")
   (with-eval-after-load 'flycheck
     (use-package flycheck-clojure
-      :config (flycheck-clojure-setup)))
-  (use-package cider
-    :diminish "cider"
-    :bind (("C-c m s" . cider-scratch)
-           :map cider-mode-map
-           ("<C-return>" . cider-eval-last-sexp)
-           ("<M-return>" . cider-eval-defun-at-point)
-           ("<S-return>" . cider-eval-region)
-           ("<C-M-return>" . cider-eval-buffer)
-           ("<C-S-return>" . cider-eval-print-last-sexp)
-           :map cider-repl-mode-map
-           ("C-c M-o" . cider-repl-clear-buffer))
-    :config
-    (setq nrepl-hide-special-buffers t
-          cider-prefer-local-resources t
-          cider-font-lock-dynamically t
-          cider-repl-display-help-banner nil
-          cider-repl-history-file "~/.emacs.d/cider-history")))
+      :config (flycheck-clojure-setup))))
 
 (use-package geiser
   :mode ("\\.scm\\'" . scheme-mode)
@@ -432,7 +421,7 @@
                (";" . comment-box)))
 
   (use-package which-key
-    :diminish " W"
+    :diminish ""
     :config (which-key-mode 1))
 
   (use-package aggressive-indent
