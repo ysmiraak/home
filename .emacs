@@ -103,11 +103,16 @@
   (use-package rainbow-delimiters
     :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable)))
 
+(define-key input-decode-map
+  ;; unbind C-m from RET and rebind as H-m, to be used like C-c, but
+  ;; for opening/toggling modes or black books
+  (kbd "C-m") (kbd "H-m"))
+
 (use-package magit
-  :bind ("C-c m m" . magit-status))
+  :bind ("H-m m" . magit-status))
 
 (use-package rainbow-mode
-  :bind ("C-c m r" . rainbow-mode))
+  :bind ("H-m r" . rainbow-mode))
 
 ;;;;;;;;;;;;;;;
 ;; languages ;;
@@ -130,7 +135,7 @@
 
 (use-package cider
   :ensure clojure-mode
-  :bind (("C-c m s" . cider-scratch)
+  :bind (("H-m s" . cider-scratch)
          :map cider-mode-map
          ("<C-return>" . cider-eval-last-sexp)
          ("<M-return>" . cider-eval-defun-at-point)
@@ -142,6 +147,7 @@
         cider-prefer-local-resources t
         cider-font-lock-dynamically t
         cider-repl-display-help-banner nil
+        cider-repl-pop-to-buffer-on-connect nil
         cider-repl-history-file "~/.emacs.d/cider-history")
   (with-eval-after-load 'flycheck
     (use-package flycheck-clojure
@@ -187,7 +193,7 @@
 
 (use-package org-agenda
   :ensure org
-  :bind ("C-c m a" . org-agenda)
+  :bind ("H-m a" . org-agenda)
   :init
   (setq org-directory "~/Sotha_Sil/Emacs/org"
         org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
@@ -323,7 +329,7 @@
   :config (avy-setup-default))
 
 (use-package projectile
-  :bind ("C-c m p" . projectile-global-mode))
+  :bind ("H-m p" . projectile-global-mode))
 
 ;;;;;;;;;;;;;
 ;; editing ;;
@@ -333,12 +339,12 @@
   :bind ("S-SPC" . er/expand-region))
 
 (use-package multiple-cursors
-  :bind (("C-c m c" . mc/mark-more-like-this-extended)
+  :bind (("H-m c" . mc/mark-more-like-this-extended)
          ("C-\"" . mc/mark-all-dwim)
          ("C-'" . mc-hide-unmatched-lines-mode)))
 
 (use-package centered-cursor-mode
-  :bind ("C-c m l" . global-centered-cursor-mode))
+  :bind ("H-m l" . global-centered-cursor-mode))
 
 (use-package smartparens-config
   ;; defer loading til idle for one sec---although these editing aids
@@ -426,7 +432,7 @@
 
   (use-package aggressive-indent
     :demand
-    :bind ("C-c m i" . global-aggressive-indent-mode)
+    :bind ("H-m i" . global-aggressive-indent-mode)
     :config (global-aggressive-indent-mode 1))
   
   (use-package undo-tree
@@ -460,7 +466,7 @@
   (projectile-global-mode 1))
 
 (use-package yasnippet
-  :bind (("C-c m y" . yas-global-mode)
+  :bind (("H-m y" . yas-global-mode)
          :map yas-minor-mode-map
          ("<S-tab>" . yas-expand))
   :diminish (yas-minor-mode . " Y")
@@ -470,7 +476,7 @@
   (unbind-key "TAB" yas-minor-mode-map))
 
 (use-package company
-  :bind ("C-c m k" . global-company-mode)
+  :bind ("H-m k" . global-company-mode)
   :diminish " K"
   :config
   (unbind-key "<tab>" company-active-map)
@@ -489,7 +495,7 @@
     (setq company-quickhelp-delay 1)))
 
 (use-package flycheck
-  :bind ("C-c m f" . global-flycheck-mode)
+  :bind ("H-m f" . global-flycheck-mode)
   :config
   (use-package flycheck-pos-tip
     :config
@@ -498,7 +504,7 @@
 
 (use-package flyspell
   :diminish " $"
-  :bind ("C-c m $" . flyspell-mode))
+  :bind ("H-m $" . flyspell-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; custom functions ;;
