@@ -1,10 +1,32 @@
-;;;;;;;;;;;;;;;;;;;;
-;; customizations ;;
-;;;;;;;;;;;;;;;;;;;;
+;;; .emacs --- Ysmiraak's Emacs init file.
 
-;; custom-set-variables and custom-set-face work better
-;; than setq/setq-default and set-face-attributes;
-;; But if you let Custom edit them, it will mess up the comments.
+;; Copyright (C) 2015-2016 Ysmiraak
+
+;; Author: Ysmiraak <ysmiraak@gmail.com>
+;; URL: https://github.com/Ysmiraak/home-backup/blob/master/.emacs
+
+;; This file is not part of GNU Emacs.
+
+;; This file is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published
+;; by the Free Software Foundation, either version 3 of the License,
+;; or (at your option) any later version.
+
+;; This file is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; `custom-set-variables' and `custom-set-face' work better than
+;; `setq', `setq-default', or `set-face-attributes', but if you let
+;; Custum edit them, it will mess up the comments, so be careful.
+
+;;; Code:
 
 (custom-set-variables
  ;; The Scarab: City-Face
@@ -45,14 +67,12 @@
  ;; Ink and gold.
  '(mc/cursor-face ((t (:background "#DAA520" :foreground "#242424")))))
 
-;; keys for switching windows
-(windmove-default-keybindings 'meta)
-
 ;; enable some disabled commands
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
-(put 'dired-find-alternate-file 'disabled nil)
+(mapc (lambda (cmd) (put cmd 'disabled nil))
+      '(upcase-region
+        downcase-region
+        narrow-to-region
+        dired-find-alternate-file))
 
 ;;;;;;;;;;;;;;
 ;; packages ;;
@@ -118,6 +138,9 @@
 ;; languages ;;
 ;;;;;;;;;;;;;;;
 
+(defun hook-all (f &rest hs) "Add F for all HS." (mapc (lambda (h) (add-hook h f)) hs))
+(defun add-hooks (h &rest fs) "Add to H all FS." (mapc (lambda (f) (add-hook h f)) fs))
+
 (use-package eldoc
   :diminish "Eld"
   :bind (:map lisp-mode-shared-map
@@ -126,18 +149,17 @@
               ("<S-return>" . eval-region)
               ("<C-M-return>" . eval-buffer)
               ("<C-S-return>" . eval-print-last-sexp))
-  :init
-  (add-hook 'emacs-lisp-mode-hook #'eldoc-mode 1)
-  (add-hook 'lisp-interaction-mode-hook #'eldoc-mode 1)
-  (add-hook 'clojure-mode-hook #'eldoc-mode 1)
-  (add-hook 'cider-repl-mode-hook #'eldoc-mode 1)
-  (add-hook 'ielm-mode-hook #'eldoc-mode 1))
+  :init (hook-all #'eldoc-mode
+                  'emacs-lisp-mode-hook
+                  'lisp-interaction-mode-hook
+                  'clojure-mode-hook
+                  'cider-repl-mode-hook
+                  'ielm-mode-hook))
 
 (use-package cider
   :ensure clojure-mode
   :init
   (add-hook 'clojure-mode-hook #'clj-refactor-mode)
-  (add-hook 'clojure-mode-hook #'yas-minor-mode)
   :bind (("H-m s" . cider-scratch)
          :map cider-mode-map
          ("<C-return>" . cider-eval-last-sexp)
@@ -152,6 +174,7 @@
         cider-repl-use-pretty-printing t
         cider-repl-display-help-banner nil
         cider-repl-pop-to-buffer-on-connect nil
+        cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]"
         cider-repl-history-file "~/.emacs.d/cider-history")
   (use-package clj-refactor
     :config (cljr-add-keybindings-with-prefix "H-m H-m"))
@@ -163,11 +186,11 @@
   :mode ("\\.scm\\'" . scheme-mode)
   :config
   (setq geiser-active-implementations '(racket))
-  (bind-keys :map scheme-mode-map
-             ("<C-return>" . geiser-eval-last-sexp)
-             ("<M-return>" . geiser-eval-definition)
-             ("<S-return>" . geiser-eval-region)
-             ("<C-M-return>" . geiser-eval-buffer))
+  :bind (:map scheme-mode-map
+              ("<C-return>" . geiser-eval-last-sexp)
+              ("<M-return>" . geiser-eval-definition)
+              ("<S-return>" . geiser-eval-region)
+              ("<C-M-return>" . geiser-eval-buffer))
   (use-package quack))
 
 (with-eval-after-load 'prolog
@@ -210,8 +233,9 @@
         org-latex-packages-alist '(("" "minted"))
         org-latex-listings 'minted
         org-confirm-babel-evaluate nil)
-  (add-hook 'org-mode-hook #'turn-on-auto-fill)
-  (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+  (add-hooks 'org-mode-hook
+             #'turn-on-auto-fill
+             #'turn-on-org-cdlatex))
 
 (use-package markdown-mode
   :mode
@@ -220,19 +244,11 @@
   ("\\.md\\'" . markdown-mode)
   ("\\.[rR]md" . markdown-mode)
   ("README\\.md\\'" . gfm-mode)
+  :init
+  (add-hook 'markdown-mode-hook #'visual-line-mode)
   :config
   (setq markdown-enable-math t)
-  (add-hook 'markdown-mode-hook #'visual-line-mode)
   (use-package markdown-mode+)
-
-  (defun rmarkdown-new-chunk (&optional name)
-    "Insert a new R chunk. https://gist.github.com/chlalanne/7403341"
-    (interactive "sChunk name: ")
-    (insert "\n```{r " name "}\n")
-    (save-excursion
-      (newline)
-      (insert "```\n")
-      (previous-line)))
   (defun rmarkdown-render-current-file-then-display (&optional EXTENSION)
     "Output format should be specified accordingly in YAML."
     (interactive "sOutput filename extension (default pdf): ")
@@ -264,16 +280,12 @@
         reftex-plug-into-AUCTeX t)
   (with-eval-after-load 'company
     (use-package company-auctex
-      :config
-      (company-auctex-init)
-      (yas-minor-mode-on)
-      (yas-reload-all)))
+      :config (company-auctex-init)))
   (use-package cdlatex)
   (use-package latex-preview-pane)
   (add-hook 'LaTeX-mode-hook
             (lambda ()
               (visual-line-mode 1)
-              (flyspell-mode 1)
               (LaTeX-math-mode 1)
               (turn-on-reftex)
               (turn-on-cdlatex)
@@ -301,10 +313,10 @@
 
 (use-package ido
   :init
-  (add-hook 'window-setup-hook #'ido-mode) ;; defer til the end of start-up
   (setq ad-redefinition-action 'accept)
   :config
   (setq ad-redefinition-action 'warn)
+  (ido-mode 1)
   (ido-everywhere 1)
   (setq ido-enable-flex-matching t
         ido-max-work-directory-list 0
@@ -338,15 +350,50 @@
          ("M-g g" . avy-goto-line))
   :config (avy-setup-default))
 
+(use-package windmove
+  :bind (("<C-M-left>" . windmove-left)
+         ("<C-M-right>" . windmove-right)
+         ("<C-M-up>" . windmove-up)
+         ("<C-M-down>" . windmove-down)))
+
 (use-package projectile
-  :bind ("H-m p" . projectile-global-mode))
+  :demand
+  :bind ("H-m p" . projectile-global-mode)
+  :config (projectile-global-mode 1))
 
 ;;;;;;;;;;;;;
 ;; editing ;;
 ;;;;;;;;;;;;;
 
+(use-package undo-tree
+  :demand
+  :diminish ""
+  :config (global-undo-tree-mode 1))
+
+(use-package aggressive-indent
+  :demand
+  :diminish " i"
+  :bind ("H-m i" . global-aggressive-indent-mode)
+  :config (global-aggressive-indent-mode 1))
+
 (use-package expand-region
   :bind ("S-SPC" . er/expand-region))
+
+(use-package region-bindings-mode
+  :demand
+  :bind (:map region-bindings-mode-map
+              ("d" . delete-region)
+              ("g" . keyboard-quit)
+              ("i" . indent-region)
+              ("k" . kill-region)
+              ("l" . downcase-region)
+              ("m" . mc/edit-lines)
+              ("r" . replace-string)
+              ("u" . upcase-region)
+              ("w" . kill-ring-save)
+              ("x" . mc/mark-all-in-region)
+              (";" . comment-box))
+  :config (region-bindings-mode-enable))
 
 (use-package multiple-cursors
   :bind (("H-m c" . mc/mark-more-like-this-extended)
@@ -356,13 +403,77 @@
 (use-package centered-cursor-mode
   :bind ("H-m l" . global-centered-cursor-mode))
 
+(use-package hippie-exp
+  :bind (("<C-tab>" . hippie-expand)
+         ("<M-tab>" . crazy-hippie-expand))
+  :config
+  (setq hippie-expand-try-functions-list
+        '(try-expand-dabbrev
+          try-expand-dabbrev-all-buffers
+          try-expand-dabbrev-from-kill
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol
+          try-expand-all-abbrevs))
+  (fset 'crazy-hippie-expand
+        (make-hippie-expand-function
+         '(try-complete-file-name-partially
+           try-complete-file-name
+           try-expand-list
+           try-expand-list-all-buffers
+           try-expand-line
+           try-expand-line-all-buffers
+           try-expand-whole-kill) t)))
+
 (use-package smartparens-config
-  ;; defer loading til idle for one sec---although these editing aids
-  ;; are surely needed if I'm doing editing---I may not do editing
-  ;; if I just want to click open some file
   :ensure smartparens
-  :defer 1
-  :diminish (smartparens-mode . "<>") ;; red diamond
+  :demand
+  :diminish (smartparens-mode . "")
+  :bind (:map smartparens-mode-map
+              ;; paredit bindings
+              ("C-)" . sp-forward-slurp-sexp)
+              ("C-}" . sp-dedent-adjust-sexp)
+              ("C-(" . sp-backward-slurp-sexp)
+              ("C-{" . sp-backward-barf-sexp)
+              ("M-s" . sp-splice-sexp)
+              ("M-S" . sp-split-sexp)
+              ("M-J" . sp-join-sexp)
+              ("M-?" . sp-convolute-sexp)
+              ;; more magic added by smartparens
+              ("M-I" . sp-indent-defun)
+              ("M-(" . sp-indent-adjust-sexp) ; mimic C-(
+              ("M-)" . sp-add-to-next-sexp)   ; mimic C-)
+              ("M-/" . sp-rewrap-sexp)
+              ("C-<" . sp-extract-before-sexp)
+              ("C->" . sp-extract-after-sexp)
+              ;; navigation via parentheses
+              ("M-n" . sp-down-sexp)
+              ("M-p" . sp-backward-down-sexp)
+              ("M-[" . sp-backward-up-sexp) ; mimic M-< and M-{
+              ("M-]" . sp-up-sexp)          ; also replace M-)
+              ("C-S-r" . sp-select-previous-thing-exchange)
+              ("C-S-s" . sp-select-next-thing)
+              ;; emacs stuff ; overrides
+              ("C-M-f" . sp-forward-sexp)      ; forward-sexp
+              ("C-M-b" . sp-backward-sexp)     ; backward-sexp
+              ("C-M-a" . sp-beginning-of-sexp) ; beginning-of-defun
+              ("C-M-e" . sp-end-of-sexp)       ; end-of-defun
+              ("C-M-n" . sp-next-sexp)         ; forward-list
+              ("C-M-p" . sp-previous-sexp)     ; backward-list
+              ("C-j" . sp-newline)  ; electric-newline-and-maybe-indent
+              ("C-M-t"   . sp-transpose-sexp)        ; transpose-sexp
+              ("C-x C-t" . sp-transpose-hybrid-sexp) ; transpose-lines
+              ("C-M-k"           . sp-kill-sexp)     ; kill-sexp
+              ("<C-M-backspace>" . sp-backward-kill-sexp) ; backward-kill-sexp
+              ("<C-backspace>" . sp-splice-sexp-killing-backward)
+              ("C-M-d" . sp-splice-sexp-killing-forward) ; down-list
+              ("C-M-u" . sp-unwrap-sexp)          ; backward-up-list
+              ;; strict mode stuff
+              ("C-d"   . sp-delete-char)          ; delete-char
+              ("DEL"   . sp-backward-delete-char) ; backward-delete-char
+              ("M-DEL" . sp-backward-kill-word)   ; backward-kill-word
+              ("M-d"   . sp-kill-word)            ; kill-word
+              ("C-k"   . sp-kill-hybrid-sexp)     ; kill-line
+              )
   :config
   (set-face-attribute 'sp-show-pair-match-face nil ;; ELEGENT WEAPONS
                       :background "#181818"        ;; Star Wound
@@ -373,119 +484,21 @@
                       :foreground "#003B6F" ;; Tardis blue, Mnemoli
                       :weight 'black)
   (smartparens-global-mode t)
-  (show-smartparens-global-mode t)
-  (bind-keys :map smartparens-mode-map
-             ;; paredit bindings
-             ("C-)" . sp-forward-slurp-sexp)
-             ("C-}" . sp-dedent-adjust-sexp)
-             ("C-(" . sp-backward-slurp-sexp)
-             ("C-{" . sp-backward-barf-sexp)
-             ("M-s" . sp-splice-sexp)
-             ("M-S" . sp-split-sexp)
-             ("M-J" . sp-join-sexp)
-             ("M-?" . sp-convolute-sexp)
-             ;; more magic added by smartparens
-             ("M-I" . sp-indent-defun)
-             ("M-(" . sp-indent-adjust-sexp) ; mimic C-(
-             ("M-)" . sp-add-to-next-sexp)   ; mimic C-)
-             ("M-/" . sp-rewrap-sexp)
-             ("C-<" . sp-extract-before-sexp)
-             ("C->" . sp-extract-after-sexp)
-             ;; navigation via parentheses
-             ("M-n" . sp-down-sexp)
-             ("M-p" . sp-backward-down-sexp)
-             ("M-[" . sp-backward-up-sexp) ; mimic M-< and M-{
-             ("M-]" . sp-up-sexp)          ; also replace M-)
-             ("<C-left>" . sp-select-previous-thing-exchange)
-             ("<C-right>" . sp-select-next-thing)
-             ;; emacs stuff ; overrides
-             ("C-M-f" . sp-forward-sexp)      ; forward-sexp
-             ("C-M-b" . sp-backward-sexp)     ; backward-sexp
-             ("C-M-a" . sp-beginning-of-sexp) ; beginning-of-defun
-             ("C-M-e" . sp-end-of-sexp)       ; end-of-defun
-             ("C-M-n" . sp-next-sexp)         ; forward-list
-             ("C-M-p" . sp-previous-sexp)     ; backward-list
-             ("C-j" . sp-newline)  ; electric-newline-and-maybe-indent
-             ("C-M-t"   . sp-transpose-sexp)        ; transpose-sexp
-             ("C-x C-t" . sp-transpose-hybrid-sexp) ; transpose-lines
-             ("C-M-k"           . sp-kill-sexp)     ; kill-sexp
-             ("<C-M-backspace>" . sp-backward-kill-sexp) ; backward-kill-sexp
-             ("<C-backspace>" . sp-splice-sexp-killing-backward)
-             ("C-M-d" . sp-splice-sexp-killing-forward) ; down-list
-             ("C-M-u" . sp-unwrap-sexp)          ; backward-up-list
-             ;; strict mode stuff
-             ("C-d"   . sp-delete-char)          ; delete-char
-             ("DEL"   . sp-backward-delete-char) ; backward-delete-char
-             ("M-DEL" . sp-backward-kill-word)   ; backward-kill-word
-             ("M-d"   . sp-kill-word)            ; kill-word
-             ("C-k"   . sp-kill-hybrid-sexp)     ; kill-line
-             )
-  (use-package region-bindings-mode
-    :config
-    (region-bindings-mode-enable)
-    (bind-keys :map region-bindings-mode-map
-               ("d" . delete-region)
-               ("g" . keyboard-quit)
-               ("i" . indent-region)
-               ("k" . kill-region)
-               ("l" . downcase-region)
-               ("m" . mc/edit-lines)
-               ("r" . replace-string)
-               ("u" . upcase-region)
-               ("w" . kill-ring-save)
-               ("x" . mc/mark-all-in-region)
-               (";" . comment-box)))
-
-  (use-package aggressive-indent
-    :demand
-    :bind ("H-m i" . global-aggressive-indent-mode)
-    :config (global-aggressive-indent-mode 1))
-
-  (use-package undo-tree
-    :diminish " ψ"
-    :config (global-undo-tree-mode 1))
-
-  (use-package hippie-exp
-    ;; this package always gets loaded at startup even with defer
-    ;; had to hide it here
-    :config
-    (setq hippie-expand-try-functions-list
-          '(try-expand-dabbrev
-            try-expand-dabbrev-all-buffers
-            try-expand-dabbrev-from-kill
-            try-complete-lisp-symbol-partially
-            try-complete-lisp-symbol
-            try-expand-all-abbrevs))
-    (fset 'crazy-hippie-expand
-          (make-hippie-expand-function
-           '(try-complete-file-name-partially
-             try-complete-file-name
-             try-expand-list
-             try-expand-list-all-buffers
-             try-expand-line
-             try-expand-line-all-buffers
-             try-expand-whole-kill) t))
-    :bind (("<C-tab>" . hippie-expand)
-           ("<M-tab>" . crazy-hippie-expand)))
-
-  (global-company-mode 1)
-  (projectile-global-mode 1))
+  (show-smartparens-global-mode t))
 
 (use-package yasnippet
-  :bind (("H-m y" . yas-global-mode)
-         :map yas-minor-mode-map
-         ("<S-tab>" . yas-expand))
+  :demand
+  :bind ("H-m y" . yas-global-mode)
   :diminish (yas-minor-mode . " Y")
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
-  :config
-  ;; (unbind-key "<tab>" yas-minor-mode-map)
-  ;; (unbind-key "TAB" yas-minor-mode-map)
-  )
+  :config (yas-global-mode 1))
 
 (use-package company
+  :demand
   :bind ("H-m k" . global-company-mode)
   :diminish " K"
   :config
+  (global-company-mode 1)
   (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
   (setq company-idle-delay 0.2
@@ -502,7 +515,19 @@
     (setq company-quickhelp-delay 1)))
 
 (use-package flycheck
-  :bind ("H-m f" . global-flycheck-mode)
+  :bind ("H-m f" . flycheck-mode)
+  :init
+  (hook-all #'flycheck-mode
+            'emacs-lisp-mode-hook
+            'geiser-mode-hook
+            'ess-mode-hook
+            'shell-mode-hook
+            'python-mode-hook
+            'LaTeX-mode-hook
+            'markdown-mode-hook
+            'css-mode-hook
+            'html-mode-hook
+            'js2-mode-hook)
   :config
   (use-package flycheck-pos-tip
     :config
@@ -511,7 +536,12 @@
 
 (use-package flyspell
   :diminish " $"
-  :bind ("H-m $" . flyspell-mode))
+  :bind ("H-m $" . flyspell-mode)
+  :init
+  (hook-all #'flyspell-mode
+            'org-mode-hook
+            'LaTeX-mode-hook
+            'markdown-mode-hook))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; custom functions ;;
@@ -527,31 +557,7 @@
     (end-of-line)
     (comment-dwim nil)))
 
-(defun increase-window-height (&optional arg)
-  "Make the window taller by one line. Useful when bound to a repeatable key combination."
-  (interactive "p")
-  (enlarge-window arg))
-
-(defun decrease-window-height (&optional arg)
-  "Make the window shorter by one line. Useful when bound to a repeatable key combination."
-  (interactive "p")
-  (enlarge-window (- 0 arg)))
-
-(defun decrease-window-width (&optional arg)
-  "Make the window narrower by one column. Useful when bound to a repeatable key combination."
-  (interactive "p")
-  (enlarge-window (- 0 arg) t))
-
-(defun increase-window-width (&optional arg)
-  "Make the window wider by one column. Useful when bound to a repeatable key combination."
-  (interactive "p")
-  (enlarge-window arg t))
-
-(bind-keys ("C-;" . comment-current-line-dwim)
-           ("<S-up>" . increase-window-height)
-           ("<S-down>" . decrease-window-height)
-           ("<S-right>" . increase-window-width)
-           ("<S-left>" . decrease-window-width))
+(bind-key "C-;" 'comment-current-line-dwim)
 
 (add-hook 'after-init-hook
           (lambda ()
@@ -559,3 +565,6 @@
                   (concat initial-scratch-message
                           (format ";; Emacs initialized in %.2f seconds.\n\n"
                                   (float-time (time-subtract after-init-time before-init-time)))))))
+
+(provide '.emacs)
+;;; .emacs ends here
