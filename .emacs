@@ -74,6 +74,16 @@
         narrow-to-region
         dired-find-alternate-file))
 
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq initial-scratch-message
+                  (concat initial-scratch-message
+                          (format ";; Emacs initialized in %.2f seconds.\n\n"
+                                  (float-time (time-subtract after-init-time before-init-time)))))))
+
+(defun hook-all (f &rest hs) "Add F for all HS." (mapc (lambda (h) (add-hook h f)) hs))
+(defun add-hooks (h &rest fs) "Add to H all FS." (mapc (lambda (f) (add-hook h f)) fs))
+
 ;;;;;;;;;;;;;;
 ;; packages ;;
 ;;;;;;;;;;;;;;
@@ -95,18 +105,15 @@
 (use-package benchmark-init
   ;; benchmarking require and load functions
   ;; for finding out where time is being spent
-  :disabled
+  ;; :disabled
   :config (benchmark-init/activate))
 
 ;;;;;;;;;;
 ;; misc ;;
 ;;;;;;;;;;
 
-(use-package exec-path-from-shell
-  ;; sets environment variables correctly for OS X
-  :if (memq window-system '(mac ns))
-  :demand
-  ;; fullscreen shortcut for mac, 's' is the cmd key
+(use-package exec-path-from-shell :if (memq window-system '(mac ns)) :demand
+  ;; sets environment variables and fullscreen key bindings for OS X
   :bind (("<C-s-f>" . toggle-frame-fullscreen)
          ("<C-s-268632070>" . toggle-frame-fullscreen))
   :config
@@ -114,7 +121,7 @@
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL")))
 
-(use-package zenburn-theme
+(use-package zenburn-theme :demand
   :config (load-theme 'zenburn t)
   (use-package hl-line
     :config (global-hl-line-mode 1))
@@ -123,26 +130,17 @@
   (use-package rainbow-delimiters
     :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable)))
 
-(define-key input-decode-map
-  ;; unbind C-m from RET and rebind as H-m, to be used like C-c, but
-  ;; for opening/toggling modes or black books
-  (kbd "C-m") (kbd "H-m"))
-
 (use-package magit
-  :bind ("H-m m" . magit-status))
+  :bind ("C-; m" . magit-status))
 
 (use-package rainbow-mode
-  :bind ("H-m r" . rainbow-mode))
+  :bind ("C-; r" . rainbow-mode))
 
 ;;;;;;;;;;;;;;;
 ;; languages ;;
 ;;;;;;;;;;;;;;;
 
-(defun hook-all (f &rest hs) "Add F for all HS." (mapc (lambda (h) (add-hook h f)) hs))
-(defun add-hooks (h &rest fs) "Add to H all FS." (mapc (lambda (f) (add-hook h f)) fs))
-
-(use-package eldoc
-  :diminish "Eld"
+(use-package eldoc :diminish "Eld"
   :bind (:map lisp-mode-shared-map
               ("<C-return>" . eval-last-sexp)
               ("<M-return>" . eval-defun)
@@ -158,9 +156,8 @@
 
 (use-package cider
   :ensure clojure-mode
-  :init
-  (add-hook 'clojure-mode-hook #'clj-refactor-mode)
-  :bind (("H-m s" . cider-scratch)
+  :init (add-hook 'clojure-mode-hook #'clj-refactor-mode)
+  :bind (("C-; s" . cider-scratch)
          :map cider-mode-map
          ("<C-return>" . cider-eval-last-sexp)
          ("<M-return>" . cider-eval-defun-at-point)
@@ -174,32 +171,39 @@
         cider-repl-use-pretty-printing t
         cider-repl-display-help-banner nil
         cider-repl-pop-to-buffer-on-connect nil
-        cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]"
         cider-repl-history-file "~/.emacs.d/cider-history")
   (use-package clj-refactor
-    :config (cljr-add-keybindings-with-prefix "H-m H-m"))
+    :config (cljr-add-keybindings-with-prefix "C-; C-;"))
   (with-eval-after-load 'flycheck
     (use-package flycheck-clojure
       :config (flycheck-clojure-setup))))
 
 (use-package geiser
   :mode ("\\.scm\\'" . scheme-mode)
-  :config
-  (setq geiser-active-implementations '(racket))
+  :defines geiser-active-implementations
   :bind (:map scheme-mode-map
               ("<C-return>" . geiser-eval-last-sexp)
               ("<M-return>" . geiser-eval-definition)
               ("<S-return>" . geiser-eval-region)
               ("<C-M-return>" . geiser-eval-buffer))
+  :config
+  (setq geiser-active-implementations '(racket))
   (use-package quack))
 
-(with-eval-after-load 'prolog
-  (use-package ediprolog
-    ;; defer with :bind somehow does not work properly for ediprolog
-    :config (bind-key "<C-return>" 'ediprolog-dwim prolog-mode-map)))
-(setq auto-mode-alist
-      (append '(("\\.pl$" . prolog-mode) ("\\.m$" . mercury-mode))
-              auto-mode-alist))
+(use-package ediprolog
+  :mode ("\\.pl$" . prolog-mode)
+  :defines prolog-mode-map
+  :init (with-eval-after-load 'prolog
+          (bind-key "<C-return>" 'ediprolog-dwim prolog-mode-map)))
+
+(use-package ess-site
+  :ensure ess
+  :commands R
+  :bind (:map ess-mode-map
+              ("<C-return>" . ess-eval-line)
+              ("<M-return>" . ess-eval-function-or-paragraph)
+              ("<S-return>" . ess-eval-region)
+              ("<C-M-return>" . ess-eval-buffer)))
 
 (use-package python
   :bind (:map python-mode-map
@@ -211,39 +215,30 @@
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode))
 
-(use-package ess-site
-  :ensure ess
-  :commands R
-  :bind (:map ess-mode-map
-              ("<C-return>" . ess-eval-line)
-              ("<M-return>" . ess-eval-function-or-paragraph)
-              ("<S-return>" . ess-eval-region)
-              ("<C-M-return>" . ess-eval-buffer)))
-
 (use-package org-agenda
   :ensure org
-  :bind ("H-m a" . org-agenda)
-  :init
-  (setq org-directory "~/Sotha_Sil/Emacs/org"
-        org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
-        org-archive-location "~/Sotha_Sil/Emacs/org/archive.org::"
-        org-log-done 'time
-        org-latex-create-formula-image-program 'imagemagick
-        org-src-fontify-natively t
-        org-latex-packages-alist '(("" "minted"))
-        org-latex-listings 'minted
-        org-confirm-babel-evaluate nil)
-  (add-hooks 'org-mode-hook
-             #'turn-on-auto-fill
-             #'turn-on-org-cdlatex))
+  :bind ("C-; a" . org-agenda)
+  :init (setq org-directory "~/Sotha_Sil/Emacs/org"
+              org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
+              org-archive-location "~/Sotha_Sil/Emacs/org/archive.org::"
+              org-log-done 'time)
+  (use-package ox-latex
+    :mode ("\\.org\\'" . org-mode)
+    :init (add-hooks 'org-mode-hook
+                     #'turn-on-auto-fill
+                     #'turn-on-org-cdlatex)
+    (setq org-latex-create-formula-image-program 'imagemagick
+          org-confirm-babel-evaluate nil
+          org-latex-listings 'minted
+          org-latex-packages-alist '(("" "minted"))
+          org-src-fontify-natively t)))
 
 (use-package markdown-mode
-  :mode
-  ("\\.text\\'" . markdown-mode)
-  ("\\.markdown\\'" . markdown-mode)
-  ("\\.md\\'" . markdown-mode)
-  ("\\.[rR]md" . markdown-mode)
-  ("README\\.md\\'" . gfm-mode)
+  ;; :mode
+  ;; ("\\.markdown\\'" . markdown-mode)
+  ;; ("\\.md\\'" . markdown-mode)
+  ;; ("\\.[rR]md" . markdown-mode)
+  ;; ("README\\.md\\'" . gfm-mode)
   :init
   (add-hook 'markdown-mode-hook #'visual-line-mode)
   :config
@@ -261,57 +256,50 @@
 
 (use-package tex
   :ensure auctex
-  :mode
-  ("\\.hva\\'" . latex-mode)
-  ("\\.drv\\'" . latex-mode)
-  ("\\.[tT]e[xX]\\'" . tex-mode)
-  ("\\.ins\\'" . tex-mode)
-  ("\\.ltx\\'" . latex-mode)
-  ("\\.dtx\\'" . doctex-mode)
-  ("\\.sty\\'" . latex-mode)
-  ("\\.cl[so]\\'" . latex-mode)
-  ("\\.bbl\\'" . latex-mode)
-  ("\\.bib\\'" . bibtex-mode)
-  ("\\.bst\\'" . bibtex-style-mode)
+  :defer t
+  ;; :mode
+  ;; ("\\.hva\\'" . latex-mode)
+  ;; ("\\.drv\\'" . latex-mode)
+  ;; ("\\.[tT]e[xX]\\'" . tex-mode)
+  ;; ("\\.ins\\'" . tex-mode)
+  ;; ("\\.ltx\\'" . latex-mode)
+  ;; ("\\.dtx\\'" . doctex-mode)
+  ;; ("\\.sty\\'" . latex-mode)
+  ;; ("\\.cl[so]\\'" . latex-mode)
+  ;; ("\\.bbl\\'" . latex-mode)
+  ;; ("\\.bib\\'" . bibtex-mode)
+  ;; ("\\.bst\\'" . bibtex-style-mode)
+  :init (add-hooks 'LaTeX-mode-hook
+                   #'visual-line-mode
+                   #'LaTeX-math-mode
+                   #'latex-preview-pane-enable
+                   #'turn-on-cdlatex
+                   #'turn-on-reftex
+                   (lambda () (setq TeX-command-default "latexmk")))
   :config
-  (setq-default TeX-master nil)
+  (push '("latexmk" "latexmk -pdf -latexoption=-shell-escape %s"
+          TeX-run-TeX nil t :help "Run latexmk on file")
+        TeX-command-list)
+  (push '(output-pdf "Skim") TeX-view-program-selection)
+  ;; (push '("Skim displayline"
+  ;;         "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
+  ;;       TeX-view-program-list)
+  (server-start)
   (setq TeX-auto-save t
-        TeX-parse-self t
-        reftex-plug-into-AUCTeX t)
+        TeX-parse-self t)
+  (use-package latex-preview-pane)
+  (use-package cdlatex)
+  (use-package reftex
+    :config (setq reftex-plug-into-AUCTeX t))
   (with-eval-after-load 'company
     (use-package company-auctex
-      :config (company-auctex-init)))
-  (use-package cdlatex)
-  (use-package latex-preview-pane)
-  (add-hook 'LaTeX-mode-hook
-            (lambda ()
-              (visual-line-mode 1)
-              (LaTeX-math-mode 1)
-              (turn-on-reftex)
-              (turn-on-cdlatex)
-              (latex-preview-pane-enable)
-              (TeX-PDF-mode 1)
-              (push '("latexmk" "latexmk -pdf -latexoption=-shell-escape %s"
-                      TeX-run-TeX nil t :help "Run latexmk on file")
-                    TeX-command-list)
-              (setq TeX-command-default "latexmk")
-              (server-start)))
-  (when (eq system-type 'darwin)
-    (setq TeX-view-program-selection
-          '((output-dvi "DVI Viewer")
-            (output-pdf "PDF Viewer")
-            (output-html "HTML Viewer")))
-    (setq TeX-view-program-list
-          '(("DVI Viewer" "open %o")
-            ;; http://www.stefanom.org/setting-up-a-nice-auctex-environment-on-mac-os-x/
-            ("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
-            ("HTML Viewer" "open %o")))))
+      :config (company-auctex-init))))
 
 ;;;;;;;;;;;;;;;;
 ;; navigation ;;
 ;;;;;;;;;;;;;;;;
 
-(use-package ido
+(use-package ido :demand
   :init
   (setq ad-redefinition-action 'accept)
   :config
@@ -339,8 +327,7 @@
   :bind (("M-x" . smex)
          ("M-X" . smex-major-mode-commands)))
 
-(use-package which-key
-  :diminish ""
+(use-package which-key :demand :diminish ""
   :config (which-key-mode 1))
 
 (use-package avy
@@ -356,31 +343,25 @@
          ("<C-M-up>" . windmove-up)
          ("<C-M-down>" . windmove-down)))
 
-(use-package projectile
-  :demand
-  :bind ("H-m p" . projectile-global-mode)
+(use-package projectile :demand
+  :bind ("C-; p" . projectile-global-mode)
   :config (projectile-global-mode 1))
 
 ;;;;;;;;;;;;;
 ;; editing ;;
 ;;;;;;;;;;;;;
 
-(use-package undo-tree
-  :demand
-  :diminish ""
+(use-package undo-tree :demand :diminish ""
   :config (global-undo-tree-mode 1))
 
-(use-package aggressive-indent
-  :demand
-  :diminish " i"
-  :bind ("H-m i" . global-aggressive-indent-mode)
+(use-package aggressive-indent :demand :diminish " i"
+  :bind ("C-; i" . global-aggressive-indent-mode)
   :config (global-aggressive-indent-mode 1))
 
 (use-package expand-region
   :bind ("S-SPC" . er/expand-region))
 
-(use-package region-bindings-mode
-  :demand
+(use-package region-bindings-mode :demand
   :bind (:map region-bindings-mode-map
               ("d" . delete-region)
               ("g" . keyboard-quit)
@@ -392,16 +373,17 @@
               ("u" . upcase-region)
               ("w" . kill-ring-save)
               ("x" . mc/mark-all-in-region)
-              (";" . comment-box))
+              ("q" . comment-box)
+              (";" . comment-or-uncomment-region))
   :config (region-bindings-mode-enable))
 
 (use-package multiple-cursors
-  :bind (("H-m c" . mc/mark-more-like-this-extended)
+  :bind (("C-; c" . mc/mark-more-like-this-extended)
          ("C-\"" . mc/mark-all-dwim)
          ("C-'" . mc-hide-unmatched-lines-mode)))
 
 (use-package centered-cursor-mode
-  :bind ("H-m l" . global-centered-cursor-mode))
+  :bind ("C-; l" . global-centered-cursor-mode))
 
 (use-package hippie-exp
   :bind (("<C-tab>" . hippie-expand)
@@ -424,10 +406,8 @@
            try-expand-line-all-buffers
            try-expand-whole-kill) t)))
 
-(use-package smartparens-config
+(use-package smartparens-config :demand :diminish (smartparens-mode . "")
   :ensure smartparens
-  :demand
-  :diminish (smartparens-mode . "")
   :bind (:map smartparens-mode-map
               ;; paredit bindings
               ("C-)" . sp-forward-slurp-sexp)
@@ -475,6 +455,8 @@
               ("C-k"   . sp-kill-hybrid-sexp)     ; kill-line
               )
   :config
+  (smartparens-global-mode 1)
+  (show-smartparens-global-mode t)
   (set-face-attribute 'sp-show-pair-match-face nil ;; ELEGENT WEAPONS
                       :background "#181818"        ;; Star Wound
                       :foreground "#A41210" ;; Tamriel-Aetherius-Oblivion
@@ -482,21 +464,15 @@
   (set-face-attribute 'sp-show-pair-mismatch-face nil ;; FOR A MORE... CIVILIZED AGE.
                       :background "#161616" ;; the void unknown
                       :foreground "#003B6F" ;; Tardis blue, Mnemoli
-                      :weight 'black)
-  (smartparens-global-mode t)
-  (show-smartparens-global-mode t))
+                      :weight 'black))
 
-(use-package yasnippet
-  :demand
-  :bind ("H-m y" . yas-global-mode)
-  :diminish (yas-minor-mode . " Y")
+(use-package yasnippet :demand :diminish (yas-minor-mode . " Y")
+  :bind ("C-; y" . yas-global-mode)
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
   :config (yas-global-mode 1))
 
-(use-package company
-  :demand
-  :bind ("H-m k" . global-company-mode)
-  :diminish " K"
+(use-package company :demand :diminish " K"
+  :bind ("C-; k" . global-company-mode)
   :config
   (global-company-mode 1)
   (unbind-key "<tab>" company-active-map)
@@ -508,63 +484,37 @@
   (use-package company-flx
     :config (company-flx-mode 1))
   (use-package company-math
-    :config (add-to-list 'company-backends 'company-math-symbols-unicode))
+    :config (push 'company-math-symbols-unicode company-backends))
   (use-package company-quickhelp
     :config
     (company-quickhelp-mode 1)
     (setq company-quickhelp-delay 1)))
 
 (use-package flycheck
-  :bind ("H-m f" . flycheck-mode)
-  :init
-  (hook-all #'flycheck-mode
-            'emacs-lisp-mode-hook
-            'geiser-mode-hook
-            'ess-mode-hook
-            'shell-mode-hook
-            'python-mode-hook
-            'LaTeX-mode-hook
-            'markdown-mode-hook
-            'css-mode-hook
-            'html-mode-hook
-            'js2-mode-hook)
+  :bind ("C-; f" . flycheck-mode)
+  :init (hook-all #'flycheck-mode
+                  'emacs-lisp-mode-hook
+                  'geiser-mode-hook
+                  'ess-mode-hook
+                  'shell-mode-hook
+                  'python-mode-hook
+                  'LaTeX-mode-hook
+                  'markdown-mode-hook
+                  'css-mode-hook
+                  'html-mode-hook
+                  'js2-mode-hook)
   :config
   (use-package flycheck-pos-tip
-    :config
-    (setq flycheck-display-errors-function
-          #'flycheck-pos-tip-error-messages)))
+    :config (setq flycheck-display-errors-function
+                  #'flycheck-pos-tip-error-messages)))
 
 (use-package flyspell
   :diminish " $"
-  :bind ("H-m $" . flyspell-mode)
-  :init
-  (hook-all #'flyspell-mode
-            'org-mode-hook
-            'LaTeX-mode-hook
-            'markdown-mode-hook))
-
-;;;;;;;;;;;;;;;;;;;;;;
-;; custom functions ;;
-;;;;;;;;;;;;;;;;;;;;;;
-
-;; https://github.com/rdallasgray/graphene/blob/master/graphene-helper-functions.el
-
-(defun comment-current-line-dwim ()
-  "Comment or uncomment the current line."
-  (interactive)
-  (save-excursion
-    (push-mark (beginning-of-line) t t)
-    (end-of-line)
-    (comment-dwim nil)))
-
-(bind-key "C-;" 'comment-current-line-dwim)
-
-(add-hook 'after-init-hook
-          (lambda ()
-            (setq initial-scratch-message
-                  (concat initial-scratch-message
-                          (format ";; Emacs initialized in %.2f seconds.\n\n"
-                                  (float-time (time-subtract after-init-time before-init-time)))))))
+  :bind ("C-; $" . flyspell-mode)
+  :init (hook-all #'flyspell-mode
+                  'org-mode-hook
+                  'LaTeX-mode-hook
+                  'markdown-mode-hook))
 
 (provide '.emacs)
 ;;; .emacs ends here
