@@ -84,6 +84,12 @@
 (defun hook-all (f &rest hs) "Add F for all HS." (mapc (lambda (h) (add-hook h f)) hs))
 (defun add-hooks (h &rest fs) "Add to H all FS." (mapc (lambda (f) (add-hook h f)) fs))
 
+(define-key input-decode-map
+  ;; Free C-m from RET to be used as my personal C-c, for opening
+  (if window-system (kbd "C-m") (kbd "C-`"))
+  ;; black books.
+  (kbd "H-m"))
+
 ;;;;;;;;;;;;;;
 ;; packages ;;
 ;;;;;;;;;;;;;;
@@ -124,10 +130,10 @@
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable))
 
 (use-package magit
-  :bind ("C-; m" . magit-status))
+  :bind ("H-m g" . magit-status))
 
 (use-package rainbow-mode
-  :bind ("C-; r" . rainbow-mode))
+  :commands rainbow-mode)
 
 ;;;;;;;;;;;;;;;;
 ;; navigation ;;
@@ -162,9 +168,9 @@
   :config (which-key-mode 1))
 
 (use-package avy
-  :bind (("C-c j" . avy-goto-word-1) ;; same as ace-jump
-         ("C-c l" . avy-goto-char)   ;; letter
-         ("C-c k" . avy-goto-char-2) ;; keys
+  :bind (("H-m '" . avy-goto-char-2)
+         ("H-m C-'" . avy-goto-char-2)
+         ("C-'" . avy-goto-char-2)
          ("M-g g" . avy-goto-line))
   :config (avy-setup-default))
 
@@ -175,14 +181,14 @@
          ("<C-M-down>" . windmove-down)))
 
 (use-package projectile :demand
-  :bind ("C-; p" . projectile-global-mode)
+  :bind ("H-m p" . projectile-global-mode)
   :config (projectile-global-mode 1))
 
 ;;;;;;;;;;;;;;;
 ;; languages ;;
 ;;;;;;;;;;;;;;;
 
-(use-package eldoc :diminish "Eld"
+(use-package eldoc :diminish ""
   :bind (:map lisp-mode-shared-map
               ("<C-return>" . eval-last-sexp)
               ("<M-return>" . eval-defun)
@@ -192,13 +198,13 @@
   :init (hook-all #'eldoc-mode
                   'emacs-lisp-mode-hook
                   'lisp-interaction-mode-hook
+                  'ielm-mode-hook
                   'clojure-mode-hook
-                  'cider-repl-mode-hook
-                  'ielm-mode-hook))
+                  'cider-repl-mode-hook))
 
 (use-package clojure-mode
   :init (add-hook 'clojure-mode-hook #'clj-refactor-mode)
-  :bind (("C-; s" . cider-scratch)
+  :bind (("H-m s" . cider-scratch)
          :map cider-mode-map
          ("<C-return>" . cider-eval-last-sexp)
          ("<M-return>" . cider-eval-defun-at-point)
@@ -207,7 +213,7 @@
          ("<C-S-return>" . cider-eval-print-last-sexp))
   :config (use-package cider)
   (use-package clj-refactor)
-  (cljr-add-keybindings-with-prefix "C-; C-;")
+  (cljr-add-keybindings-with-prefix "H-m r")
   ;; (use-package flycheck-clojure)
   ;; (with-eval-after-load 'flycheck
   ;;   (flycheck-clojure-setup))
@@ -255,7 +261,7 @@
   :mode ("\\.js\\'" . js2-mode))
 
 (use-package org
-  :bind ("C-; a" . org-agenda)
+  :bind ("H-m a" . org-agenda)
   :init (add-hooks 'org-mode-hook
                    #'turn-on-auto-fill
                    #'turn-on-org-cdlatex)
@@ -323,35 +329,36 @@
   :config (global-undo-tree-mode 1))
 
 (use-package aggressive-indent :demand :diminish " i"
-  :bind ("C-; i" . global-aggressive-indent-mode)
+  :bind ("H-m i" . global-aggressive-indent-mode)
   :config (global-aggressive-indent-mode 1))
 
 (use-package expand-region
-  :bind ("S-SPC" . er/expand-region))
+  :bind (("H-m SPC" . er/expand-region)
+         ("H-m C-SPC" . er/expand-region)
+         ("S-SPC" . er/expand-region)))
 
 (use-package region-bindings-mode :demand
   :bind (:map region-bindings-mode-map
+              ("b" . comment-box)
               ("d" . delete-region)
               ("g" . keyboard-quit)
               ("i" . indent-region)
               ("k" . kill-region)
               ("l" . downcase-region)
-              ("m" . mc/edit-lines)
+              ("m" . mc/mark-all-in-region)
+              ("n" . mc/edit-lines)
               ("r" . replace-string)
               ("u" . upcase-region)
               ("w" . kill-ring-save)
-              ("x" . mc/mark-all-in-region)
-              ("q" . comment-box)
               (";" . comment-or-uncomment-region))
   :config (region-bindings-mode-enable))
 
 (use-package multiple-cursors
-  :bind (("C-; c" . mc/mark-more-like-this-extended)
-         ("C-\"" . mc/mark-all-dwim)
-         ("C-'" . mc-hide-unmatched-lines-mode)))
+  :bind (("H-m m" . mc/mark-more-like-this-extended)
+         ("H-m H-m" . mc-hide-unmatched-lines-mode)))
 
 (use-package centered-cursor-mode
-  :bind ("C-; l" . global-centered-cursor-mode))
+  :bind ("H-m l" . global-centered-cursor-mode))
 
 (use-package hippie-exp
   :bind (("<C-tab>" . hippie-expand)
@@ -433,13 +440,8 @@
                       :foreground "#003B6F" ;; Tardis blue, Mnemoli
                       :weight 'black))
 
-(use-package yasnippet :demand :diminish (yas-minor-mode . " Y")
-  :bind ("C-; y" . yas-global-mode)
-  :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
-  :config (yas-global-mode 1))
-
 (use-package company :demand :diminish " K"
-  :bind ("C-; k" . global-company-mode)
+  :bind ("H-m RET" . global-company-mode)
   :config (global-company-mode 1)
   (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
@@ -455,8 +457,14 @@
         company-tooltip-align-annotations t
         company-quickhelp-delay 1))
 
+(use-package yasnippet :demand :diminish (yas-minor-mode . " Y")
+  :bind ("H-m TAB" . yas-global-mode)
+  :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
+  :config (yas-global-mode 1)
+  (unbind-key "TAB" yas-minor-mode-map))
+
 (use-package flycheck
-  :bind ("C-; f" . flycheck-mode)
+  :bind ("H-m !" . flycheck-mode)
   :init (hook-all #'flycheck-mode
                   'geiser-mode-hook
                   'ess-mode-hook
@@ -472,11 +480,12 @@
         #'flycheck-pos-tip-error-messages))
 
 (use-package flyspell :diminish " $"
-  :bind ("C-; $" . flyspell-mode)
+  :bind ("H-m $" . flyspell-mode)
   :init (hook-all #'flyspell-mode
                   'org-mode-hook
                   'LaTeX-mode-hook
-                  'markdown-mode-hook))
+                  'markdown-mode-hook)
+  :config (unbind-key "H-m" flyspell-mode-map))
 
 (provide '.emacs)
 ;;; .emacs ends here
