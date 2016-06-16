@@ -90,22 +90,16 @@
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-;; I have set package-enable-at-startup to nil
-;; now we initialize packages without activation
 (package-initialize nil)
 
-;; use use-package package for managing packages
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 (eval-when-compile (require 'use-package))
-(setq use-package-always-ensure t)
-;; (setq use-package-verbose t)
+(setq use-package-verbose t
+      use-package-always-ensure t)
 
-(use-package benchmark-init
-  ;; benchmarking require and load functions
-  ;; for finding out where time is being spent
-  :disabled
+(use-package benchmark-init ;; :disabled
   :config (benchmark-init/activate))
 
 ;;;;;;;;;;
@@ -140,28 +134,8 @@
 ;; navigation ;;
 ;;;;;;;;;;;;;;;;
 
-(use-package recentf
-  :bind ("C-c f" . recentf-ido-find-file)
-  :config (recentf-mode 1)
-  (defun recentf-ido-find-file ()
-    "Find a recent file using ido."
-    (interactive)
-    (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-      (when file
-        (find-file file)))))
-
-(defun ido-recentf-open ()
-  "Use `ido-completing-read' to \\[find-file] a recent file."
-  (interactive)
-  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-      (message "Opening file...")
-    (message "Aborting")))
-
 (use-package ido :demand
-  :init
-  (setq ad-redefinition-action 'accept)
   :config
-  (setq ad-redefinition-action 'warn)
   (ido-mode 1)
   (ido-everywhere 1)
   (use-package flx-ido)
@@ -235,9 +209,9 @@
   :config (use-package cider)
   (use-package clj-refactor)
   (cljr-add-keybindings-with-prefix "C-; C-;")
-  (with-eval-after-load 'flycheck
-    (use-package flycheck-clojure
-      :config (flycheck-clojure-setup)))
+  ;; (use-package flycheck-clojure)
+  ;; (with-eval-after-load 'flycheck
+  ;;   (flycheck-clojure-setup))
   (setq nrepl-hide-special-buffers t
         cider-font-lock-dynamically t
         cider-prefer-local-resources t
@@ -264,7 +238,6 @@
           (bind-key "<C-return>" 'ediprolog-dwim prolog-mode-map)))
 
 (use-package ess
-  ;; :ensure ess -site
   :commands R
   :bind (:map ess-mode-map
               ("<C-return>" . ess-eval-line)
@@ -291,6 +264,7 @@
         org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
         org-archive-location "~/Sotha_Sil/Emacs/org/archive.org::"
         org-log-done 'time)
+  :defines org-latex-listings
   :config
   (setq org-latex-create-formula-image-program 'imagemagick
         org-confirm-babel-evaluate nil
@@ -299,6 +273,7 @@
         org-src-fontify-natively t))
 
 (use-package markdown-mode
+  :mode ("README\\.md\\'" . gfm-mode)
   :init (add-hook 'markdown-mode-hook #'visual-line-mode)
   :config (setq markdown-enable-math t)
   (use-package markdown-mode+)
@@ -312,9 +287,8 @@
               (concat (file-name-sans-extension (buffer-file-name)) "."
                       (if (zerop (length EXTENSION)) "pdf" EXTENSION)))))))
 
-(use-package tex
+(use-package tex :defer
   :ensure auctex
-  :defer t
   :init (add-hooks 'LaTeX-mode-hook
                    #'visual-line-mode
                    #'LaTeX-math-mode
@@ -327,19 +301,19 @@
           TeX-run-TeX nil t :help "Run latexmk on file")
         TeX-command-list)
   (push '(output-pdf "Skim") TeX-view-program-selection)
-  ;; (push '("Skim displayline"
-  ;;         "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
-  ;;       TeX-view-program-list)
+  (push '("Skim displayline"
+          "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
+        TeX-view-program-list)
   (server-start)
   (setq TeX-auto-save t
         TeX-parse-self t)
   (use-package latex-preview-pane)
   (use-package cdlatex)
-  (use-package reftex
-    :config (setq reftex-plug-into-AUCTeX t))
+  (use-package reftex)
+  (setq reftex-plug-into-AUCTeX t)
+  (use-package company-auctex)
   (with-eval-after-load 'company
-    (use-package company-auctex
-      :config (company-auctex-init))))
+    (company-auctex-init)))
 
 ;;;;;;;;;;;;;
 ;; editing ;;
@@ -402,54 +376,53 @@
 
 (use-package smartparens-config :demand :diminish (smartparens-mode . "")
   :ensure smartparens
-  :bind (:map smartparens-mode-map
-              ;; paredit bindings
-              ("C-)" . sp-forward-slurp-sexp)
-              ("C-}" . sp-dedent-adjust-sexp)
-              ("C-(" . sp-backward-slurp-sexp)
-              ("C-{" . sp-backward-barf-sexp)
-              ("M-s" . sp-splice-sexp)
-              ("M-S" . sp-split-sexp)
-              ("M-J" . sp-join-sexp)
-              ("M-?" . sp-convolute-sexp)
-              ;; more magic added by smartparens
-              ("M-I" . sp-indent-defun)
-              ("M-(" . sp-indent-adjust-sexp) ; mimic C-(
-              ("M-)" . sp-add-to-next-sexp)   ; mimic C-)
-              ("M-/" . sp-rewrap-sexp)
-              ("C-<" . sp-extract-before-sexp)
-              ("C->" . sp-extract-after-sexp)
-              ;; navigation via parentheses
-              ("M-n" . sp-down-sexp)
-              ("M-p" . sp-backward-down-sexp)
-              ("M-[" . sp-backward-up-sexp) ; mimic M-< and M-{
-              ("M-]" . sp-up-sexp)          ; also replace M-)
-              ("C-S-r" . sp-select-previous-thing-exchange)
-              ("C-S-s" . sp-select-next-thing)
-              ;; emacs stuff ; overrides
-              ("C-M-f" . sp-forward-sexp)      ; forward-sexp
-              ("C-M-b" . sp-backward-sexp)     ; backward-sexp
-              ("C-M-a" . sp-beginning-of-sexp) ; beginning-of-defun
-              ("C-M-e" . sp-end-of-sexp)       ; end-of-defun
-              ("C-M-n" . sp-next-sexp)         ; forward-list
-              ("C-M-p" . sp-previous-sexp)     ; backward-list
-              ("C-j" . sp-newline)  ; electric-newline-and-maybe-indent
-              ("C-M-t"   . sp-transpose-sexp)        ; transpose-sexp
-              ("C-x C-t" . sp-transpose-hybrid-sexp) ; transpose-lines
-              ("C-M-k"           . sp-kill-sexp)     ; kill-sexp
-              ("<C-M-backspace>" . sp-backward-kill-sexp) ; backward-kill-sexp
-              ("<C-backspace>" . sp-splice-sexp-killing-backward)
-              ("C-M-d" . sp-splice-sexp-killing-forward) ; down-list
-              ("C-M-u" . sp-unwrap-sexp)          ; backward-up-list
-              ;; strict mode stuff
-              ("C-d"   . sp-delete-char)          ; delete-char
-              ("DEL"   . sp-backward-delete-char) ; backward-delete-char
-              ("M-DEL" . sp-backward-kill-word)   ; backward-kill-word
-              ("M-d"   . sp-kill-word)            ; kill-word
-              ("C-k"   . sp-kill-hybrid-sexp)     ; kill-line
-              )
-  :config
-  (smartparens-global-mode 1)
+  :config (smartparens-global-mode 1)
+  (bind-keys :map smartparens-mode-map
+             ;; paredit bindings
+             ("C-)" . sp-forward-slurp-sexp)
+             ("C-}" . sp-dedent-adjust-sexp)
+             ("C-(" . sp-backward-slurp-sexp)
+             ("C-{" . sp-backward-barf-sexp)
+             ("M-s" . sp-splice-sexp)
+             ("M-S" . sp-split-sexp)
+             ("M-J" . sp-join-sexp)
+             ("M-?" . sp-convolute-sexp)
+             ;; more magic added by smartparens
+             ("M-I" . sp-indent-defun)
+             ("M-(" . sp-indent-adjust-sexp)       ; mimic C-(
+             ("M-)" . sp-add-to-next-sexp)         ; mimic C-)
+             ("M-/" . sp-rewrap-sexp)
+             ("C-<" . sp-extract-before-sexp)
+             ("C->" . sp-extract-after-sexp)
+             ;; navigation via parentheses
+             ("M-n" . sp-down-sexp)
+             ("M-p" . sp-backward-down-sexp)
+             ("M-[" . sp-backward-up-sexp) ; mimic M-< and M-{
+             ("M-]" . sp-up-sexp)          ; also replace M-)
+             ("C-S-r" . sp-select-previous-thing-exchange)
+             ("C-S-s" . sp-select-next-thing)
+             ;; emacs stuff ; overrides
+             ("C-M-f" . sp-forward-sexp)              ; forward-sexp
+             ("C-M-b" . sp-backward-sexp)             ; backward-sexp
+             ("C-M-a" . sp-beginning-of-sexp)     ; beginning-of-defun
+             ("C-M-e" . sp-end-of-sexp)           ; end-of-defun
+             ("C-M-n" . sp-next-sexp)             ; forward-list
+             ("C-M-p" . sp-previous-sexp)         ; backward-list
+             ("C-j" . sp-newline)  ; electric-newline-and-maybe-indent
+             ("C-M-t"   . sp-transpose-sexp) ; transpose-sexp
+             ("C-x C-t" . sp-transpose-hybrid-sexp) ; transpose-lines
+             ("C-M-k"           . sp-kill-sexp)     ; kill-sexp
+             ("<C-M-backspace>" . sp-backward-kill-sexp) ; backward-kill-sexp
+             ("<C-backspace>" . sp-splice-sexp-killing-backward)
+             ("C-M-d" . sp-splice-sexp-killing-forward) ; down-list
+             ("C-M-u" . sp-unwrap-sexp)         ; backward-up-list
+             ;; strict mode stuff
+             ("C-d"   . sp-delete-char)                  ; delete-char
+             ("DEL"   . sp-backward-delete-char) ; backward-delete-char
+             ("M-DEL" . sp-backward-kill-word)   ; backward-kill-word
+             ("M-d"   . sp-kill-word)            ; kill-word
+             ("C-k"   . sp-kill-hybrid-sexp)     ; kill-line
+             )
   (show-smartparens-global-mode t)
   (set-face-attribute 'sp-show-pair-match-face nil ;; ELEGENT WEAPONS
                       :background "#181818"        ;; Star Wound
@@ -494,13 +467,11 @@
                   'css-mode-hook
                   'html-mode-hook
                   'js2-mode-hook)
-  :config
-  (use-package flycheck-pos-tip)
+  :config (use-package flycheck-pos-tip)
   (setq flycheck-display-errors-function
         #'flycheck-pos-tip-error-messages))
 
-(use-package flyspell
-  :diminish " $"
+(use-package flyspell :diminish " $"
   :bind ("C-; $" . flyspell-mode)
   :init (hook-all #'flyspell-mode
                   'org-mode-hook
