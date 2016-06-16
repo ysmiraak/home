@@ -99,13 +99,13 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (eval-when-compile (require 'use-package))
-;; (setq use-package-always-ensure t)
+(setq use-package-always-ensure t)
 ;; (setq use-package-verbose t)
 
 (use-package benchmark-init
   ;; benchmarking require and load functions
   ;; for finding out where time is being spent
-  ;; :disabled
+  :disabled
   :config (benchmark-init/activate))
 
 ;;;;;;;;;;
@@ -123,18 +123,87 @@
 
 (use-package zenburn-theme :demand
   :config (load-theme 'zenburn t)
-  (use-package hl-line
-    :config (global-hl-line-mode 1))
-  (use-package powerline
-    :config (powerline-center-theme))
-  (use-package rainbow-delimiters
-    :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable)))
+  (use-package hl-line)
+  (global-hl-line-mode 1)
+  (use-package powerline)
+  (powerline-center-theme)
+  (use-package rainbow-delimiters)
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable))
 
 (use-package magit
   :bind ("C-; m" . magit-status))
 
 (use-package rainbow-mode
   :bind ("C-; r" . rainbow-mode))
+
+;;;;;;;;;;;;;;;;
+;; navigation ;;
+;;;;;;;;;;;;;;;;
+
+(use-package recentf
+  :bind ("C-c f" . recentf-ido-find-file)
+  :config (recentf-mode 1)
+  (defun recentf-ido-find-file ()
+    "Find a recent file using ido."
+    (interactive)
+    (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+      (when file
+        (find-file file)))))
+
+(defun ido-recentf-open ()
+  "Use `ido-completing-read' to \\[find-file] a recent file."
+  (interactive)
+  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+      (message "Opening file...")
+    (message "Aborting")))
+
+(use-package ido :demand
+  :init
+  (setq ad-redefinition-action 'accept)
+  :config
+  (setq ad-redefinition-action 'warn)
+  (ido-mode 1)
+  (ido-everywhere 1)
+  (use-package flx-ido)
+  (flx-ido-mode 1)
+  (use-package ido-yes-or-no)
+  (ido-yes-or-no-mode 1)
+  (use-package ido-ubiquitous)
+  (ido-ubiquitous-mode 1)
+  (use-package ido-vertical-mode)
+  (ido-vertical-mode 1)
+  (use-package ido-complete-space-or-hyphen)
+  (setq gc-cons-threshold 20000000
+        ido-use-faces nil
+        ido-enable-flex-matching t
+        ido-max-work-directory-list 0
+        ido-enable-last-directory-history nil
+        ido-vertical-show-count t
+        ido-vertical-define-keys 'C-n-C-p-up-down-left-right))
+
+(use-package smex
+  :bind (("M-x" . smex)
+         ("M-X" . smex-major-mode-commands)))
+
+(use-package which-key :demand :diminish ""
+  :config (which-key-mode 1))
+
+(use-package avy
+  :bind (("C-c j" . avy-goto-word-1) ;; same as ace-jump
+         ("C-c l" . avy-goto-char)   ;; letter
+         ("C-c k" . avy-goto-char-2) ;; keys
+         ("M-g g" . avy-goto-line))
+  :config (avy-setup-default))
+
+(use-package windmove
+  :bind (("<C-M-left>" . windmove-left)
+         ("<C-M-right>" . windmove-right)
+         ("<C-M-up>" . windmove-up)
+         ("<C-M-down>" . windmove-down)))
+
+(use-package projectile :demand
+  :bind ("C-; p" . projectile-global-mode)
+  :config (projectile-global-mode 1))
 
 ;;;;;;;;;;;;;;;
 ;; languages ;;
@@ -154,8 +223,7 @@
                   'cider-repl-mode-hook
                   'ielm-mode-hook))
 
-(use-package cider
-  :ensure clojure-mode
+(use-package clojure-mode
   :init (add-hook 'clojure-mode-hook #'clj-refactor-mode)
   :bind (("C-; s" . cider-scratch)
          :map cider-mode-map
@@ -164,22 +232,21 @@
          ("<S-return>" . cider-eval-region)
          ("<C-M-return>" . cider-eval-buffer)
          ("<C-S-return>" . cider-eval-print-last-sexp))
-  :config
+  :config (use-package cider)
+  (use-package clj-refactor)
+  (cljr-add-keybindings-with-prefix "C-; C-;")
+  (with-eval-after-load 'flycheck
+    (use-package flycheck-clojure
+      :config (flycheck-clojure-setup)))
   (setq nrepl-hide-special-buffers t
         cider-font-lock-dynamically t
         cider-prefer-local-resources t
         cider-repl-use-pretty-printing t
         cider-repl-display-help-banner nil
         cider-repl-pop-to-buffer-on-connect nil
-        cider-repl-history-file "~/.emacs.d/cider-history")
-  (use-package clj-refactor
-    :config (cljr-add-keybindings-with-prefix "C-; C-;"))
-  (with-eval-after-load 'flycheck
-    (use-package flycheck-clojure
-      :config (flycheck-clojure-setup))))
+        cider-repl-history-file "~/.emacs.d/cider-history"))
 
 (use-package geiser
-  :mode ("\\.scm\\'" . scheme-mode)
   :defines geiser-active-implementations
   :bind (:map scheme-mode-map
               ("<C-return>" . geiser-eval-last-sexp)
@@ -196,8 +263,8 @@
   :init (with-eval-after-load 'prolog
           (bind-key "<C-return>" 'ediprolog-dwim prolog-mode-map)))
 
-(use-package ess-site
-  :ensure ess
+(use-package ess
+  ;; :ensure ess -site
   :commands R
   :bind (:map ess-mode-map
               ("<C-return>" . ess-eval-line)
@@ -215,34 +282,25 @@
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode))
 
-(use-package org-agenda
-  :ensure org
+(use-package org
   :bind ("C-; a" . org-agenda)
-  :init (setq org-directory "~/Sotha_Sil/Emacs/org"
-              org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
-              org-archive-location "~/Sotha_Sil/Emacs/org/archive.org::"
-              org-log-done 'time)
-  (use-package ox-latex
-    :mode ("\\.org\\'" . org-mode)
-    :init (add-hooks 'org-mode-hook
-                     #'turn-on-auto-fill
-                     #'turn-on-org-cdlatex)
-    (setq org-latex-create-formula-image-program 'imagemagick
-          org-confirm-babel-evaluate nil
-          org-latex-listings 'minted
-          org-latex-packages-alist '(("" "minted"))
-          org-src-fontify-natively t)))
+  :init (add-hooks 'org-mode-hook
+                   #'turn-on-auto-fill
+                   #'turn-on-org-cdlatex)
+  (setq org-directory "~/Sotha_Sil/Emacs/org"
+        org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
+        org-archive-location "~/Sotha_Sil/Emacs/org/archive.org::"
+        org-log-done 'time)
+  :config
+  (setq org-latex-create-formula-image-program 'imagemagick
+        org-confirm-babel-evaluate nil
+        org-latex-listings 'minted
+        org-latex-packages-alist '(("" "minted"))
+        org-src-fontify-natively t))
 
 (use-package markdown-mode
-  ;; :mode
-  ;; ("\\.markdown\\'" . markdown-mode)
-  ;; ("\\.md\\'" . markdown-mode)
-  ;; ("\\.[rR]md" . markdown-mode)
-  ;; ("README\\.md\\'" . gfm-mode)
-  :init
-  (add-hook 'markdown-mode-hook #'visual-line-mode)
-  :config
-  (setq markdown-enable-math t)
+  :init (add-hook 'markdown-mode-hook #'visual-line-mode)
+  :config (setq markdown-enable-math t)
   (use-package markdown-mode+)
   (defun rmarkdown-render-current-file-then-display (&optional EXTENSION)
     "Output format should be specified accordingly in YAML."
@@ -257,18 +315,6 @@
 (use-package tex
   :ensure auctex
   :defer t
-  ;; :mode
-  ;; ("\\.hva\\'" . latex-mode)
-  ;; ("\\.drv\\'" . latex-mode)
-  ;; ("\\.[tT]e[xX]\\'" . tex-mode)
-  ;; ("\\.ins\\'" . tex-mode)
-  ;; ("\\.ltx\\'" . latex-mode)
-  ;; ("\\.dtx\\'" . doctex-mode)
-  ;; ("\\.sty\\'" . latex-mode)
-  ;; ("\\.cl[so]\\'" . latex-mode)
-  ;; ("\\.bbl\\'" . latex-mode)
-  ;; ("\\.bib\\'" . bibtex-mode)
-  ;; ("\\.bst\\'" . bibtex-style-mode)
   :init (add-hooks 'LaTeX-mode-hook
                    #'visual-line-mode
                    #'LaTeX-math-mode
@@ -294,58 +340,6 @@
   (with-eval-after-load 'company
     (use-package company-auctex
       :config (company-auctex-init))))
-
-;;;;;;;;;;;;;;;;
-;; navigation ;;
-;;;;;;;;;;;;;;;;
-
-(use-package ido :demand
-  :init
-  (setq ad-redefinition-action 'accept)
-  :config
-  (setq ad-redefinition-action 'warn)
-  (ido-mode 1)
-  (ido-everywhere 1)
-  (setq ido-enable-flex-matching t
-        ido-max-work-directory-list 0
-        ido-enable-last-directory-history nil)
-  (use-package ido-complete-space-or-hyphen)
-  (use-package ido-ubiquitous
-    :config (ido-ubiquitous-mode 1))
-  (use-package ido-vertical-mode
-    :config
-    (ido-vertical-mode 1)
-    (setq ido-vertical-show-count t)
-    (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right))
-  (use-package flx-ido
-    :config
-    (flx-ido-mode 1)
-    (setq ido-use-faces nil
-          gc-cons-threshold 20000000)))
-
-(use-package smex
-  :bind (("M-x" . smex)
-         ("M-X" . smex-major-mode-commands)))
-
-(use-package which-key :demand :diminish ""
-  :config (which-key-mode 1))
-
-(use-package avy
-  :bind (("C-c j" . avy-goto-word-1) ;; same as ace-jump
-         ("C-c l" . avy-goto-char)   ;; letter
-         ("C-c k" . avy-goto-char-2) ;; keys
-         ("M-g g" . avy-goto-line))
-  :config (avy-setup-default))
-
-(use-package windmove
-  :bind (("<C-M-left>" . windmove-left)
-         ("<C-M-right>" . windmove-right)
-         ("<C-M-up>" . windmove-up)
-         ("<C-M-down>" . windmove-down)))
-
-(use-package projectile :demand
-  :bind ("C-; p" . projectile-global-mode)
-  :config (projectile-global-mode 1))
 
 ;;;;;;;;;;;;;
 ;; editing ;;
@@ -473,27 +467,24 @@
 
 (use-package company :demand :diminish " K"
   :bind ("C-; k" . global-company-mode)
-  :config
-  (global-company-mode 1)
+  :config (global-company-mode 1)
   (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
+  (use-package company-flx)
+  (company-flx-mode 1)
+  (use-package company-math)
+  (push 'company-math-symbols-unicode company-backends)
+  (use-package company-quickhelp)
+  (company-quickhelp-mode 1)
   (setq company-idle-delay 0.2
         company-minimum-prefix-length 2
         company-selection-wrap-around t
-        company-tooltip-align-annotations t)
-  (use-package company-flx
-    :config (company-flx-mode 1))
-  (use-package company-math
-    :config (push 'company-math-symbols-unicode company-backends))
-  (use-package company-quickhelp
-    :config
-    (company-quickhelp-mode 1)
-    (setq company-quickhelp-delay 1)))
+        company-tooltip-align-annotations t
+        company-quickhelp-delay 1))
 
 (use-package flycheck
   :bind ("C-; f" . flycheck-mode)
   :init (hook-all #'flycheck-mode
-                  'emacs-lisp-mode-hook
                   'geiser-mode-hook
                   'ess-mode-hook
                   'shell-mode-hook
@@ -504,9 +495,9 @@
                   'html-mode-hook
                   'js2-mode-hook)
   :config
-  (use-package flycheck-pos-tip
-    :config (setq flycheck-display-errors-function
-                  #'flycheck-pos-tip-error-messages)))
+  (use-package flycheck-pos-tip)
+  (setq flycheck-display-errors-function
+        #'flycheck-pos-tip-error-messages))
 
 (use-package flyspell
   :diminish " $"
