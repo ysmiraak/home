@@ -67,8 +67,8 @@
  ;; Ink and gold.
  '(mc/cursor-face ((t (:background "#DAA520" :foreground "#242424")))))
 
-;; enable some disabled commands
 (mapc (lambda (cmd) (put cmd 'disabled nil))
+      ;; enable some disabled commands
       '(upcase-region
         downcase-region
         narrow-to-region
@@ -107,7 +107,6 @@
 ;;;;;;;;;;
 
 (use-package exec-path-from-shell :if (memq window-system '(mac ns)) :demand
-  ;; sets environment variables and fullscreen key bindings for OS X
   :bind (("<C-s-f>" . toggle-frame-fullscreen)
          ("<C-s-268632070>" . toggle-frame-fullscreen))
   :config
@@ -297,13 +296,14 @@
                    #'turn-on-reftex
                    (lambda () (setq TeX-command-default "latexmk")))
   :config
+  ;; http://stackoverflow.com/questions/7899845/
   (push '("latexmk" "latexmk -pdf -latexoption=-shell-escape %s"
           TeX-run-TeX nil t :help "Run latexmk on file")
         TeX-command-list)
-  (push '(output-pdf "Skim") TeX-view-program-selection)
   (push '("Skim displayline"
           "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
         TeX-view-program-list)
+  (push '(output-pdf "Skim displayline") TeX-view-program-selection)
   (server-start)
   (setq TeX-auto-save t
         TeX-parse-self t)
