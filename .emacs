@@ -187,9 +187,175 @@
   :bind ("H-m p" . projectile-global-mode)
   :config (projectile-global-mode 1))
 
+;;;;;;;;;;;;;
+;; editing ;;
+;;;;;;;;;;;;;
+
+(use-package undo-tree :demand :diminish ""
+  :config (global-undo-tree-mode 1))
+
+(use-package smartparens-config :demand :diminish (smartparens-mode . "")
+  :ensure smartparens
+  :config (smartparens-global-mode 1)
+  (bind-keys :map smartparens-mode-map
+             ;; paredit bindings
+             ("C-)" . sp-forward-slurp-sexp)
+             ("C-}" . sp-dedent-adjust-sexp)
+             ("C-(" . sp-backward-slurp-sexp)
+             ("C-{" . sp-backward-barf-sexp)
+             ("M-s" . sp-splice-sexp)
+             ("M-S" . sp-split-sexp)
+             ("M-J" . sp-join-sexp)
+             ("M-?" . sp-convolute-sexp)
+             ;; more magic added by smartparens
+             ("M-I" . sp-indent-defun)
+             ("M-(" . sp-indent-adjust-sexp) ; mimic C-(
+             ("M-)" . sp-add-to-next-sexp)   ; mimic C-)
+             ("M-/" . sp-rewrap-sexp)
+             ("C-<" . sp-extract-before-sexp)
+             ("C->" . sp-extract-after-sexp)
+             ;; navigation via parentheses
+             ("M-n" . sp-down-sexp)
+             ("M-p" . sp-backward-down-sexp)
+             ("M-[" . sp-backward-up-sexp) ; mimic M-< and M-{
+             ("M-]" . sp-up-sexp)          ; also replace M-)
+             ("C-S-r" . sp-select-previous-thing-exchange)
+             ("C-S-s" . sp-select-next-thing)
+             ;; emacs stuff ; overrides
+             ("C-M-f" . sp-forward-sexp)      ; forward-sexp
+             ("C-M-b" . sp-backward-sexp)     ; backward-sexp
+             ("C-M-a" . sp-beginning-of-sexp) ; beginning-of-defun
+             ("C-M-e" . sp-end-of-sexp)       ; end-of-defun
+             ("C-M-n" . sp-next-sexp)         ; forward-list
+             ("C-M-p" . sp-previous-sexp)     ; backward-list
+             ("C-j" . sp-newline)  ; electric-newline-and-maybe-indent
+             ("C-M-t"   . sp-transpose-sexp)        ; transpose-sexp
+             ("C-x C-t" . sp-transpose-hybrid-sexp) ; transpose-lines
+             ("C-M-k"           . sp-kill-sexp)     ; kill-sexp
+             ("<C-M-backspace>" . sp-backward-kill-sexp) ; backward-kill-sexp
+             ("<C-backspace>" . sp-splice-sexp-killing-backward)
+             ("C-M-d" . sp-splice-sexp-killing-forward) ; down-list
+             ("C-M-u" . sp-unwrap-sexp)          ; backward-up-list
+             ;; strict mode stuff
+             ("C-d"   . sp-delete-char)          ; delete-char
+             ("DEL"   . sp-backward-delete-char) ; backward-delete-char
+             ("M-DEL" . sp-backward-kill-word)   ; backward-kill-word
+             ("M-d"   . sp-kill-word)            ; kill-word
+             ("C-k"   . sp-kill-hybrid-sexp)     ; kill-line
+             )
+  (show-smartparens-global-mode t)
+  (set-face-attribute 'sp-show-pair-match-face nil ;; ELEGENT WEAPONS
+                      :background "#181818"        ;; Star Wound
+                      :foreground "#A41210" ;; Tamriel-Aetherius-Oblivion
+                      :weight 'bold)
+  (set-face-attribute 'sp-show-pair-mismatch-face nil ;; FOR A MORE... CIVILIZED AGE.
+                      :background "#161616" ;; the void unknown
+                      :foreground "#003B6F" ;; Tardis blue, Mnemoli
+                      :weight 'black))
+
+(use-package multiple-cursors
+  :bind (("H-m m" . mc/mark-more-like-this-extended)
+         ("H-m H-m" . mc-hide-unmatched-lines-mode)))
+
+(use-package region-bindings-mode :demand
+  :bind (:map region-bindings-mode-map
+              ("b" . comment-box)
+              ("d" . delete-region)
+              ("g" . keyboard-quit)
+              ("i" . indent-region)
+              ("k" . kill-region)
+              ("l" . downcase-region)
+              ("m" . mc/mark-all-in-region)
+              ("n" . mc/edit-lines)
+              ("r" . replace-string)
+              ("u" . upcase-region)
+              ("w" . kill-ring-save)
+              (";" . comment-or-uncomment-region))
+  :config (region-bindings-mode-enable))
+
+(use-package expand-region
+  :bind (("H-m SPC" . er/expand-region)
+         ("H-m C-SPC" . er/expand-region)
+         ("S-SPC" . er/expand-region)))
+
+(use-package company :demand :diminish " K"
+  :bind ("H-m RET" . global-company-mode)
+  :config (global-company-mode 1)
+  (unbind-key "<tab>" company-active-map)
+  (unbind-key "TAB" company-active-map)
+  (use-package company-flx)
+  (company-flx-mode 1)
+  (use-package company-math)
+  (push 'company-math-symbols-unicode company-backends)
+  (use-package company-quickhelp)
+  (company-quickhelp-mode 1)
+  (setq company-idle-delay 0.2
+        company-minimum-prefix-length 2
+        company-selection-wrap-around t
+        company-tooltip-align-annotations t
+        company-quickhelp-delay 1))
+
+(use-package aggressive-indent :demand :diminish " i"
+  :bind ("H-m i" . global-aggressive-indent-mode)
+  :config (global-aggressive-indent-mode 1))
+
+(use-package centered-cursor-mode :diminish (centered-cursor-mode . "")
+  :bind ("H-m l" . global-centered-cursor-mode))
+
+(use-package hippie-exp
+  :bind (("<C-tab>" . hippie-expand)
+         ("<M-tab>" . crazy-hippie-expand))
+  :config
+  (setq hippie-expand-try-functions-list
+        '(try-expand-dabbrev
+          try-expand-dabbrev-all-buffers
+          try-expand-dabbrev-from-kill
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol
+          try-expand-all-abbrevs))
+  (fset 'crazy-hippie-expand
+        (make-hippie-expand-function
+         '(try-complete-file-name-partially
+           try-complete-file-name
+           try-expand-list
+           try-expand-list-all-buffers
+           try-expand-line
+           try-expand-line-all-buffers
+           try-expand-whole-kill) t)))
+
 ;;;;;;;;;;;;;;;
 ;; languages ;;
 ;;;;;;;;;;;;;;;
+
+(use-package yasnippet :demand :diminish (yas-minor-mode . " Y")
+  :bind ("H-m TAB" . yas-global-mode)
+  :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
+  :config (yas-global-mode 1)
+  (unbind-key "TAB" yas-minor-mode-map))
+
+(use-package flyspell :diminish " $"
+  :bind ("H-m $" . flyspell-mode)
+  :init (hook-all #'flyspell-mode
+                  'org-mode-hook
+                  'LaTeX-mode-hook
+                  'markdown-mode-hook)
+  :config (unbind-key "H-m" flyspell-mode-map))
+
+(use-package flycheck
+  :bind ("H-m !" . flycheck-mode)
+  :init (hook-all #'flycheck-mode
+                  'geiser-mode-hook
+                  'ess-mode-hook
+                  'shell-mode-hook
+                  'python-mode-hook
+                  'LaTeX-mode-hook
+                  'markdown-mode-hook
+                  'css-mode-hook
+                  'html-mode-hook
+                  'js2-mode-hook)
+  :config (use-package flycheck-pos-tip)
+  (setq flycheck-display-errors-function
+        #'flycheck-pos-tip-error-messages))
 
 (use-package eldoc :diminish ""
   :bind (:map lisp-mode-shared-map
@@ -323,172 +489,6 @@
   (use-package company-auctex)
   (with-eval-after-load 'company
     (company-auctex-init)))
-
-;;;;;;;;;;;;;
-;; editing ;;
-;;;;;;;;;;;;;
-
-(use-package undo-tree :demand :diminish ""
-  :config (global-undo-tree-mode 1))
-
-(use-package aggressive-indent :demand :diminish " i"
-  :bind ("H-m i" . global-aggressive-indent-mode)
-  :config (global-aggressive-indent-mode 1))
-
-(use-package expand-region
-  :bind (("H-m SPC" . er/expand-region)
-         ("H-m C-SPC" . er/expand-region)
-         ("S-SPC" . er/expand-region)))
-
-(use-package region-bindings-mode :demand
-  :bind (:map region-bindings-mode-map
-              ("b" . comment-box)
-              ("d" . delete-region)
-              ("g" . keyboard-quit)
-              ("i" . indent-region)
-              ("k" . kill-region)
-              ("l" . downcase-region)
-              ("m" . mc/mark-all-in-region)
-              ("n" . mc/edit-lines)
-              ("r" . replace-string)
-              ("u" . upcase-region)
-              ("w" . kill-ring-save)
-              (";" . comment-or-uncomment-region))
-  :config (region-bindings-mode-enable))
-
-(use-package multiple-cursors
-  :bind (("H-m m" . mc/mark-more-like-this-extended)
-         ("H-m H-m" . mc-hide-unmatched-lines-mode)))
-
-(use-package centered-cursor-mode
-  :bind ("H-m l" . global-centered-cursor-mode))
-
-(use-package hippie-exp
-  :bind (("<C-tab>" . hippie-expand)
-         ("<M-tab>" . crazy-hippie-expand))
-  :config
-  (setq hippie-expand-try-functions-list
-        '(try-expand-dabbrev
-          try-expand-dabbrev-all-buffers
-          try-expand-dabbrev-from-kill
-          try-complete-lisp-symbol-partially
-          try-complete-lisp-symbol
-          try-expand-all-abbrevs))
-  (fset 'crazy-hippie-expand
-        (make-hippie-expand-function
-         '(try-complete-file-name-partially
-           try-complete-file-name
-           try-expand-list
-           try-expand-list-all-buffers
-           try-expand-line
-           try-expand-line-all-buffers
-           try-expand-whole-kill) t)))
-
-(use-package smartparens-config :demand :diminish (smartparens-mode . "")
-  :ensure smartparens
-  :config (smartparens-global-mode 1)
-  (bind-keys :map smartparens-mode-map
-             ;; paredit bindings
-             ("C-)" . sp-forward-slurp-sexp)
-             ("C-}" . sp-dedent-adjust-sexp)
-             ("C-(" . sp-backward-slurp-sexp)
-             ("C-{" . sp-backward-barf-sexp)
-             ("M-s" . sp-splice-sexp)
-             ("M-S" . sp-split-sexp)
-             ("M-J" . sp-join-sexp)
-             ("M-?" . sp-convolute-sexp)
-             ;; more magic added by smartparens
-             ("M-I" . sp-indent-defun)
-             ("M-(" . sp-indent-adjust-sexp)       ; mimic C-(
-             ("M-)" . sp-add-to-next-sexp)         ; mimic C-)
-             ("M-/" . sp-rewrap-sexp)
-             ("C-<" . sp-extract-before-sexp)
-             ("C->" . sp-extract-after-sexp)
-             ;; navigation via parentheses
-             ("M-n" . sp-down-sexp)
-             ("M-p" . sp-backward-down-sexp)
-             ("M-[" . sp-backward-up-sexp) ; mimic M-< and M-{
-             ("M-]" . sp-up-sexp)          ; also replace M-)
-             ("C-S-r" . sp-select-previous-thing-exchange)
-             ("C-S-s" . sp-select-next-thing)
-             ;; emacs stuff ; overrides
-             ("C-M-f" . sp-forward-sexp)              ; forward-sexp
-             ("C-M-b" . sp-backward-sexp)             ; backward-sexp
-             ("C-M-a" . sp-beginning-of-sexp)     ; beginning-of-defun
-             ("C-M-e" . sp-end-of-sexp)           ; end-of-defun
-             ("C-M-n" . sp-next-sexp)             ; forward-list
-             ("C-M-p" . sp-previous-sexp)         ; backward-list
-             ("C-j" . sp-newline)  ; electric-newline-and-maybe-indent
-             ("C-M-t"   . sp-transpose-sexp) ; transpose-sexp
-             ("C-x C-t" . sp-transpose-hybrid-sexp) ; transpose-lines
-             ("C-M-k"           . sp-kill-sexp)     ; kill-sexp
-             ("<C-M-backspace>" . sp-backward-kill-sexp) ; backward-kill-sexp
-             ("<C-backspace>" . sp-splice-sexp-killing-backward)
-             ("C-M-d" . sp-splice-sexp-killing-forward) ; down-list
-             ("C-M-u" . sp-unwrap-sexp)         ; backward-up-list
-             ;; strict mode stuff
-             ("C-d"   . sp-delete-char)                  ; delete-char
-             ("DEL"   . sp-backward-delete-char) ; backward-delete-char
-             ("M-DEL" . sp-backward-kill-word)   ; backward-kill-word
-             ("M-d"   . sp-kill-word)            ; kill-word
-             ("C-k"   . sp-kill-hybrid-sexp)     ; kill-line
-             )
-  (show-smartparens-global-mode t)
-  (set-face-attribute 'sp-show-pair-match-face nil ;; ELEGENT WEAPONS
-                      :background "#181818"        ;; Star Wound
-                      :foreground "#A41210" ;; Tamriel-Aetherius-Oblivion
-                      :weight 'bold)
-  (set-face-attribute 'sp-show-pair-mismatch-face nil ;; FOR A MORE... CIVILIZED AGE.
-                      :background "#161616" ;; the void unknown
-                      :foreground "#003B6F" ;; Tardis blue, Mnemoli
-                      :weight 'black))
-
-(use-package company :demand :diminish " K"
-  :bind ("H-m RET" . global-company-mode)
-  :config (global-company-mode 1)
-  (unbind-key "<tab>" company-active-map)
-  (unbind-key "TAB" company-active-map)
-  (use-package company-flx)
-  (company-flx-mode 1)
-  (use-package company-math)
-  (push 'company-math-symbols-unicode company-backends)
-  (use-package company-quickhelp)
-  (company-quickhelp-mode 1)
-  (setq company-idle-delay 0.2
-        company-minimum-prefix-length 2
-        company-selection-wrap-around t
-        company-tooltip-align-annotations t
-        company-quickhelp-delay 1))
-
-(use-package yasnippet :demand :diminish (yas-minor-mode . " Y")
-  :bind ("H-m TAB" . yas-global-mode)
-  :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
-  :config (yas-global-mode 1)
-  (unbind-key "TAB" yas-minor-mode-map))
-
-(use-package flycheck
-  :bind ("H-m !" . flycheck-mode)
-  :init (hook-all #'flycheck-mode
-                  'geiser-mode-hook
-                  'ess-mode-hook
-                  'shell-mode-hook
-                  'python-mode-hook
-                  'LaTeX-mode-hook
-                  'markdown-mode-hook
-                  'css-mode-hook
-                  'html-mode-hook
-                  'js2-mode-hook)
-  :config (use-package flycheck-pos-tip)
-  (setq flycheck-display-errors-function
-        #'flycheck-pos-tip-error-messages))
-
-(use-package flyspell :diminish " $"
-  :bind ("H-m $" . flyspell-mode)
-  :init (hook-all #'flyspell-mode
-                  'org-mode-hook
-                  'LaTeX-mode-hook
-                  'markdown-mode-hook)
-  :config (unbind-key "H-m" flyspell-mode-map))
 
 (provide '.emacs)
 ;;; .emacs ends here
