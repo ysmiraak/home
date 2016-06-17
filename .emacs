@@ -168,11 +168,14 @@
   :config (which-key-mode 1))
 
 (use-package avy
-  :bind (("H-m '" . avy-goto-char-2)
-         ("H-m C-'" . avy-goto-char-2)
-         ("C-'" . avy-goto-char-2)
-         ("M-g g" . avy-goto-line))
-  :config (avy-setup-default))
+  :bind (("H-m ;" . avy-goto-char-2)
+         ("H-m C-;" . avy-goto-char-2)
+         ("C-;" . avy-goto-char-2)
+         ("H-m ." . avy-pop-mark)
+         ("C-." . avy-pop-mark)
+         ("M-g g" . avy-goto-line)
+         :map isearch-mode-map
+         ("C-." . avy-isearch)))
 
 (use-package windmove
   :bind (("<C-M-left>" . windmove-left)
