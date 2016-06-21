@@ -1,4 +1,4 @@
-personal_ws-1.1 en 115 
+personal_ws-1.1 en 125 
 beamer
 categorial
 Functor
@@ -12,6 +12,7 @@ timelines
 implicature
 Almalexia
 de
+substitutable
 LISt
 Akaviri
 sfs
@@ -28,6 +29,7 @@ parameterized
 kuanyu
 memoization
 iter
+stopword
 sentential
 tex
 factive
@@ -39,6 +41,7 @@ composable
 chronography
 ifelse
 sublists
+bigram
 HPSG
 emacs
 lexicalizing
@@ -46,6 +49,7 @@ csv
 transdimensional
 intensional
 pygmentize
+bigrams
 mit
 https
 modus
@@ -55,12 +59,13 @@ timeline
 Sotha
 Kuan
 env
+Ysmiraak
 vivec
 th
-Ysmiraak
 NLA
 Shaie
 quantiles
+Baayen
 Goettingen
 Leto
 Yehoshua
@@ -72,6 +77,7 @@ rjags
 intension
 ponens
 computable
+modifiability
 compositional
 adjunctions
 Vershu
@@ -86,11 +92,12 @@ Steedman
 evaluator
 html
 eval
-isomorphism
 iff
+isomorphism
 Tsaesci
 Nerevar
 combinatory
+punctuations
 Reman
 versa
 reasonings
@@ -102,6 +109,7 @@ LaTeX
 iteratives
 Reductionism
 lexicalize
+stopwords
 Joachim
 png
 Sternefeld
@@ -109,6 +117,7 @@ Dagoth
 prolog
 tuebingen
 emergentism
+substitutability
 compositionality
 http
 dnorm

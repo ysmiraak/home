@@ -279,7 +279,8 @@
          ("S-SPC" . er/expand-region)))
 
 (use-package company :demand :diminish " K"
-  :bind ("H-m RET" . global-company-mode)
+  :bind (("H-m RET" . global-company-mode)
+         ("H-m <C-return>" . company-complete))
   :config (global-company-mode 1)
   (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
@@ -303,7 +304,9 @@
   :bind ("H-m l" . global-centered-cursor-mode))
 
 (use-package hippie-exp
-  :bind (("<C-tab>" . hippie-expand)
+  :bind (("H-m <C-tab>" . hippie-expand)
+         ("<C-tab>" . hippie-expand)
+         ("H-m <M-tab>" . crazy-hippie-expand)
          ("<M-tab>" . crazy-hippie-expand))
   :config
   (setq hippie-expand-try-functions-list
@@ -328,7 +331,9 @@
 ;;;;;;;;;;;;;;;
 
 (use-package yasnippet :demand :diminish (yas-minor-mode . " Y")
-  :bind ("H-m TAB" . yas-global-mode)
+  :bind (("H-m TAB" . yas-global-mode)
+         ("H-m <S-tab>" . yas-global-mode)
+         ("<S-tab>" . yas-global-mode))
   :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
   :config (yas-global-mode 1)
   (unbind-key "TAB" yas-minor-mode-map))
@@ -391,7 +396,6 @@
         cider-prefer-local-resources t
         cider-repl-use-pretty-printing t
         cider-repl-display-help-banner nil
-        cider-repl-pop-to-buffer-on-connect nil
         cider-repl-history-file "~/.emacs.d/cider-history"))
 
 (use-package geiser
