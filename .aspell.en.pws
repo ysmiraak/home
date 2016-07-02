@@ -1,7 +1,8 @@
-personal_ws-1.1 en 125 
+personal_ws-1.1 en 135 
 beamer
 categorial
 Functor
+implicatures
 topicalized
 DCG
 ggmcmc
@@ -30,19 +31,23 @@ kuanyu
 memoization
 iter
 stopword
+hapax
 sentential
 tex
 factive
 edu
 Lambek
+paddings
 ieeetr
 NHST
 composable
 chronography
+Clojure
 ifelse
 sublists
 bigram
 HPSG
+incrementing
 emacs
 lexicalizing
 csv
@@ -53,6 +58,7 @@ bigrams
 mit
 https
 modus
+ngrams
 conventionalism
 Voryn
 timeline
@@ -63,6 +69,7 @@ Ysmiraak
 vivec
 th
 NLA
+hapaxes
 Shaie
 quantiles
 Baayen
@@ -71,9 +78,11 @@ Leto
 Yehoshua
 HDIs
 pdf
+trigram
 regexpr
 Dragonguard
 rjags
+unigrams
 intension
 ponens
 computable
@@ -82,6 +91,7 @@ compositional
 adjunctions
 Vershu
 Parameterize
+expressives
 Yu
 Functors
 functor's
@@ -92,8 +102,8 @@ Steedman
 evaluator
 html
 eval
-iff
 isomorphism
+iff
 Tsaesci
 Nerevar
 combinatory
@@ -102,6 +112,7 @@ Reman
 versa
 reasonings
 lexicalized
+Unigram
 Kruschke
 adjunction
 Homoiconicity

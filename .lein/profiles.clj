@@ -1,4 +1,5 @@
-{:user {:plugins [[lein-pprint "1.1.2"]
+{:user {:plugins [[lein-kibit "0.1.2"]
+                  [lein-pprint "1.1.2"]
                   [lein-ancient "0.6.10"]]
         :dependencies [[com.cemerick/pomegranate "0.3.1"]]
         :repl-options {:init (set! *print-length* 11)}}}

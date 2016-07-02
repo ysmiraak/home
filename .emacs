@@ -387,6 +387,7 @@
          ("<C-S-return>" . cider-eval-print-last-sexp))
   :config (use-package cider)
   (use-package clj-refactor)
+  (use-package kibit-helper)
   (cljr-add-keybindings-with-prefix "H-m r")
   ;; (use-package flycheck-clojure)
   ;; (with-eval-after-load 'flycheck
