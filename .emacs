@@ -397,6 +397,7 @@
         cider-prefer-local-resources t
         cider-repl-use-pretty-printing t
         cider-repl-display-help-banner nil
+        cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]"
         cider-repl-history-file "~/.emacs.d/cider-history"))
 
 (use-package geiser
