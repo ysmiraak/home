@@ -1,4 +1,4 @@
-personal_ws-1.1 en 137 
+personal_ws-1.1 en 139 
 beamer
 categorial
 Functor
@@ -84,8 +84,10 @@ trigram
 regexpr
 Dragonguard
 rjags
+Convolutional
 unigrams
 intension
+perceptron
 ponens
 computable
 modifiability
@@ -95,8 +97,8 @@ Vershu
 Parameterize
 expressives
 Yu
-Functors
 functor's
+Functors
 embeddings
 Dumac
 LocalWords

@@ -33,7 +33,6 @@
  ;; '(default-frame-alist '((width . 150) (height . 45)))
  ;; '(split-height-threshold 60)
  ;; '(split-width-threshold 90)
- '(frame-title-format "%b [%f]" t)
  '(uniquify-buffer-name-style 'forward)
  '(inhibit-startup-screen t)
  '(tool-bar-mode nil)
@@ -120,14 +119,17 @@
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL")))
 
-(use-package zenburn-theme :demand
-  :config (load-theme 'zenburn t)
+(use-package rainbow-delimiters :demand
+  :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable)
+  :config
+  (use-package zenburn-theme)
+  (load-theme 'zenburn t)
+  ;; (use-package solarized-theme)
+  ;; (load-theme 'solarized-light t)
   (use-package hl-line)
   (global-hl-line-mode 1)
   (use-package powerline)
-  (powerline-center-theme)
-  (use-package rainbow-delimiters)
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable))
+  (powerline-center-theme))
 
 (use-package magit
   :bind ("H-m g" . magit-status))
@@ -350,7 +352,6 @@
   :bind ("H-m !" . flycheck-mode)
   :init (hook-all #'flycheck-mode
                   'geiser-mode-hook
-                  'ess-mode-hook
                   'shell-mode-hook
                   'python-mode-hook
                   'LaTeX-mode-hook
