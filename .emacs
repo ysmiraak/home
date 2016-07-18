@@ -124,8 +124,6 @@
   :config
   (use-package zenburn-theme)
   (load-theme 'zenburn t)
-  ;; (use-package solarized-theme)
-  ;; (load-theme 'solarized-light t)
   (use-package hl-line)
   (global-hl-line-mode 1)
   (use-package powerline)
