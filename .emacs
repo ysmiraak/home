@@ -32,7 +32,7 @@
  ;; The Scarab: City-Face
  ;; '(default-frame-alist '((width . 150) (height . 45)))
  ;; '(split-height-threshold 60)
- ;; '(split-width-threshold 90)
+ ;; '(split-width-threshold 90) 
  '(uniquify-buffer-name-style 'forward)
  '(inhibit-startup-screen t)
  '(tool-bar-mode nil)
@@ -46,6 +46,7 @@
  '(blink-cursor-mode nil)
  '(cursor-type '(bar . 3))
  '(cursor-in-non-selected-windows 'hollow)
+ '(fill-column 81)
  ;; always uses spaces for tabs (for real tabs, use C-q)
  ;; see also tabify, untabify, and tab-width
  '(indent-tabs-mode nil)
@@ -104,7 +105,7 @@
 (setq use-package-verbose t
       use-package-always-ensure t)
 
-(use-package benchmark-init ;; :disabled
+(use-package benchmark-init :disabled
   :config (benchmark-init/activate))
 
 ;;;;;;;;;;
@@ -439,9 +440,9 @@
   :init (add-hooks 'org-mode-hook
                    #'turn-on-auto-fill
                    #'turn-on-org-cdlatex)
-  (setq org-directory "~/Sotha_Sil/Emacs/org"
-        org-agenda-files "~/Sotha_Sil/Emacs/org/agenda-files"
-        org-archive-location "~/Sotha_Sil/Emacs/org/archive.org::"
+  (setq org-directory "~/sotha_sil/emacs/org"
+        org-agenda-files "~/sotha_sil/emacs/org/agenda-files"
+        org-archive-location "~/sotha_sil/emacs/org/archive.org::"
         org-log-done 'time)
   :defines org-latex-listings
   :config
@@ -452,7 +453,8 @@
         org-src-fontify-natively t))
 
 (use-package markdown-mode
-  :mode ("README\\.md\\'" . gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.[Rr]md\\'" . markdown-mode))
   :init (add-hook 'markdown-mode-hook #'visual-line-mode)
   :config (setq markdown-enable-math t)
   (use-package markdown-mode+)
