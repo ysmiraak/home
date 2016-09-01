@@ -105,7 +105,7 @@
 (setq use-package-verbose t
       use-package-always-ensure t)
 
-(use-package benchmark-init :disabled
+(use-package benchmark-init ;; :disabled
   :config (benchmark-init/activate))
 
 ;;;;;;;;;;
@@ -353,6 +353,7 @@
                   'geiser-mode-hook
                   'shell-mode-hook
                   'python-mode-hook
+                  'rust-mode-hook
                   'LaTeX-mode-hook
                   'markdown-mode-hook
                   'css-mode-hook
@@ -374,7 +375,8 @@
                   'lisp-interaction-mode-hook
                   'ielm-mode-hook
                   'clojure-mode-hook
-                  'cider-repl-mode-hook))
+                  'cider-repl-mode-hook
+                  'rust-mode-hook))
 
 (use-package clojure-mode
   :init (add-hook 'clojure-mode-hook #'clj-refactor-mode)
@@ -426,14 +428,30 @@
               ("<C-M-return>" . ess-eval-buffer)))
 
 (use-package python
+  :init (add-hooks 'python-mode-hook
+                   #'anaconda-mode
+                   #'anaconda-eldoc-mode)
   :bind (:map python-mode-map
               ("<M-return>" . python-shell-send-defun)
               ("<S-return>" . python-shell-send-region)
               ("<C-M-return>" . python-shell-send-buffer))
-  :config (setq python-shell-interpreter "python3"))
+  :config (setq python-shell-interpreter "python3")
+  (use-package company-anaconda
+    :ensure anaconda-mode)
+  (push '(company-anaconda :with company-capf) company-backends))
+
+(use-package rust-mode :defer
+  :init (add-hooks 'rust-mode-hook
+                   #'racer-mode
+                   #'flycheck-rust-setup)
+  :config (use-package flycheck-rust)
+  (use-package racer)
+  (setq racer-rust-src-path "~/sotha_sil/rust/rustc-1.11.0/src/"))
 
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode))
+
+(use-package csv-mode :defer)
 
 (use-package org
   :bind ("H-m a" . org-agenda)
