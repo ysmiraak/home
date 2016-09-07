@@ -32,7 +32,7 @@
  ;; The Scarab: City-Face
  ;; '(default-frame-alist '((width . 150) (height . 45)))
  ;; '(split-height-threshold 60)
- ;; '(split-width-threshold 90) 
+ ;; '(split-width-threshold 90)
  '(uniquify-buffer-name-style 'forward)
  '(inhibit-startup-screen t)
  '(tool-bar-mode nil)
