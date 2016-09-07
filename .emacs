@@ -65,7 +65,7 @@
  ;; nor cast my own small golden sceptre down.
  '(cursor ((t (:background "#DAA520")))) ;; goldenrod
  ;; Ink and gold.
- '(mc/cursor-face ((t (:background "#DAA520" :foreground "#242424")))))
+ '(mc/cursor-bar-face ((t (:background "#DAA520" :foreground "#242424")))))
 
 (mapc (lambda (cmd) (put cmd 'disabled nil))
       ;; enable some disabled commands
@@ -378,7 +378,6 @@
                   'cider-repl-mode-hook
                   'rust-mode-hook))
 
-
 (use-package clojure-mode
   :init (add-hook 'clojure-mode-hook #'clj-refactor-mode)
   :bind (("H-m s" . cider-scratch)
@@ -389,18 +388,21 @@
          ("<C-M-return>" . cider-eval-buffer)
          ("<C-S-return>" . cider-eval-print-last-sexp))
   :config (use-package cider)
+  (use-package cider-eval-sexp-fu)
   (use-package clj-refactor)
   (cljr-add-keybindings-with-prefix "H-m r")
-  ;; (use-package flycheck-clojure)
-  ;; (with-eval-after-load 'flycheck
-  ;;   (flycheck-clojure-setup))
   (setq nrepl-hide-special-buffers t
         cider-font-lock-dynamically t
         cider-prefer-local-resources t
         cider-repl-use-pretty-printing t
         cider-repl-display-help-banner nil
         cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]"
-        cider-repl-history-file "~/.emacs.d/cider-history")
+        cider-repl-history-file "~/.emacs.d/cider-history"
+        eval-sexp-fu-flash-face 'region
+        eval-sexp-fu-flash-duration eval-sexp-fu-flash-error-duration)
+  ;; (use-package flycheck-clojure)
+  ;; (with-eval-after-load 'flycheck
+  ;;   (flycheck-clojure-setup))
   (use-package kibit-helper))
 
 (use-package geiser
