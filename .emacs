@@ -130,11 +130,11 @@
   (use-package powerline)
   (powerline-center-theme))
 
-(use-package magit
-  :bind ("H-m g" . magit-status))
-
 (use-package rainbow-mode
   :commands rainbow-mode)
+
+(use-package magit
+  :bind ("H-m g" . magit-status))
 
 ;;;;;;;;;;;;;;;;
 ;; navigation ;;
@@ -378,6 +378,7 @@
                   'cider-repl-mode-hook
                   'rust-mode-hook))
 
+
 (use-package clojure-mode
   :init (add-hook 'clojure-mode-hook #'clj-refactor-mode)
   :bind (("H-m s" . cider-scratch)
@@ -389,7 +390,6 @@
          ("<C-S-return>" . cider-eval-print-last-sexp))
   :config (use-package cider)
   (use-package clj-refactor)
-  (use-package kibit-helper)
   (cljr-add-keybindings-with-prefix "H-m r")
   ;; (use-package flycheck-clojure)
   ;; (with-eval-after-load 'flycheck
@@ -400,7 +400,8 @@
         cider-repl-use-pretty-printing t
         cider-repl-display-help-banner nil
         cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]"
-        cider-repl-history-file "~/.emacs.d/cider-history"))
+        cider-repl-history-file "~/.emacs.d/cider-history")
+  (use-package kibit-helper))
 
 (use-package geiser
   :defines geiser-active-implementations
@@ -410,7 +411,7 @@
               ("<S-return>" . geiser-eval-region)
               ("<C-M-return>" . geiser-eval-buffer))
   :config
-  (setq geiser-active-implementations '(racket))
+  (setq geiser-active-implementations '(guile))
   (use-package quack))
 
 (use-package ediprolog
