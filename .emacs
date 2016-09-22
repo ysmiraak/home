@@ -277,7 +277,21 @@
 (use-package expand-region
   :bind (("H-m SPC" . er/expand-region)
          ("H-m C-SPC" . er/expand-region)
-         ("S-SPC" . er/expand-region)))
+         ("S-SPC" . er/expand-region))
+  :config (setq er/try-expand-list
+                '(er/mark-word
+                  ;; er/mark-symbol
+                  er/mark-symbol-with-prefix
+                  er/mark-next-accessor
+                  er/mark-method-call
+                  ;; er/mark-inside-quotes
+                  er/mark-outside-quotes
+                  ;; er/mark-inside-pairs
+                  er/mark-outside-pairs
+                  ;; er/mark-comment
+                  er/mark-url
+                  er/mark-email
+                  er/mark-defun)))
 
 (use-package company :demand :diminish " K"
   :bind (("H-m RET" . global-company-mode)
