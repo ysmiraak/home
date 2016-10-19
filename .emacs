@@ -57,10 +57,7 @@
  '(version-control t)
  '(delete-old-versions t)
  '(backup-directory-alist `(("." . ,temporary-file-directory)))
- '(package-enable-at-startup nil)
- '(package-selected-packages
-   (quote
-    (markdown-mode+ zenburn-theme which-key use-package undo-tree smex smartparens region-bindings-mode rainbow-mode rainbow-delimiters racer quack projectile powerline markdown-mode magit latex-preview-pane kibit-helper js2-mode ido-yes-or-no ido-vertical-mode ido-ubiquitous ido-complete-space-or-hyphen geiser flycheck-rust flycheck-pos-tip flx-ido expand-region exec-path-from-shell ess ediprolog csv-mode company-quickhelp company-math company-flx company-auctex clj-refactor cider-eval-sexp-fu centered-cursor-mode cdlatex benchmark-init avy anaconda-mode aggressive-indent))))
+ '(package-enable-at-startup nil))
 
 (custom-set-faces
  ;; I bow not yet before the Iron Crown,
@@ -99,6 +96,7 @@
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+;; (add-to-list 'package-archives '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
 (package-initialize nil)
 
 (unless (package-installed-p 'use-package)
