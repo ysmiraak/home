@@ -295,7 +295,8 @@
                   ;; er/mark-comment
                   er/mark-url
                   er/mark-email
-                  er/mark-defun)))
+                  er/mark-defun))
+  (defun er/enable-mode-expansions (mode add-fn)))
 
 (use-package company :demand :diminish " K"
   :bind (("H-m RET" . global-company-mode)
@@ -397,6 +398,7 @@
                   'rust-mode-hook))
 
 (use-package eval-sexp-fu
+  ;; delete the *.elc files in this package !!!
   :init (setq byte-compile-warnings nil)
   :config (setq byte-compile-warnings t)
   (setq eval-sexp-fu-flash-face 'region
