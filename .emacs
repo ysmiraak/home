@@ -57,10 +57,7 @@
  '(version-control t)
  '(delete-old-versions t)
  '(backup-directory-alist `(("." . ,temporary-file-directory)))
- '(package-enable-at-startup nil)
- '(package-selected-packages
-   (quote
-    (zenburn-theme which-key use-package undo-tree smex smartparens region-bindings-mode rainbow-mode rainbow-delimiters racer quack projectile powerline markdown-mode+ magit latex-preview-pane kibit-helper js2-mode ido-yes-or-no ido-vertical-mode ido-ubiquitous ido-complete-space-or-hyphen geiser flycheck-rust flycheck-pos-tip flx-ido expand-region exec-path-from-shell ess ediprolog csv-mode company-quickhelp company-math company-flx company-auctex company-anaconda clj-refactor cider-eval-sexp-fu centered-cursor-mode cdlatex benchmark-init avy anaconda-mode aggressive-indent))))
+ '(package-enable-at-startup nil))
 
 (custom-set-faces
  ;; I bow not yet before the Iron Crown,
@@ -173,11 +170,9 @@
   :config (which-key-mode 1))
 
 (use-package avy
-  :bind (("H-m ;" . avy-goto-char-2)
-         ("H-m C-;" . avy-goto-char-2)
-         ("C-;" . avy-goto-char-2)
-         ("H-m ." . avy-pop-mark)
-         ("C-." . avy-pop-mark)
+  :bind (("C-," . avy-goto-word-1) ("H-m ," . avy-goto-word-1)
+         ("C-;" . avy-goto-char-2) ("H-m ;" . avy-goto-char-2)
+         ("C-." . avy-pop-mark)    ("H-m ." . avy-pop-mark)
          ("M-g g" . avy-goto-line)
          :map isearch-mode-map
          ("C-." . avy-isearch)))
@@ -260,7 +255,7 @@
 
 (use-package multiple-cursors
   :bind (("H-m m" . mc/mark-more-like-this-extended)
-         ("H-m H-m" . mc-hide-unmatched-lines-mode)))
+         ("H-m h" . mc-hide-unmatched-lines-mode)))
 
 (use-package region-bindings-mode :demand
   :bind (:map region-bindings-mode-map
@@ -279,13 +274,11 @@
   :config (region-bindings-mode-enable))
 
 (use-package expand-region
-  :bind (("H-m SPC" . er/expand-region)
-         ("H-m C-SPC" . er/expand-region)
-         ("S-SPC" . er/expand-region)))
+  :bind (("S-SPC" . er/expand-region) ("H-m SPC" . er/expand-region)))
 
 (use-package company :demand :diminish " K"
   :bind (("H-m RET" . global-company-mode)
-         ("H-m <C-return>" . company-complete))
+         ("C-'" . company-complete) ("H-m '" . company-complete))
   :config (global-company-mode 1)
   (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
@@ -309,10 +302,8 @@
   :bind ("H-m l" . global-centered-cursor-mode))
 
 (use-package hippie-exp
-  :bind (("H-m <C-tab>" . hippie-expand)
-         ("<C-tab>" . hippie-expand)
-         ("H-m <M-tab>" . crazy-hippie-expand)
-         ("<M-tab>" . crazy-hippie-expand))
+  :bind (("<C-tab>" . hippie-expand)       ("H-m <C-tab>" . hippie-expand)
+         ("<M-tab>" . crazy-hippie-expand) ("H-m <M-tab>" . crazy-hippie-expand))
   :config
   (setq hippie-expand-try-functions-list
         '(try-expand-dabbrev
@@ -337,9 +328,9 @@
 
 (use-package yasnippet :demand :diminish (yas-minor-mode . " Y")
   :bind (("H-m TAB" . yas-global-mode)
-         ("H-m <S-tab>" . yas-global-mode)
-         ("<S-tab>" . yas-global-mode))
-  :init (setq yas-snippet-dirs '(yas-installed-snippets-dir))
+         ("<S-tab>" . yas-expand) ("H-m <S-tab>" . yas-expand))
+  :init (setq yas-snippet-dirs'(yas-installed-snippets-dir
+                                "~/sotha_sil/emacs/snippets/"))
   :config (yas-global-mode 1)
   (unbind-key "TAB" yas-minor-mode-map))
 
@@ -348,8 +339,7 @@
   :init (hook-all #'flyspell-mode
                   'org-mode-hook
                   'LaTeX-mode-hook
-                  'markdown-mode-hook)
-  :config (unbind-key "H-m" flyspell-mode-map))
+                  'markdown-mode-hook))
 
 (use-package flycheck
   :bind ("H-m !" . flycheck-mode)
@@ -450,11 +440,13 @@
 
 (use-package rust-mode :defer
   :init (add-hooks 'rust-mode-hook
-                   #'racer-mode
-                   #'flycheck-rust-setup)
-  :config (use-package flycheck-rust)
+                   #'cargo-minor-mode
+                   #'flycheck-rust-setup
+                   #'racer-mode)
+  :config (use-package cargo)
+  (use-package flycheck-rust)
   (use-package racer)
-  (setq racer-rust-src-path "~/.multirust/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src/"))
+  (setq racer-rust-src-path "~/.multirust/toolchains/nightly-x86_64-apple-darwin/lib/rustlib/src/rust/src"))
 
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode))
