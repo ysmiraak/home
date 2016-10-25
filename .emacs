@@ -119,7 +119,7 @@
   :config
   (toggle-frame-fullscreen)
   (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL")))
+  (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL" "RUST_SRC_PATH")))
 
 (use-package rainbow-delimiters :demand
   :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable)
@@ -446,7 +446,7 @@
   :config (use-package cargo)
   (use-package flycheck-rust)
   (use-package racer)
-  (setq racer-rust-src-path "~/.multirust/toolchains/nightly-x86_64-apple-darwin/lib/rustlib/src/rust/src"))
+  (setq racer-rust-src-path (getenv "RUST_SRC_PATH")))
 
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode))
