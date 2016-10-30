@@ -57,7 +57,10 @@
  '(version-control t)
  '(delete-old-versions t)
  '(backup-directory-alist `(("." . ,temporary-file-directory)))
- '(package-enable-at-startup nil))
+ '(package-enable-at-startup nil)
+ '(package-selected-packages
+   (quote
+    (zenburn-theme which-key use-package undo-tree smex smartparens region-bindings-mode rainbow-mode rainbow-delimiters racer quack projectile powerline markdown-mode+ magit latex-preview-pane kibit-helper js2-mode ido-yes-or-no ido-vertical-mode ido-ubiquitous ido-complete-space-or-hyphen geiser flycheck-rust flycheck-pos-tip flx-ido expand-region exec-path-from-shell ess ediprolog csv-mode company-quickhelp company-math company-flx company-auctex company-anaconda clj-refactor cider-eval-sexp-fu centered-cursor-mode cdlatex cargo benchmark-init avy aggressive-indent))))
 
 (custom-set-faces
  ;; I bow not yet before the Iron Crown,

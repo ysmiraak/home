@@ -5,4 +5,5 @@
                   [jonase/eastwood "0.2.3"]]
         :repl-options {:init (do (set! *print-length* 11)
                                  (set! *warn-on-reflection* true))}}
- :repl {:dependencies [[com.cemerick/pomegranate "0.3.1"]]}}
+ :repl {:dependencies [[com.cemerick/pomegranate "0.3.1"]
+                       [criterium "0.4.4"]]}}
