@@ -187,8 +187,8 @@
          ("<C-M-down>" . windmove-down)))
 
 (use-package projectile :demand
-  :bind ("H-m p" . projectile-global-mode)
-  :config (projectile-global-mode 1))
+  :bind ("H-m p" . projectile-mode)
+  :config (projectile-mode 1))
 
 ;;;;;;;;;;;;;
 ;; editing ;;
@@ -332,8 +332,6 @@
 (use-package yasnippet :demand :diminish (yas-minor-mode . " Y")
   :bind (("H-m TAB" . yas-global-mode)
          ("<S-tab>" . yas-expand) ("H-m <S-tab>" . yas-expand))
-  :init (setq yas-snippet-dirs'(yas-installed-snippets-dir
-                                "~/sotha_sil/emacs/snippets/"))
   :config (yas-global-mode 1)
   (unbind-key "TAB" yas-minor-mode-map))
 
