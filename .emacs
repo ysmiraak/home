@@ -345,6 +345,7 @@
 (use-package flycheck
   :bind ("H-m !" . flycheck-mode)
   :init (hook-all #'flycheck-mode
+                  'emacs-lisp-mode-hook
                   'geiser-mode-hook
                   'shell-mode-hook
                   'python-mode-hook
