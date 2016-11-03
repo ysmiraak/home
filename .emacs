@@ -498,11 +498,13 @@
                    #'turn-on-reftex
                    (lambda () (setq TeX-command-default "xelatexmk")))
   :config
-  (push '("xelatexmk" "latexmk %s" TeX-run-TeX nil t :help "run xelatexmk on file")
+  (push '("xelatexmk" "latexmk -pdf -pdflatex=\"xelatex -interaction=nonstopmode -shell-escape -synctex=1\" %s"
+          TeX-run-Tex nil t :help "run xelatexmk on file")
         TeX-command-list)
-  (push '("skim line" "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
+  ;; Skim -> Preferences -> Sync; CMD + shift + click in the pdf file for jumping to source
+  (push '("skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
         TeX-view-program-list)
-  (push '(output-pdf "skim line") TeX-view-program-selection)
+  (push '(output-pdf "skim") TeX-view-program-selection)
   (server-start)
   (setq TeX-auto-save t
         TeX-parse-self t)
