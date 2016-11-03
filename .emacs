@@ -496,15 +496,10 @@
                    #'latex-preview-pane-enable
                    #'turn-on-cdlatex
                    #'turn-on-reftex
-                   ;; (lambda () (setq TeX-command-default "latexmk"))
-                   (lambda () (setq TeX-command-default "XeLaTeX")))
+                   (lambda () (setq TeX-command-default "xelatexmk")))
   :config
-  (push '("XeLaTeX" "xelatex -shell-escape %t"
-          TeX-run-TeX nil t :help "run xelatex on file")
+  (push '("xelatexmk" "latexmk %s" TeX-run-TeX nil t :help "run xelatexmk on file")
         TeX-command-list)
-  ;; (push '("latexmk" "latexmk -pdf -latexoption=-shell-escape %s"
-  ;;         TeX-run-TeX nil t :help "Run latexmk on file")
-  ;;       TeX-command-list)
   (push '("skim line" "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
         TeX-view-program-list)
   (push '(output-pdf "skim line") TeX-view-program-selection)
