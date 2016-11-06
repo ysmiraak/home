@@ -469,7 +469,7 @@
   (setq org-latex-create-formula-image-program 'imagemagick
         org-confirm-babel-evaluate nil
         org-latex-listings 'minted
-        org-latex-packages-alist '(("" "minted"))
+        org-latex-packages-alist '(("" "minted") ("" "xeCJK"))
         org-src-fontify-natively t))
 
 (use-package markdown-mode
@@ -499,7 +499,7 @@
                    (lambda () (setq TeX-command-default "xelatexmk")))
   :config
   (push '("xelatexmk" "latexmk -pdf -pdflatex=\"xelatex -interaction=nonstopmode -shell-escape -synctex=1\" %s"
-          TeX-run-Tex nil t :help "run xelatexmk on file")
+          TeX-run-TeX nil t :help "run xelatexmk on file")
         TeX-command-list)
   ;; Skim -> Preferences -> Sync; CMD + shift + click in the pdf file for jumping to source
   (push '("skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
