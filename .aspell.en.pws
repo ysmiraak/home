@@ -1,4 +1,4 @@
-personal_ws-1.1 en 145 
+personal_ws-1.1 en 146 
 runtime
 beamer
 categorial
@@ -102,8 +102,8 @@ Vershu
 Parameterize
 expressives
 Yu
-Functors
 functor's
+Functors
 combinators
 embeddings
 Dumac
@@ -136,6 +136,7 @@ png
 Sternefeld
 Dagoth
 prolog
+modelling
 tuebingen
 emergentism
 substitutability
