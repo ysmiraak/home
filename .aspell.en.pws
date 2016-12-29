@@ -1,7 +1,8 @@
-personal_ws-1.1 en 146 
+personal_ws-1.1 en 153 
 runtime
 beamer
 categorial
+functor
 Functor
 implicatures
 topicalized
@@ -26,9 +27,11 @@ toucher
 compositionally
 pretrained
 Sil
+intensionally
 dev
 restitutive
 Atreides
+QUD
 Subcategorization
 parameterized
 kuanyu
@@ -51,9 +54,11 @@ Clojure
 ifelse
 sublists
 bigram
+disjunctions
 HPSG
 incrementing
 emacs
+interpretable
 lexicalizing
 csv
 transdimensional
@@ -69,6 +74,7 @@ conventionalism
 Voryn
 timeline
 Sotha
+kuan
 Kuan
 env
 ysmiraak
@@ -102,8 +108,8 @@ Vershu
 Parameterize
 expressives
 Yu
-functor's
 Functors
+functor's
 combinators
 embeddings
 Dumac
@@ -133,6 +139,7 @@ lexicalize
 stopwords
 Joachim
 png
+temporality
 Sternefeld
 Dagoth
 prolog
