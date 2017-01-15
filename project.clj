@@ -4,8 +4,9 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.9.0-alpha14"]
-                 [uncomplicate/fluokitten "0.5.1"]
+                 [uncomplicate/fluokitten "0.5.2"]
                  [lonocloud/synthread "1.4.0"]
+                 [swiss-arrows "1.0.0"]
                  [prismatic/plumbing "0.5.3"]
                  [net.mikera/core.matrix "0.57.0"]
                  [net.mikera/vectorz-clj "0.45.0"]
