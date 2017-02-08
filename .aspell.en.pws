@@ -1,9 +1,8 @@
-personal_ws-1.1 en 153 
+personal_ws-1.1 en 156 
 runtime
 beamer
 categorial
 functor
-Functor
 implicatures
 topicalized
 DCG
@@ -25,9 +24,9 @@ sublist
 disjunction
 toucher
 compositionally
+intensionally
 pretrained
 Sil
-intensionally
 dev
 restitutive
 Atreides
@@ -62,6 +61,7 @@ interpretable
 lexicalizing
 csv
 transdimensional
+projective
 intensional
 pygmentize
 bigrams
@@ -70,12 +70,12 @@ https
 modus
 ngrams
 overfit
+reified
 conventionalism
 Voryn
 timeline
 Sotha
 kuan
-Kuan
 env
 ysmiraak
 vivec
@@ -105,6 +105,7 @@ compositional
 quantificational
 adjunctions
 Vershu
+trigrams
 Parameterize
 expressives
 Yu
@@ -128,6 +129,7 @@ Reman
 versa
 reasonings
 lexicalized
+unigram
 Unigram
 Kruschke
 adjunction
@@ -152,3 +154,4 @@ http
 dnorm
 textwidth
 formalisms
+POV

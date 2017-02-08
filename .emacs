@@ -89,7 +89,7 @@
 
 (define-key input-decode-map
   ;; Free C-m from RET to be used as my personal C-c, for opening
-  (if window-system (kbd "C-m") (kbd "C-`"))
+  (if window-system (kbd "C-m") (kbd "C-M-z"))
   ;; black books.
   (kbd "H-m"))
 
