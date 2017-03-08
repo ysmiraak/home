@@ -57,6 +57,7 @@
  '(version-control t)
  '(delete-old-versions t)
  '(backup-directory-alist `(("." . ,temporary-file-directory)))
+ '(insert-directory-program "gls")
  '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
@@ -77,12 +78,12 @@
         narrow-to-region
         dired-find-alternate-file))
 
-(add-hook 'after-init-hook
-          (lambda ()
-            (setq initial-scratch-message
-                  (concat initial-scratch-message
-                          (format ";; Emacs initialized in %.2f seconds.\n\n"
-                                  (float-time (time-subtract after-init-time before-init-time)))))))
+;; (add-hook 'after-init-hook
+;;           (lambda ()
+;;             (setq initial-scratch-message
+;;                   (concat initial-scratch-message
+;;                           (format ";; Emacs initialized in %.2f seconds.\n\n"
+;;                                   (float-time (time-subtract after-init-time before-init-time)))))))
 
 (defun hook-all (f &rest hs) "Add F for all HS." (mapc (lambda (h) (add-hook h f)) hs))
 (defun add-hooks (h &rest fs) "Add to H all FS." (mapc (lambda (f) (add-hook h f)) fs))
@@ -438,7 +439,7 @@
   :config (setq python-shell-interpreter "python3")
   (use-package anaconda-mode)
   (use-package company-anaconda)
-  (push '(company-anaconda :with company-capf) company-backends))
+  (push 'company-anaconda company-backends))
 
 (use-package rust-mode :defer
   :init (add-hooks 'rust-mode-hook
