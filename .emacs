@@ -61,7 +61,7 @@
  '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
-    (zenburn-theme which-key use-package undo-tree smex smartparens region-bindings-mode rainbow-mode rainbow-delimiters racer quack projectile powerline markdown-mode+ magit latex-preview-pane kibit-helper js2-mode ido-yes-or-no ido-vertical-mode ido-ubiquitous ido-complete-space-or-hyphen geiser flycheck-rust flycheck-pos-tip flx-ido expand-region exec-path-from-shell ess ediprolog csv-mode company-quickhelp company-math company-flx company-auctex company-anaconda clj-refactor cider-eval-sexp-fu centered-cursor-mode cdlatex cargo benchmark-init avy aggressive-indent))))
+    (zenburn-theme which-key use-package undo-tree smex smartparens region-bindings-mode rainbow-mode rainbow-delimiters racer quack projectile powerline markdown-mode+ magit latex-preview-pane kibit-helper js2-mode ido-yes-or-no ido-vertical-mode ido-ubiquitous ido-complete-space-or-hyphen geiser flycheck-rust flycheck-pos-tip flx-ido expand-region exec-path-from-shell ess elpy ediprolog csv-mode company-quickhelp company-math company-flx company-auctex clj-refactor cider-eval-sexp-fu centered-cursor-mode cdlatex cargo benchmark-init avy aggressive-indent))))
 
 (custom-set-faces
  ;; I bow not yet before the Iron Crown,
@@ -349,7 +349,6 @@
                   'emacs-lisp-mode-hook
                   'geiser-mode-hook
                   'shell-mode-hook
-                  'python-mode-hook
                   'rust-mode-hook
                   'LaTeX-mode-hook
                   'markdown-mode-hook
@@ -428,18 +427,13 @@
               ("<S-return>" . ess-eval-region)
               ("<C-M-return>" . ess-eval-buffer)))
 
-(use-package python
-  :init (add-hooks 'python-mode-hook
-                   #'anaconda-mode
-                   #'anaconda-eldoc-mode)
+(use-package elpy :defer
+  :init (add-hooks 'python-mode-hook 'elpy-mode)
   :bind (:map python-mode-map
               ("<M-return>" . python-shell-send-defun)
               ("<S-return>" . python-shell-send-region)
               ("<C-M-return>" . python-shell-send-buffer))
-  :config (setq python-shell-interpreter "python3")
-  (use-package anaconda-mode)
-  (use-package company-anaconda)
-  (push 'company-anaconda company-backends))
+  :config (elpy-enable))
 
 (use-package rust-mode :defer
   :init (add-hooks 'rust-mode-hook
