@@ -427,8 +427,12 @@
               ("<S-return>" . ess-eval-region)
               ("<C-M-return>" . ess-eval-buffer)))
 
-(use-package elpy :defer
-  :init (add-hooks 'python-mode-hook 'elpy-mode)
+(use-package elpy
+  :init (add-hook 'python-mode-hook #'elpy-mode)
+  (add-hook 'elpy-mode-hook
+            (lambda ()
+              (highlight-indentation-mode 0)
+              (aggressive-indent-mode 0)))
   :bind (:map python-mode-map
               ("<M-return>" . python-shell-send-defun)
               ("<S-return>" . python-shell-send-region)
