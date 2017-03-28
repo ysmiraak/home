@@ -432,7 +432,8 @@
   (add-hook 'elpy-mode-hook
             (lambda ()
               (highlight-indentation-mode 0)
-              (aggressive-indent-mode 0)))
+              (aggressive-indent-mode 0)
+              (unbind-key "<S-return>" elpy-mode-map)))
   :bind (:map python-mode-map
               ("<M-return>" . python-shell-send-defun)
               ("<S-return>" . python-shell-send-region)
