@@ -57,19 +57,10 @@
  '(version-control t)
  '(delete-old-versions t)
  '(backup-directory-alist `(("." . ,temporary-file-directory)))
- '(insert-directory-program "gls")
  '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
     (zenburn-theme which-key use-package undo-tree smex smartparens region-bindings-mode rainbow-mode rainbow-delimiters racer quack projectile powerline markdown-mode+ magit latex-preview-pane kibit-helper js2-mode ido-yes-or-no ido-vertical-mode ido-ubiquitous ido-complete-space-or-hyphen geiser flycheck-rust flycheck-pos-tip flx-ido expand-region exec-path-from-shell ess elpy ediprolog csv-mode company-quickhelp company-math company-flx company-auctex clj-refactor cider-eval-sexp-fu centered-cursor-mode cdlatex cargo benchmark-init avy aggressive-indent))))
-
-(custom-set-faces
- ;; I bow not yet before the Iron Crown,
- '(region ((t (:background "#242424")))) ;; Nirn gray
- ;; nor cast my own small golden sceptre down.
- '(cursor ((t (:background "#DAA520")))) ;; goldenrod
- ;; Ink and gold.
- '(mc/cursor-bar-face ((t (:background "#DAA520" :foreground "#242424")))))
 
 (mapc (lambda (cmd) (put cmd 'disabled nil))
       ;; enable some disabled commands
@@ -110,24 +101,32 @@
 (setq use-package-verbose t
       use-package-always-ensure t)
 
-(use-package benchmark-init ;; :disabled
+(use-package benchmark-init :disabled
   :config (benchmark-init/activate))
 
 ;;;;;;;;;;
 ;; misc ;;
 ;;;;;;;;;;
 
-(use-package exec-path-from-shell :if (memq window-system '(mac ns)) :demand
+(use-package exec-path-from-shell :if (equal 'ns window-system) :demand
   :bind (("<C-s-f>" . toggle-frame-fullscreen)
          ("<C-s-268632070>" . toggle-frame-fullscreen))
   :config
   (toggle-frame-fullscreen)
+  (setq insert-directory-program "gls")
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL" "RUST_SRC_PATH")))
 
-(use-package rainbow-delimiters :demand
+(use-package rainbow-delimiters :if (display-graphic-p) :demand
   :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable)
   :config
+  (custom-set-faces
+   ;; I bow not yet before the Iron Crown,
+   '(region ((t (:background "#242424")))) ;; Nirn gray
+   ;; nor cast my own small golden sceptre down.
+   '(cursor ((t (:background "#DAA520")))) ;; goldenrod
+   ;; Ink and gold.
+   '(mc/cursor-bar-face ((t (:background "#DAA520" :foreground "#242424")))))
   (use-package zenburn-theme)
   (load-theme 'zenburn t)
   (use-package hl-line)
@@ -498,7 +497,8 @@
                    #'turn-on-reftex
                    (lambda () (setq TeX-command-default "xelatexmk")))
   :config
-  (push '("xelatexmk" "latexmk -pdf -pdflatex=\"xelatex -interaction=nonstopmode -shell-escape -synctex=1\" %s"
+  (push '("xelatexmk"
+          "latexmk -pdf -pdflatex=\"xelatex -interaction=nonstopmode -shell-escape -synctex=1\" %s"
           TeX-run-TeX nil t :help "run xelatexmk on file")
         TeX-command-list)
   ;; Skim -> Preferences -> Sync; CMD + shift + click in the pdf file for jumping to source
