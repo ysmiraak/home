@@ -1,4 +1,4 @@
-personal_ws-1.1 en 156 
+personal_ws-1.1 en 165 
 runtime
 beamer
 categorial
@@ -49,12 +49,14 @@ NHST
 composable
 overfitting
 chronography
+tokenizers
 Clojure
 ifelse
 sublists
 bigram
 disjunctions
 HPSG
+repl
 incrementing
 emacs
 interpretable
@@ -71,8 +73,10 @@ modus
 ngrams
 reified
 overfit
+polymorphism
 conventionalism
 Voryn
+str
 timeline
 Sotha
 kuan
@@ -82,6 +86,7 @@ vivec
 th
 NLA
 hapaxes
+initializers
 Shaie
 quantiles
 Baayen
@@ -93,6 +98,7 @@ pdf
 trigram
 regexpr
 Dragonguard
+numpy
 rjags
 convolutional
 unigrams
@@ -121,6 +127,7 @@ html
 eval
 isomorphism
 iff
+projectivity
 Tsaesci
 Nerevar
 combinatory
@@ -149,9 +156,11 @@ modelling
 tuebingen
 emergentism
 substitutability
+tokenizer
 compositionality
 http
 dnorm
 textwidth
 formalisms
 POV
+initializer
