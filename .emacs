@@ -468,7 +468,6 @@
   (setq org-latex-create-formula-image-program 'imagemagick
         org-confirm-babel-evaluate nil
         org-latex-listings 'minted
-        ;; org-latex-packages-alist '(("" "minted"))
         org-src-fontify-natively t))
 
 (use-package markdown-mode
