@@ -281,7 +281,9 @@
 
 (use-package company :demand :diminish " K"
   :bind (("H-m RET" . global-company-mode)
-         ("C-'" . company-complete) ("H-m '" . company-complete))
+         ("C-'" . company-complete) ("H-m '" . company-complete)
+         :map company-active-map
+         ("M-h" . company-quickhelp-manual-begin))
   :config (global-company-mode 1)
   (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
@@ -295,7 +297,7 @@
         company-minimum-prefix-length 2
         company-selection-wrap-around t
         company-tooltip-align-annotations t
-        company-quickhelp-delay 1))
+        company-quickhelp-delay nil))
 
 (use-package aggressive-indent :demand :diminish " i"
   :bind ("H-m i" . global-aggressive-indent-mode)
@@ -409,7 +411,7 @@
               ("<S-return>" . geiser-eval-region)
               ("<C-M-return>" . geiser-eval-buffer))
   :config
-  (setq geiser-active-implementations '(guile))
+  (setq geiser-active-implementations '(guile chez))
   (use-package quack))
 
 (use-package ediprolog
