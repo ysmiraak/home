@@ -411,7 +411,7 @@
               ("<S-return>" . geiser-eval-region)
               ("<C-M-return>" . geiser-eval-buffer))
   :config
-  (setq geiser-active-implementations '(guile chez))
+  (setq geiser-active-implementations '(chez))
   (use-package quack))
 
 (use-package ediprolog
