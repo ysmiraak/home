@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.9.0-alpha15"]
                  [org.clojure/core.async "0.3.442"]
                  [uncomplicate/fluokitten "0.6.0"]
-                 [lonocloud/synthread "1.4.0"]
+                 [com.rpl/specter "1.0.1"]
                  [swiss-arrows "1.0.0"]
                  [aysylu/loom "1.0.0"]
                  [prismatic/plumbing "0.5.4"]
