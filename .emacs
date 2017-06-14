@@ -394,11 +394,12 @@
   (use-package cider-eval-sexp-fu)
   (use-package clj-refactor)
   (cljr-add-keybindings-with-prefix "H-m r")
-  (setq nrepl-hide-special-buffers t
+  (setq cljr-suppress-middleware-warnings t
+        nrepl-hide-special-buffers t
         cider-font-lock-dynamically t
         cider-prefer-local-resources t
         cider-repl-use-pretty-printing t
-        cider-repl-display-help-banner nil
+        cider-allow-jack-in-without-project t
         cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]"
         cider-repl-history-file "~/.emacs.d/cider-history")
   (use-package kibit-helper))
@@ -458,9 +459,7 @@
 
 (use-package org
   :bind ("H-m a" . org-agenda)
-  :init (add-hooks 'org-mode-hook
-                   #'turn-on-auto-fill
-                   #'turn-on-org-cdlatex)
+  :init (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
   (setq org-directory "~/sotha_sil/emacs/org"
         org-agenda-files "~/sotha_sil/emacs/org/agenda-files"
         org-archive-location "~/sotha_sil/emacs/org/archive.org::"
