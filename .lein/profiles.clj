@@ -38,16 +38,20 @@
                                            [clojure.set :as set]
                                            [clojure.java.io :as io]))
                                (defn library
-                                 "require ns by symbols or ns-clusters by keywords:
+                                 "
+  require namespaces by symbols or clusters of namespaces by keywords:
+
   add-dep cemerick.pomegranate
   b criterium.core
   c clojure.core.async
   match clojure.core.match
+
   :logic
   v    clojure.core.logic
   fd   clojure.core.logic.fd
   nom  clojure.core.logic.nominal
   pldb clojure.core.logic.pldb
+
   :array
   a      clojure.core.matrix
   sel    clojure.core.matrix.selection
@@ -55,9 +59,11 @@
   rand   clojure.core.matrix.random
   stats  clojure.core.matrix.stats
   ds     clojure.core.matrix.datasets
+
   :data
   z   clojure.data.int-map
-  csv clojure.data.csv"
+  csv clojure.data.csv
+  "
                                  ([lib & libs] (mapv library (cons lib libs)))
                                  ([lib]
                                   (case lib
