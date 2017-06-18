@@ -382,7 +382,9 @@
         eval-sexp-fu-flash-duration eval-sexp-fu-flash-error-duration))
 
 (use-package clojure-mode
-  :init (add-hook 'clojure-mode-hook #'clj-refactor-mode)
+  :init (add-hooks 'clojure-mode-hook
+                   #'clj-refactor-mode
+                   (lambda () (toggle-truncate-lines 1)))
   :bind (("H-m s" . cider-scratch)
          :map cider-mode-map
          ("<C-return>" . cider-eval-last-sexp)
