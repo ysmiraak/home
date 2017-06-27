@@ -190,6 +190,7 @@
   :config (popwin-mode 1)
   (setq popwin:popup-window-position 'right
         popwin:popup-window-width 81)
+  (push '("\\*.*[Dd]oc.*\\*" :regexp t) popwin:special-display-config)
   (push '("*Buffer List*" :dedicated t) popwin:special-display-config))
 
 (use-package projectile :demand
@@ -382,7 +383,7 @@
                   'rust-mode-hook))
 
 (use-package eval-sexp-fu
-  ;; delete the *.elc files in this package !!!
+  ;; delete the *.elc files in this package !!!!
   :init (setq byte-compile-warnings nil)
   :config (setq byte-compile-warnings t)
   (setq eval-sexp-fu-flash-face 'region
@@ -435,7 +436,8 @@
   :init (add-hook 'idris-mode-hook (lambda () (idris-simple-indent-mode 0)))
   :bind (:map idris-mode-map
               ("<C-return>" . prop-menu-by-completing-read)
-              ("<C-M-return>" . idris-load-file))
+              ("<C-M-return>" . idris-load-file)
+              ("C-c C-q" . idris-quit))
   :config (push 'idris-compiler-notes-mode popwin:special-display-config))
 
 (use-package ess
