@@ -1,8 +1,8 @@
-;;; .emacs --- Ysmiraak's Emacs init file.
+;;; .emacs --- ysmiraak's emacs init file.
 
-;; Copyright (C) 2015-2016 Ysmiraak
+;; Copyright (C) 2015-2016 ysmiraak
 
-;; Author: Ysmiraak <ysmiraak@gmail.com>
+;; Author: ysmiraak <ysmiraak@gmail.com>
 ;; URL: https://github.com/Ysmiraak/home-backup/blob/master/.emacs
 
 ;; This file is not part of GNU Emacs.
@@ -59,8 +59,8 @@
  '(backup-directory-alist `(("." . ,temporary-file-directory)))
  '(package-enable-at-startup nil)
  '(package-selected-packages
-   (quote
-    (zenburn-theme which-key use-package undo-tree smex smartparens region-bindings-mode rainbow-mode rainbow-delimiters racer quack projectile powerline markdown-mode+ magit latex-preview-pane kibit-helper js2-mode ido-yes-or-no ido-vertical-mode ido-ubiquitous ido-complete-space-or-hyphen geiser flycheck-rust flycheck-pos-tip flx-ido expand-region exec-path-from-shell ess elpy ediprolog csv-mode company-quickhelp company-math company-flx company-auctex clj-refactor cider-eval-sexp-fu centered-cursor-mode cdlatex cargo benchmark-init avy aggressive-indent))))
+   '(aggressive-indent avy benchmark-init cargo cdlatex centered-cursor-mode cider-eval-sexp-fu clj-refactor company-auctex company-flx company-math company-quickhelp csv-mode ediprolog elpy ess exec-path-from-shell expand-region flx-ido flycheck-pos-tip flycheck-rust geiser haskell-mode ido-complete-space-or-hyphen ido-ubiquitous ido-vertical-mode ido-yes-or-no idris-mode js2-mode kibit-helper latex-preview-pane magit markdown-mode+ popwin powerline projectile quack racer rainbow-delimiters rainbow-mode region-bindings-mode smartparens smex undo-tree use-package which-key zenburn-theme))
+ '(custom-file "~/.emacs.d/custom.el"))
 
 (mapc (lambda (cmd) (put cmd 'disabled nil))
       ;; enable some disabled commands
@@ -185,6 +185,12 @@
          ("<C-M-right>" . windmove-right)
          ("<C-M-up>" . windmove-up)
          ("<C-M-down>" . windmove-down)))
+
+(use-package popwin
+  :config (popwin-mode 1)
+  (setq popwin:popup-window-position 'right
+        popwin:popup-window-width 81)
+  (push '("*Buffer List*" :dedicated t) popwin:special-display-config))
 
 (use-package projectile :demand
   :bind ("H-m p" . projectile-mode)
@@ -372,6 +378,7 @@
                   'ielm-mode-hook
                   'clojure-mode-hook
                   'cider-repl-mode-hook
+                  'idris-mode-hook
                   'rust-mode-hook))
 
 (use-package eval-sexp-fu
@@ -400,7 +407,6 @@
         nrepl-hide-special-buffers t
         cider-font-lock-dynamically t
         cider-prefer-local-resources t
-        cider-repl-use-pretty-printing t
         cider-allow-jack-in-without-project t
         cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]"
         cider-repl-history-file "~/.emacs.d/cider-history")
@@ -422,6 +428,15 @@
   :defines prolog-mode-map
   :init (with-eval-after-load 'prolog
           (bind-key "<C-return>" 'ediprolog-dwim prolog-mode-map)))
+
+(use-package haskell-mode :defer)
+
+(use-package idris-mode
+  :init (add-hook 'idris-mode-hook (lambda () (idris-simple-indent-mode 0)))
+  :bind (:map idris-mode-map
+              ("<C-return>" . prop-menu-by-completing-read)
+              ("<C-M-return>" . idris-load-file))
+  :config (push 'idris-compiler-notes-mode popwin:special-display-config))
 
 (use-package ess
   :commands R
@@ -496,8 +511,7 @@
                    #'LaTeX-math-mode
                    #'latex-preview-pane-enable
                    #'turn-on-cdlatex
-                   #'turn-on-reftex
-                   (lambda () (setq TeX-command-default "xelatexmk")))
+                   #'turn-on-reftex)
   :config
   (push '("xelatexmk"
           "latexmk -pdf -pdflatex=\"xelatex -interaction=nonstopmode -shell-escape -synctex=1\" %s"
@@ -508,7 +522,8 @@
         TeX-view-program-list)
   (push '(output-pdf "skim") TeX-view-program-selection)
   (server-start)
-  (setq TeX-auto-save t
+  (setq TeX-command "xelatexmk"
+        TeX-auto-save t
         TeX-parse-self t)
   (use-package latex-preview-pane)
   (use-package cdlatex)

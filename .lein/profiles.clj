@@ -3,8 +3,9 @@
                   [lein-codox "0.10.0"]
                   [lein-kibit "0.1.2" :exclusions [org.clojure/clojure]]
                   [jonase/eastwood "0.2.4"]]}
- :repl {:dependencies [[com.cemerick/pomegranate "0.3.1"]
-                       [ysmiraak "0.1.0-SNAPSHOT"]]
+ :repl {:dependencies [^:displace [org.clojure/clojure "1.9.0-alpha17"]
+                       [com.cemerick/pomegranate "0.3.1"]
+                       [ysmiraak "2017.06.22"]]
         :repl-options {:init-ns ysmiraak}
         :global-vars {*warn-on-reflection* true
                       *print-length* 11}

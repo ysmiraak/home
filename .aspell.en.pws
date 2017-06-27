@@ -1,4 +1,4 @@
-personal_ws-1.1 en 269 
+personal_ws-1.1 en 270 
 millennia
 textwidth
 quantificational
@@ -21,8 +21,8 @@ Parameterize
 interpretable
 substitutability
 polymorphism
-tex
 UAS
+tex
 Dragonguard
 rjags
 edu
@@ -70,6 +70,7 @@ stopword
 paddings
 backend
 parameterization
+subtyping
 LISt
 TensorFlow
 tsv
@@ -217,8 +218,8 @@ sublist
 emergentism
 modifiability
 regexpr
-relu
 ReLU
+relu
 timelines
 expressives
 mephala
