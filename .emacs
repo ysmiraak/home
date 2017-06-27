@@ -29,19 +29,18 @@
 ;;; Code:
 
 (custom-set-variables
+ '(custom-file "~/.emacs.d/custom.el")
  ;; The Scarab: City-Face
  ;; '(default-frame-alist '((width . 150) (height . 45)))
  ;; '(split-height-threshold 60)
  ;; '(split-width-threshold 90)
+ '(same-window-buffer-names '("*Buffer List*"))
  '(uniquify-buffer-name-style 'forward)
  '(inhibit-startup-screen t)
  '(tool-bar-mode nil)
  '(scroll-bar-mode nil)
  '(column-number-mode t)
  '(ring-bell-function 'ignore t)
- ;; clipboard
- '(x-select-enable-clipboard t)
- '(save-interprogram-paste-before-kill t)
  ;; cursor
  '(blink-cursor-mode nil)
  '(cursor-type '(bar . 3))
@@ -51,16 +50,19 @@
  ;; see also tabify, untabify, and tab-width
  '(indent-tabs-mode nil)
  '(electric-indent-mode nil)
- ;; file
+ ;; clipboard
+ '(x-select-enable-clipboard t)
+ '(save-interprogram-paste-before-kill t)
+ ;; backup
  '(create-lockfiles nil)
  '(auto-save-default nil)
  '(version-control t)
  '(delete-old-versions t)
  '(backup-directory-alist `(("." . ,temporary-file-directory)))
+ ;; package
  '(package-enable-at-startup nil)
  '(package-selected-packages
-   '(aggressive-indent avy benchmark-init cargo cdlatex centered-cursor-mode cider-eval-sexp-fu clj-refactor company-auctex company-flx company-math company-quickhelp csv-mode ediprolog elpy ess exec-path-from-shell expand-region flx-ido flycheck-pos-tip flycheck-rust geiser haskell-mode ido-complete-space-or-hyphen ido-ubiquitous ido-vertical-mode ido-yes-or-no idris-mode js2-mode kibit-helper latex-preview-pane magit markdown-mode+ powerline projectile quack racer rainbow-delimiters rainbow-mode region-bindings-mode smartparens smex undo-tree use-package which-key zenburn-theme))
- '(custom-file "~/.emacs.d/custom.el"))
+   '(aggressive-indent avy benchmark-init cargo cdlatex centered-cursor-mode cider-eval-sexp-fu clj-refactor company-auctex company-flx company-math company-quickhelp csv-mode ediprolog elpy ess exec-path-from-shell expand-region flx-ido flycheck-pos-tip flycheck-rust geiser haskell-mode ido-complete-space-or-hyphen ido-ubiquitous ido-vertical-mode ido-yes-or-no idris-mode js2-mode kibit-helper latex-preview-pane magit markdown-mode+ powerline projectile quack racer rainbow-delimiters rainbow-mode region-bindings-mode smartparens smex undo-tree use-package which-key zenburn-theme)))
 
 (mapc (lambda (cmd) (put cmd 'disabled nil))
       ;; enable some disabled commands
