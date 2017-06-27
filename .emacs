@@ -59,7 +59,7 @@
  '(backup-directory-alist `(("." . ,temporary-file-directory)))
  '(package-enable-at-startup nil)
  '(package-selected-packages
-   '(aggressive-indent avy benchmark-init cargo cdlatex centered-cursor-mode cider-eval-sexp-fu clj-refactor company-auctex company-flx company-math company-quickhelp csv-mode ediprolog elpy ess exec-path-from-shell expand-region flx-ido flycheck-pos-tip flycheck-rust geiser haskell-mode ido-complete-space-or-hyphen ido-ubiquitous ido-vertical-mode ido-yes-or-no idris-mode js2-mode kibit-helper latex-preview-pane magit markdown-mode+ popwin powerline projectile quack racer rainbow-delimiters rainbow-mode region-bindings-mode smartparens smex undo-tree use-package which-key zenburn-theme))
+   '(aggressive-indent avy benchmark-init cargo cdlatex centered-cursor-mode cider-eval-sexp-fu clj-refactor company-auctex company-flx company-math company-quickhelp csv-mode ediprolog elpy ess exec-path-from-shell expand-region flx-ido flycheck-pos-tip flycheck-rust geiser haskell-mode ido-complete-space-or-hyphen ido-ubiquitous ido-vertical-mode ido-yes-or-no idris-mode js2-mode kibit-helper latex-preview-pane magit markdown-mode+ powerline projectile quack racer rainbow-delimiters rainbow-mode region-bindings-mode smartparens smex undo-tree use-package which-key zenburn-theme))
  '(custom-file "~/.emacs.d/custom.el"))
 
 (mapc (lambda (cmd) (put cmd 'disabled nil))
@@ -185,13 +185,6 @@
          ("<C-M-right>" . windmove-right)
          ("<C-M-up>" . windmove-up)
          ("<C-M-down>" . windmove-down)))
-
-(use-package popwin
-  :config (popwin-mode 1)
-  (setq popwin:popup-window-position 'right
-        popwin:popup-window-width 81)
-  (push '("\\*.*[Dd]oc.*\\*" :regexp t) popwin:special-display-config)
-  (push '("*Buffer List*" :dedicated t) popwin:special-display-config))
 
 (use-package projectile :demand
   :bind ("H-m p" . projectile-mode)
@@ -433,12 +426,11 @@
 (use-package haskell-mode :defer)
 
 (use-package idris-mode
-  :init (add-hook 'idris-mode-hook (lambda () (idris-simple-indent-mode 0)))
+  :init (add-hook 'idris-mode-hook (lambda () (aggressive-indent-mode 0)))
   :bind (:map idris-mode-map
               ("<C-return>" . prop-menu-by-completing-read)
               ("<C-M-return>" . idris-load-file)
-              ("C-c C-q" . idris-quit))
-  :config (push 'idris-compiler-notes-mode popwin:special-display-config))
+              ("C-c C-q" . idris-quit)))
 
 (use-package ess
   :commands R
@@ -513,7 +505,8 @@
                    #'LaTeX-math-mode
                    #'latex-preview-pane-enable
                    #'turn-on-cdlatex
-                   #'turn-on-reftex)
+                   #'turn-on-reftex
+                   (lambda () (setq TeX-command-default "xelatexmk")))
   :config
   (push '("xelatexmk"
           "latexmk -pdf -pdflatex=\"xelatex -interaction=nonstopmode -shell-escape -synctex=1\" %s"
@@ -524,8 +517,7 @@
         TeX-view-program-list)
   (push '(output-pdf "skim") TeX-view-program-selection)
   (server-start)
-  (setq TeX-command "xelatexmk"
-        TeX-auto-save t
+  (setq TeX-auto-save t
         TeX-parse-self t)
   (use-package latex-preview-pane)
   (use-package cdlatex)
