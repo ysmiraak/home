@@ -430,7 +430,9 @@
 (use-package idris-mode
   :init (add-hook 'idris-mode-hook (lambda () (aggressive-indent-mode 0)))
   :bind (:map idris-mode-map
-              ("<C-return>" . prop-menu-by-completing-read)
+              ("<C-return>" . idris-case-dwim)
+              ("<M-return>" . idris-add-clause)
+              ("<S-return>" . idris-proof-search)
               ("<C-M-return>" . idris-load-file)
               ("C-c C-q" . idris-quit)))
 

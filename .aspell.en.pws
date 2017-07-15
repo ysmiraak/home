@@ -1,4 +1,4 @@
-personal_ws-1.1 en 270 
+personal_ws-1.1 en 272 
 millennia
 textwidth
 quantificational
@@ -69,8 +69,8 @@ compositional
 stopword
 paddings
 backend
-parameterization
 subtyping
+parameterization
 LISt
 TensorFlow
 tsv
@@ -163,6 +163,7 @@ overfit
 implicature
 restitutive
 vivec's
+destructured
 i'm
 ponens
 adamax
@@ -210,6 +211,7 @@ Nivre
 acl
 iter
 daedra
+destructuring
 ur
 Clojure
 NHST
