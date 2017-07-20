@@ -1,9 +1,9 @@
 ;;; .emacs --- ysmiraak's emacs init file.
 
-;; Copyright (C) 2015-2016 ysmiraak
+;; Copyright (C) 2015-2017 ysmiraak
 
 ;; Author: ysmiraak <ysmiraak@gmail.com>
-;; URL: https://github.com/Ysmiraak/home-backup/blob/master/.emacs
+;; URL: https://github.com/ysmiraak/home-backup/blob/master/.emacs
 
 ;; This file is not part of GNU Emacs.
 
@@ -30,13 +30,11 @@
 
 (custom-set-variables
  '(custom-file "~/.emacs.d/custom.el")
- ;; The Scarab: City-Face
- ;; '(default-frame-alist '((width . 150) (height . 45)))
- ;; '(split-height-threshold 60)
- ;; '(split-width-threshold 90)
  '(same-window-buffer-names '("*Buffer List*"))
  '(uniquify-buffer-name-style 'forward)
  '(inhibit-startup-screen t)
+ '(initial-scratch-message nil)
+ '(truncate-lines t)
  '(tool-bar-mode nil)
  '(scroll-bar-mode nil)
  '(column-number-mode t)
@@ -71,18 +69,11 @@
         narrow-to-region
         dired-find-alternate-file))
 
-;; (add-hook 'after-init-hook
-;;           (lambda ()
-;;             (setq initial-scratch-message
-;;                   (concat initial-scratch-message
-;;                           (format ";; Emacs initialized in %.2f seconds.\n\n"
-;;                                   (float-time (time-subtract after-init-time before-init-time)))))))
-
 (defun hook-all (f &rest hs) "Add F for all HS." (mapc (lambda (h) (add-hook h f)) hs))
 (defun add-hooks (h &rest fs) "Add to H all FS." (mapc (lambda (f) (add-hook h f)) fs))
 
 (define-key input-decode-map
-  ;; Free C-m from RET to be used as my personal C-c, for opening
+  ;; free C-m from RET to be used as my personal C-c, for opening
   (if window-system (kbd "C-m") (kbd "C-M-z"))
   ;; black books.
   (kbd "H-m"))
@@ -154,7 +145,7 @@
   (flx-ido-mode 1)
   (use-package ido-yes-or-no)
   (ido-yes-or-no-mode 1)
-  (use-package ido-ubiquitous)
+  (use-package ido-completing-read+)
   (ido-ubiquitous-mode 1)
   (use-package ido-vertical-mode)
   (ido-vertical-mode 1)
@@ -385,9 +376,7 @@
         eval-sexp-fu-flash-duration eval-sexp-fu-flash-error-duration))
 
 (use-package clojure-mode
-  :init (add-hooks 'clojure-mode-hook
-                   #'clj-refactor-mode
-                   (lambda () (toggle-truncate-lines 1)))
+  :init (add-hook 'clojure-mode-hook #'clj-refactor-mode)
   :bind (("H-m s" . cider-scratch)
          :map cider-mode-map
          ("<C-return>" . cider-eval-last-sexp)
@@ -472,24 +461,9 @@
 
 (use-package csv-mode :defer)
 
-(use-package org
-  :bind ("H-m a" . org-agenda)
-  :init (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
-  (setq org-directory "~/sotha_sil/emacs/org"
-        org-agenda-files "~/sotha_sil/emacs/org/agenda-files"
-        org-archive-location "~/sotha_sil/emacs/org/archive.org::"
-        org-log-done 'time)
-  :defines org-latex-listings
-  :config
-  (setq org-latex-create-formula-image-program 'imagemagick
-        org-confirm-babel-evaluate nil
-        org-latex-listings 'minted
-        org-src-fontify-natively t))
-
 (use-package markdown-mode
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.[Rr]md\\'" . markdown-mode))
-  :init (add-hook 'markdown-mode-hook #'visual-line-mode)
   :config (setq markdown-enable-math t)
   (use-package markdown-mode+)
   (defun rmarkdown-render-current-file-then-display (&optional EXTENSION)
@@ -505,17 +479,16 @@
 (use-package tex :defer
   :ensure auctex
   :init (add-hooks 'LaTeX-mode-hook
-                   #'visual-line-mode
                    #'LaTeX-math-mode
                    #'latex-preview-pane-enable
                    #'turn-on-cdlatex
-                   #'turn-on-reftex
-                   (lambda () (setq TeX-command-default "xelatexmk")))
-  :config
+                   #'turn-on-reftex)
+  :config (setq-default TeX-engine 'xetex)
   (push '("xelatexmk"
           "latexmk -pdf -pdflatex=\"xelatex -interaction=nonstopmode -shell-escape -synctex=1\" %s"
           TeX-run-TeX nil t :help "run xelatexmk on file")
         TeX-command-list)
+  (add-hook 'TeX-mode-hook (lambda () (setq TeX-command-default "xelatexmk")))
   ;; Skim -> Preferences -> Sync; CMD + shift + click in the pdf file for jumping to source
   (push '("skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
         TeX-view-program-list)
@@ -525,11 +498,38 @@
         TeX-parse-self t)
   (use-package latex-preview-pane)
   (use-package cdlatex)
+  (unbind-key "(" cdlatex-mode-map)
+  (unbind-key "<" cdlatex-mode-map)
+  (unbind-key "[" cdlatex-mode-map)
+  (unbind-key "{" cdlatex-mode-map)
   (use-package reftex)
   (setq reftex-plug-into-AUCTeX t)
   (use-package company-auctex)
   (with-eval-after-load 'company
     (company-auctex-init)))
+
+(use-package org
+  :bind ("H-m a" . org-agenda)
+  :init (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+  (setq org-directory "~/sotha_sil/emacs/org"
+        org-agenda-files "~/sotha_sil/emacs/org/agenda-files"
+        org-archive-location "~/sotha_sil/emacs/org/archive.org::"
+        org-log-done 'time)
+  :defines org-latex-listings
+  :config
+  (setq org-latex-create-formula-image-program 'imagemagick
+        org-latex-listings 'minted
+        org-src-fontify-natively t
+        org-latex-default-packages-alist
+        '(("" "fontspec" t)
+          ("" "graphicx" t)
+          ("" "longtable" nil)
+          ("" "float" nil)
+          ("" "wrapfig" nil)
+          ("" "rotating" nil)
+          ("normalem" "ulem" t)
+          ("" "amsmath" t)
+          ("" "hyperref" nil))))
 
 (provide '.emacs)
 ;;; .emacs ends here

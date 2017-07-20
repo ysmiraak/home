@@ -1,13 +1,15 @@
-personal_ws-1.1 en 272 
+personal_ws-1.1 en 298 
 millennia
 textwidth
 quantificational
 hapax
 Sil
+vehk
 modus
 pygmentize
 QUD
 Sofroniev
+ttfamily
 dev
 treebank
 adjunctions
@@ -41,6 +43,7 @@ tokenization
 hyperparameter
 hortator's
 convolutional
+toc
 vec
 csv
 factive
@@ -56,6 +59,7 @@ Yehoshua
 dagoth
 Almalexia
 netch
+midrule
 alandro
 initializer
 formalisms
@@ -76,12 +80,14 @@ TensorFlow
 tsv
 Keras
 projective
+printbibliography
 EACL
 async
 alandro's
 Kruschke
 Atreides
 initializers
+smallskip
 Pavel
 acyclic
 azura
@@ -94,9 +100,11 @@ parsers
 hir
 quantiles
 implicatures
+enumii
 temporality
 pretrained
 sublists
+agglutinative
 adjunction
 Subcategorization
 feedbacks
@@ -118,6 +126,7 @@ intension
 kuan
 treebanks
 nerevarine
+biblatex
 conventionalism
 detokenized
 Tsaesci
@@ -144,9 +153,12 @@ AYEM
 ifelse
 i've
 c'mon
+bibtex
 preprocessed
+bottomrule
 compositionality
 de
+unnormalized
 disjunction
 html
 unmaintainable
@@ -155,11 +167,14 @@ Joakim
 https
 eval
 teleport
+includegraphics
+fusional
 dwemer
 Parsito
 isomorphism
 Zimmermann
 overfit
+regularizations
 implicature
 restitutive
 vivec's
@@ -174,6 +189,7 @@ Baayen
 http
 mit
 kuanyu
+graphicspath
 khajiit
 Wulfharth
 iteratives
@@ -187,7 +203,9 @@ functor's
 functor
 nordic
 NAACL
+textbf
 unigrams
+textsuperscript
 NLA
 datasets
 sharmat
@@ -202,10 +220,12 @@ LaTeX
 Reductionism
 Kurmanji
 th
+usepackage
 dumac
 LocalWords
 UI
 nerevar's
+vfill
 Steedman
 Nivre
 acl
@@ -222,15 +242,19 @@ modifiability
 regexpr
 ReLU
 relu
+enumi
 timelines
+textit
 expressives
 mephala
 ze
 repl
 substitutable
+toprule
 trigram
 sentential
 uesp
+num
 yu
 boethiah
 Sorbian
@@ -255,6 +279,7 @@ Goettingen
 bigrams
 lexicalize
 struct
+footnotesize
 LIBLINEAR
 lexicalized
 subtypes
@@ -270,4 +295,5 @@ sigmoid
 TODO
 Tübingen
 Advisor
+scriptsize
 sfs
