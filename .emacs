@@ -60,7 +60,7 @@
  ;; package
  '(package-enable-at-startup nil)
  '(package-selected-packages
-   '(aggressive-indent avy benchmark-init cargo cdlatex centered-cursor-mode cider-eval-sexp-fu clj-refactor company-auctex company-flx company-math company-quickhelp csv-mode ediprolog elpy ess exec-path-from-shell expand-region flx-ido flycheck-pos-tip flycheck-rust geiser haskell-mode ido-complete-space-or-hyphen ido-ubiquitous ido-vertical-mode ido-yes-or-no idris-mode js2-mode kibit-helper latex-preview-pane magit markdown-mode+ powerline projectile quack racer rainbow-delimiters rainbow-mode region-bindings-mode smartparens smex undo-tree use-package which-key zenburn-theme)))
+   '(ace-window aggressive-indent avy benchmark-init browse-kill-ring cargo cdlatex centered-cursor-mode cider-eval-sexp-fu clj-refactor company-auctex company-flx company-math company-quickhelp csv-mode ediprolog elpy ess exec-path-from-shell expand-region fix-word flx-ido flycheck-pos-tip flycheck-rust geiser hungry-delete haskell-mode ido-complete-space-or-hyphen ido-ubiquitous ido-vertical-mode ido-yes-or-no idris-mode js2-mode kibit-helper latex-preview-pane magit markdown-mode+ powerline projectile quack racer rainbow-delimiters rainbow-mode region-bindings-mode smartparens smex undo-tree use-package visual-regexp which-key whitespace-cleanup-mode zenburn-theme zzz-to-char)))
 
 (mapc (lambda (cmd) (put cmd 'disabled nil))
       ;; enable some disabled commands
@@ -150,7 +150,7 @@
   (use-package ido-vertical-mode)
   (ido-vertical-mode 1)
   (use-package ido-complete-space-or-hyphen)
-  (setq gc-cons-threshold 20000000
+  (setq gc-cons-threshold (round 2e7)
         ido-use-faces nil
         ido-enable-flex-matching t
         ido-max-work-directory-list 0
@@ -162,7 +162,7 @@
   :bind (("M-x" . smex)
          ("M-X" . smex-major-mode-commands)))
 
-(use-package which-key :demand :diminish ""
+(use-package which-key :diminish ""
   :config (which-key-mode 1))
 
 (use-package avy
@@ -172,6 +172,12 @@
          ("M-g g" . avy-goto-line)
          :map isearch-mode-map
          ("C-." . avy-isearch)))
+
+(use-package centered-cursor-mode :diminish (centered-cursor-mode . "")
+  :bind ("H-m l" . global-centered-cursor-mode))
+
+(use-package ace-window
+  :bind ("C-x o" . ace-window))
 
 (use-package windmove
   :bind (("<C-M-left>" . windmove-left)
@@ -187,7 +193,10 @@
 ;; editing ;;
 ;;;;;;;;;;;;;
 
-(use-package undo-tree :demand :diminish ""
+(use-package browse-kill-ring
+  :bind ("H-m y" . browse-kill-ring))
+
+(use-package undo-tree :diminish ""
   :config (global-undo-tree-mode 1))
 
 (use-package smartparens-config :demand :diminish (smartparens-mode . "")
@@ -272,6 +281,27 @@
 (use-package expand-region
   :bind (("S-SPC" . er/expand-region) ("H-m SPC" . er/expand-region)))
 
+(use-package hippie-exp
+  :bind (("<C-tab>" . hippie-expand)       ("H-m <C-tab>" . hippie-expand)
+         ("<M-tab>" . crazy-hippie-expand) ("H-m <M-tab>" . crazy-hippie-expand))
+  :config
+  (setq hippie-expand-try-functions-list
+        '(try-expand-dabbrev
+          try-expand-dabbrev-all-buffers
+          try-expand-dabbrev-from-kill
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol
+          try-expand-all-abbrevs))
+  (fset 'crazy-hippie-expand
+        (make-hippie-expand-function
+         '(try-complete-file-name-partially
+           try-complete-file-name
+           try-expand-list
+           try-expand-list-all-buffers
+           try-expand-line
+           try-expand-line-all-buffers
+           try-expand-whole-kill) t)))
+
 (use-package company :demand :diminish " K"
   :bind (("H-m RET" . global-company-mode)
          ("C-'" . company-complete) ("H-m '" . company-complete)
@@ -296,29 +326,22 @@
   :bind ("H-m i" . global-aggressive-indent-mode)
   :config (global-aggressive-indent-mode 1))
 
-(use-package centered-cursor-mode :diminish (centered-cursor-mode . "")
-  :bind ("H-m l" . global-centered-cursor-mode))
+(use-package hungry-delete :diminish ""
+  :config (global-hungry-delete-mode 1))
 
-(use-package hippie-exp
-  :bind (("<C-tab>" . hippie-expand)       ("H-m <C-tab>" . hippie-expand)
-         ("<M-tab>" . crazy-hippie-expand) ("H-m <M-tab>" . crazy-hippie-expand))
-  :config
-  (setq hippie-expand-try-functions-list
-        '(try-expand-dabbrev
-          try-expand-dabbrev-all-buffers
-          try-expand-dabbrev-from-kill
-          try-complete-lisp-symbol-partially
-          try-complete-lisp-symbol
-          try-expand-all-abbrevs))
-  (fset 'crazy-hippie-expand
-        (make-hippie-expand-function
-         '(try-complete-file-name-partially
-           try-complete-file-name
-           try-expand-list
-           try-expand-list-all-buffers
-           try-expand-line
-           try-expand-line-all-buffers
-           try-expand-whole-kill) t)))
+(use-package visual-regexp
+  :bind ("C-M-%" . vr/query-replace))
+
+(use-package fix-word
+  :bind (("M-u" . fix-word-upcase)
+         ("M-l" . fix-word-downcase)
+         ("M-c" . fix-word-capitalize)))
+
+(use-package zzz-to-char
+  :bind ("M-z" . zzz-to-char))
+
+(use-package whitespace-cleanup-mode
+  :config (global-whitespace-cleanup-mode))
 
 ;;;;;;;;;;;;;;;
 ;; languages ;;
