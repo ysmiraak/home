@@ -60,7 +60,7 @@
  ;; package
  '(package-enable-at-startup nil)
  '(package-selected-packages
-   '(ace-window aggressive-indent avy benchmark-init browse-kill-ring cargo cdlatex centered-cursor-mode cider-eval-sexp-fu clj-refactor company-auctex company-flx company-math company-quickhelp csv-mode ediprolog elpy ess exec-path-from-shell expand-region fix-word flx-ido flycheck-pos-tip flycheck-rust geiser hungry-delete haskell-mode ido-complete-space-or-hyphen ido-ubiquitous ido-vertical-mode ido-yes-or-no idris-mode js2-mode kibit-helper latex-preview-pane magit markdown-mode+ powerline projectile quack racer rainbow-delimiters rainbow-mode region-bindings-mode smartparens smex undo-tree use-package visual-regexp which-key whitespace-cleanup-mode zenburn-theme zzz-to-char)))
+   '(ace-window aggressive-indent avy benchmark-init browse-kill-ring cargo cdlatex centered-cursor-mode cider-eval-sexp-fu clj-refactor company-auctex company-math company-quickhelp counsel csv-mode ediprolog elpy ess exec-path-from-shell expand-region fix-word flx flycheck-pos-tip flycheck-rust geiser hungry-delete haskell-mode idris-mode js2-mode kibit-helper latex-preview-pane magit markdown-mode+ powerline projectile quack racer rainbow-delimiters rainbow-mode region-bindings-mode smartparens undo-tree use-package visual-regexp which-key whitespace-cleanup-mode zenburn-theme zzz-to-char)))
 
 (mapc (lambda (cmd) (put cmd 'disabled nil))
       ;; enable some disabled commands
@@ -68,6 +68,8 @@
         downcase-region
         narrow-to-region
         dired-find-alternate-file))
+
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 (defun hook-all (f &rest hs) "Add F for all HS." (mapc (lambda (h) (add-hook h f)) hs))
 (defun add-hooks (h &rest fs) "Add to H all FS." (mapc (lambda (f) (add-hook h f)) fs))
@@ -78,9 +80,9 @@
   ;; black books.
   (kbd "H-m"))
 
-;;;;;;;;;;;;;;
-;; packages ;;
-;;;;;;;;;;;;;;
+;;;;;;;;;;
+;; misc ;;
+;;;;;;;;;;
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
@@ -96,10 +98,6 @@
 
 (use-package benchmark-init :disabled
   :config (benchmark-init/activate))
-
-;;;;;;;;;;
-;; misc ;;
-;;;;;;;;;;
 
 (use-package exec-path-from-shell :if (equal 'ns window-system) :demand
   :bind (("<C-s-f>" . toggle-frame-fullscreen)
@@ -133,34 +131,20 @@
 (use-package magit
   :bind ("H-m g" . magit-status))
 
-;;;;;;;;;;;;;;;;
-;; navigation ;;
-;;;;;;;;;;;;;;;;
+;;;;;;;;;
+;; nav ;;
+;;;;;;;;;
 
-(use-package ido :demand
-  :config
-  (ido-mode 1)
-  (ido-everywhere 1)
-  (use-package flx-ido)
-  (flx-ido-mode 1)
-  (use-package ido-yes-or-no)
-  (ido-yes-or-no-mode 1)
-  (use-package ido-completing-read+)
-  (ido-ubiquitous-mode 1)
-  (use-package ido-vertical-mode)
-  (ido-vertical-mode 1)
-  (use-package ido-complete-space-or-hyphen)
-  (setq gc-cons-threshold (round 2e7)
-        ido-use-faces nil
-        ido-enable-flex-matching t
-        ido-max-work-directory-list 0
-        ido-enable-last-directory-history nil
-        ido-vertical-show-count t
-        ido-vertical-define-keys 'C-n-C-p-up-down-left-right))
-
-(use-package smex
-  :bind (("M-x" . smex)
-         ("M-X" . smex-major-mode-commands)))
+(use-package counsel :demand :diminish (ivy-mode . "")
+  :bind (("C-s" . swiper) ("M-x" . counsel-M-x))
+  :config (ivy-mode 1)
+  (use-package flx)
+  (setq ivy-re-builders-alist
+        '((read-file-name-internal . ivy--regex-ignore-order)
+          (swiper . ivy--regex-plus)
+          (t . ivy--regex-fuzzy))
+        ivy-height 13
+        ivy-wrap t))
 
 (use-package which-key :diminish ""
   :config (which-key-mode 1))
@@ -189,9 +173,9 @@
   :bind ("H-m p" . projectile-mode)
   :config (projectile-mode 1))
 
-;;;;;;;;;;;;;
-;; editing ;;
-;;;;;;;;;;;;;
+;;;;;;;;;;
+;; edit ;;
+;;;;;;;;;;
 
 (use-package browse-kill-ring
   :bind ("H-m y" . browse-kill-ring))
@@ -310,8 +294,6 @@
   :config (global-company-mode 1)
   (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
-  (use-package company-flx)
-  (company-flx-mode 1)
   (use-package company-math)
   (push 'company-math-symbols-unicode company-backends)
   (use-package company-quickhelp)
@@ -340,7 +322,7 @@
 (use-package zzz-to-char
   :bind ("M-z" . zzz-to-char))
 
-(use-package whitespace-cleanup-mode
+(use-package whitespace-cleanup-mode :diminish (whitespace-cleanup-mode . "")
   :config (global-whitespace-cleanup-mode))
 
 ;;;;;;;;;;;;;;;
