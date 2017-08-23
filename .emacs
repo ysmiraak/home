@@ -48,7 +48,6 @@
  ;; always uses spaces for tabs (for real tabs, use C-q)
  ;; see also tabify, untabify, and tab-width
  '(indent-tabs-mode nil)
- '(electric-indent-mode nil)
  ;; clipboard
  '(x-select-enable-clipboard t)
  '(save-interprogram-paste-before-kill t)
@@ -67,15 +66,6 @@
         dired-find-alternate-file))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-
-(defun hook-all (f &rest hs) "Add F for all HS." (mapc (lambda (h) (add-hook h f)) hs))
-(defun add-hooks (h &rest fs) "Add to H all FS." (mapc (lambda (f) (add-hook h f)) fs))
-
-(define-key input-decode-map
-  ;; free C-m from RET to be used as my personal C-c, for opening
-  (if window-system (kbd "C-m") (kbd "C-M-z"))
-  ;; black books.
-  (kbd "H-m"))
 
 ;;;;;;;;;;
 ;; misc ;;
@@ -126,16 +116,23 @@
   :commands rainbow-mode)
 
 (use-package magit :defer
-  :bind ("H-m g" . magit-status))
+  :bind ("M-G" . magit-status))
 
 ;;;;;;;;;
 ;; nav ;;
 ;;;;;;;;;
 
+(bind-key "C-M-_" 'toggle-truncate-lines)
+(bind-key "C-M--" 'toggle-truncate-lines)
+
+(use-package linum :defer
+  :bind ("M-#" . linum-mode))
+
 (use-package counsel :demand :diminish (ivy-mode . "")
-  :bind (("C-s" . swiper) ("M-x" . counsel-M-x))
+  :bind (("M-s" . swiper) ("M-x" . counsel-M-x))
   :config (ivy-mode 1)
   (use-package flx)
+  (use-package smex)
   (setq ivy-re-builders-alist
         '((read-file-name-internal . ivy--regex-ignore-order)
           (swiper . ivy--regex-plus)
@@ -146,84 +143,93 @@
   :config (which-key-mode 1))
 
 (use-package avy :defer
-  :bind (("M-'"  . avy-goto-char-2) ("C-'"  . avy-goto-char-2)
-         ("M-\"" . avy-pop-mark)    ("C-\"" . avy-pop-mark)
-         ("M-g g" . avy-goto-line)))
+  :bind (("M-'" . avy-goto-char-2)
+         ("M-\"" . avy-pop-mark)
+         ("M-g g" . avy-goto-line)
+         ("M-g M-g" . avy-goto-line)))
 
 (use-package centered-cursor-mode :defer :diminish (centered-cursor-mode . "")
-  :bind ("H-m l" . global-centered-cursor-mode))
+  :bind ("M-L" . global-centered-cursor-mode))
 
 (use-package ace-window :defer
   :bind ("C-x o" . ace-window))
 
 (use-package windmove :defer
-  :bind (("<C-M-left>"  . windmove-left)
-         ("<C-M-right>" . windmove-right)
-         ("<C-M-up>"    . windmove-up)
-         ("<C-M-down>"  . windmove-down)))
+  :bind (("M-@ b" . windmove-left)
+         ("M-@ f" . windmove-right)
+         ("M-@ n" . windmove-down)
+         ("M-@ p" . windmove-up)))
 
 (use-package projectile :demand
-  :config (projectile-mode 1))
+  :config (projectile-mode 1)
+  (setq projectile-switch-project-action 'projectile-dired
+        projectile-completion-system 'ivy))
 
 ;;;;;;;;;;
 ;; edit ;;
 ;;;;;;;;;;
 
 (use-package browse-kill-ring :defer
-  :bind ("H-m y" . browse-kill-ring))
+  :bind ("C-M-y" . browse-kill-ring))
 
 (use-package undo-tree :demand :diminish ""
+  :bind ("C--" . undo-tree-undo)
   :config (global-undo-tree-mode 1))
 
-(use-package smartparens-config :demand :diminish (smartparens-mode . "")
-  :ensure smartparens
-  :config (smartparens-global-mode 1)
-  (bind-keys :map smartparens-mode-map
-             ;; paredit bindings
-             ("C-)" . sp-forward-slurp-sexp)
-             ("C-}" . sp-dedent-adjust-sexp)
-             ("C-(" . sp-backward-slurp-sexp)
-             ("C-{" . sp-backward-barf-sexp)
-             ("M-s" . sp-splice-sexp)
-             ("M-S" . sp-split-sexp)
-             ("M-J" . sp-join-sexp)
-             ("M-?" . sp-convolute-sexp)
-             ;; more magic added by smartparens
-             ("M-I" . sp-indent-defun)
-             ("M-(" . sp-indent-adjust-sexp) ; mimic C-(
-             ("M-)" . sp-add-to-next-sexp)   ; mimic C-)
-             ("M-/" . sp-rewrap-sexp)
-             ("C-<" . sp-extract-before-sexp)
-             ("C->" . sp-extract-after-sexp)
-             ;; navigation via parentheses
-             ("M-n" . sp-down-sexp)
-             ("M-p" . sp-backward-down-sexp)
-             ("M-[" . sp-backward-up-sexp) ; mimic M-< and M-{
-             ("M-]" . sp-up-sexp)          ; also replace M-)
-             ("C-S-r" . sp-select-previous-thing-exchange)
-             ("C-S-s" . sp-select-next-thing)
-             ;; emacs stuff ; overrides
-             ("C-M-f" . sp-forward-sexp)      ; forward-sexp
-             ("C-M-b" . sp-backward-sexp)     ; backward-sexp
-             ("C-M-a" . sp-beginning-of-sexp) ; beginning-of-defun
-             ("C-M-e" . sp-end-of-sexp)       ; end-of-defun
-             ("C-M-n" . sp-next-sexp)         ; forward-list
-             ("C-M-p" . sp-previous-sexp)     ; backward-list
-             ("C-j" . sp-newline)  ; electric-newline-and-maybe-indent
-             ("C-M-t"   . sp-transpose-sexp)        ; transpose-sexp
-             ("C-x C-t" . sp-transpose-hybrid-sexp) ; transpose-lines
-             ("C-M-k"           . sp-kill-sexp)     ; kill-sexp
-             ("<C-M-backspace>" . sp-backward-kill-sexp) ; backward-kill-sexp
-             ("<C-backspace>" . sp-splice-sexp-killing-backward)
-             ("C-M-d" . sp-splice-sexp-killing-forward) ; down-list
-             ("C-M-u" . sp-unwrap-sexp)          ; backward-up-list
-             ;; strict mode stuff
-             ("C-d"   . sp-delete-char)          ; delete-char
-             ("DEL"   . sp-backward-delete-char) ; backward-delete-char
-             ("M-DEL" . sp-backward-kill-word)   ; backward-kill-word
-             ("M-d"   . sp-kill-word)            ; kill-word
-             ("C-k"   . sp-kill-hybrid-sexp)     ; kill-line
-             )
+(use-package hippie-exp
+  :bind ("M-/" . hippie-expand)
+  :config
+  (setq hippie-expand-try-functions-list
+        '(try-complete-file-name-partially
+          try-complete-file-name
+          try-expand-all-abbrevs
+          try-expand-dabbrev
+          try-expand-dabbrev-visible
+          try-expand-dabbrev-all-buffers
+          try-expand-dabbrev-from-kill
+          try-expand-whole-kill
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol)))
+
+(use-package smartparens :demand :diminish ""
+  :bind (:map smartparens-mode-map
+              ;; nav
+              ("M-n" . sp-next-sexp)
+              ("M-p" . sp-previous-sexp)
+              ("C-M-f" . sp-forward-sexp)
+              ("C-M-b" . sp-backward-sexp)
+              ("C-M-a" . sp-beginning-of-sexp)
+              ("C-M-e" . sp-end-of-sexp)
+              ("C-M-n" . sp-select-next-thing)
+              ("C-M-p" . sp-select-previous-thing-exchange)
+              ("C-M-d" . sp-down-sexp)
+              ("C-M-u" . sp-backward-up-sexp)
+              ;; edit
+              ("C-M-o" . sp-splice-sexp)
+              ("C-M-j" . sp-split-sexp)
+              ("C-M-h" . sp-join-sexp)
+              ("C-M-q" . sp-rewrap-sexp)
+              ("C-M-w" . sp-copy-sexp)
+              ("M-k" . sp-kill-sexp)
+              ;; transform
+              ("M-[" . sp-absorb-sexp)
+              ("M-]" . sp-forward-slurp-sexp)
+              ("M-{" . sp-extract-before-sexp)
+              ("M-}" . sp-forward-barf-sexp)
+              ("M-(" . sp-splice-sexp-killing-backward)
+              ("M-)" . sp-splice-sexp-killing-forward)
+              ("M-*" . sp-raise-sexp)
+              ("M-+" . sp-convolute-sexp)
+              ("C-M-t"   . sp-transpose-sexp)
+              ("C-x C-t" . sp-transpose-hybrid-sexp)
+              ;; strict
+              ("C-d"   . sp-delete-char)
+              ("DEL"   . sp-backward-delete-char)
+              ("M-d"   . sp-kill-word)
+              ("M-DEL" . sp-backward-kill-word)
+              ("C-k"   . sp-kill-hybrid-sexp))
+  :config (use-package smartparens-config)
+  (smartparens-global-mode 1)
   (show-smartparens-global-mode t)
   (set-face-attribute 'sp-show-pair-match-face nil ;; ELEGENT WEAPONS
                       :background "#181818"        ;; Star Wound
@@ -235,8 +241,7 @@
                       :weight 'black))
 
 (use-package multiple-cursors :defer
-  :bind (("H-m m" . mc/mark-more-like-this-extended)
-         ("H-m h" . mc-hide-unmatched-lines-mode)))
+  :bind ("M-M" . mc/mark-more-like-this-extended))
 
 (use-package region-bindings-mode :demand
   :bind (:map region-bindings-mode-map
@@ -247,27 +252,31 @@
               ("k" . kill-region)
               ("l" . downcase-region)
               ("m" . mc/mark-all-in-region)
+              ("M" . vr/mc-mark)
               ("n" . mc/edit-lines)
               ("r" . replace-string)
+              ("R" . vr/replace)
               ("u" . upcase-region)
               ("w" . kill-ring-save)
-              (";" . comment-or-uncomment-region))
+              (";" . comment-or-uncomment-region)
+              ("$" . flyspell-region))
   :config (region-bindings-mode-enable))
 
 (use-package expand-region :defer
-  :bind (("M-`" . er/expand-region) ("C-`" . er/expand-region)))
+  :bind (("M-h" . er/expand-region)))
 
 (use-package drag-stuff :defer
-  :bind (("<M-left>"  . drag-stuff-left)
+  :bind (("<M-left>" . drag-stuff-left)
          ("<M-right>" . drag-stuff-right)
-         ("<M-up>"    . drag-stuff-up)
-         ("<M-down>"  . drag-stuff-down)))
+         ("<M-down>" . drag-stuff-down)
+         ("<M-up>" . drag-stuff-up)))
 
 (use-package aggressive-indent :demand :diminish " i"
-  :bind ("H-m i" . global-aggressive-indent-mode)
+  :bind ("M-I" . global-aggressive-indent-mode)
   :config (global-aggressive-indent-mode 1))
 
-(use-package hungry-delete :demand :diminish ""
+(use-package hungry-delete :demand :diminish " d"
+  :bind ("M-D" . global-hungry-delete-mode)
   :config (global-hungry-delete-mode 1))
 
 (use-package visual-regexp :defer
@@ -288,31 +297,30 @@
 ;; lang ;;
 ;;;;;;;;;;
 
-(use-package company :demand :diminish " K"
-  :bind (("M-~" . company-complete) ("C-~" . company-complete)
+(defun hook-all (f &rest hs) "Add F for all HS." (mapc (lambda (h) (add-hook h f)) hs))
+(defun add-hooks (h &rest fs) "Add to H all FS." (mapc (lambda (f) (add-hook h f)) fs))
+
+(use-package company :demand :diminish ""
+  :bind (("C-M-i" . company-complete)
          :map company-active-map
-         ("C-n" . company-select-next)
-         ("C-p" . company-select-previous)
          ("M-h" . company-quickhelp-manual-begin))
   :config (global-company-mode 1)
   (unbind-key "<tab>" company-active-map)
   (unbind-key "TAB" company-active-map)
-  (unbind-key "M-n" company-active-map)
-  (unbind-key "M-p" company-active-map)
-  (use-package company-math)
-  (push 'company-math-symbols-unicode company-backends)
   (use-package company-quickhelp)
   (company-quickhelp-mode 1)
   (setq company-idle-delay 0.2
         company-minimum-prefix-length 2
         company-tooltip-align-annotations t
+        company-selection-wrap-around t
         company-quickhelp-delay nil))
 
-(use-package yasnippet :demand :diminish (yas-minor-mode . " Y")
+(use-package yasnippet :demand :diminish (yas-minor-mode . "")
   :config (yas-global-mode 1))
 
 (use-package flyspell :defer :diminish " $"
-  :bind ("H-m $" . flyspell-buffer)
+  :bind (:map flyspell-mode-map
+              ("C-;" . flyspell-correct-word-before-point))
   :init (hook-all #'flyspell-mode
                   'org-mode-hook
                   'LaTeX-mode-hook
@@ -333,12 +341,11 @@
   (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
 (use-package eldoc :demand :diminish ""
-  :bind (:map lisp-mode-shared-map
-              ("M-," . eval-last-sexp)       ("C-," . eval-last-sexp)
-              ("M-." . eval-defun)           ("C-." . eval-defun)
-              ("M-=" . eval-region)          ("C-=" . eval-region)
-              ("M-+" . eval-print-last-sexp) ("C-+" . eval-print-last-sexp)
-              ("C-M-=" . eval-buffer))
+  :bind (("C-j" . newline-and-indent)
+         :map lisp-mode-shared-map
+         ("M-RET" . eval-last-sexp)
+         ("C-M-x" . eval-defun)
+         ("C-M-z" . eval-region))
   :init (hook-all #'eldoc-mode
                   'emacs-lisp-mode-hook
                   'lisp-interaction-mode-hook
@@ -357,17 +364,15 @@
 
 (use-package clojure-mode :defer
   :init (add-hook 'clojure-mode-hook #'clj-refactor-mode)
-  :bind (("H-m s" . cider-scratch)
+  :bind (("M-S" . cider-scratch)
          :map cider-mode-map
-         ("M-," . cider-eval-last-sexp)       ("C-," . cider-eval-last-sexp)
-         ("M-." . cider-eval-defun-at-point)  ("C-." . cider-eval-defun-at-point)
-         ("M-=" . cider-eval-region)          ("C-=" . cider-eval-region)
-         ("M-+" . cider-eval-print-last-sexp) ("C-+" . cider-eval-print-last-sexp)
-         ("C-M-=" . cider-eval-buffer))
+         ("M-RET" . cider-eval-last-sexp)
+         ("C-M-x" . cider-eval-defun-at-point)
+         ("C-M-z" . cider-eval-region))
   :config (use-package cider)
   (use-package cider-eval-sexp-fu)
   (use-package clj-refactor)
-  (cljr-add-keybindings-with-prefix "H-m r")
+  (cljr-add-keybindings-with-prefix "M-R")
   (setq cljr-suppress-middleware-warnings t
         nrepl-hide-special-buffers t
         cider-font-lock-dynamically t
@@ -380,10 +385,9 @@
 (use-package geiser :defer
   :defines geiser-active-implementations
   :bind (:map scheme-mode-map
-              ("M-," . geiser-eval-last-sexp)  ("C-," . geiser-eval-last-sexp)
-              ("M-." . geiser-eval-definition) ("C-." . geiser-eval-definition)
-              ("M-=" . geiser-eval-region)     ("C-=" . geiser-eval-region)
-              ("C-M-=" . geiser-eval-buffer))
+              ("M-RET" . geiser-eval-last-sexp)
+              ("C-M-x" . geiser-eval-definition)
+              ("C-M-z" . geiser-eval-region))
   :config
   (setq geiser-active-implementations '(chez))
   (use-package quack))
@@ -392,40 +396,34 @@
   :mode ("\\.pl$" . prolog-mode)
   :defines prolog-mode-map
   :init (with-eval-after-load 'prolog
-          (bind-keys :map prolog-mode-map
-                     ("M-=" . ediprolog-dwim)
-                     ("C-=" . ediprolog-dwim))))
+          (bind-key "M-RET" 'ediprolog-dwim prolog-mode-map)))
 
 (use-package haskell-mode :defer)
 
 (use-package idris-mode :defer
-  :init (add-hook 'idris-mode-hook (lambda () (aggressive-indent-mode 0)))
+  :init (add-hook 'idris-mode-hook (lambda () (aggressive-indent-mode -1)))
   :bind (:map idris-mode-map
-              ("M-," . idris-case-dwim)    ("C-," . idris-case-dwim)
-              ("M-." . idris-add-clause)   ("C-." . idris-add-clause)
-              ("M-=" . idris-proof-search) ("C-=" . idris-proof-search)
-              ("C-M-=" . idris-load-file)
+              ("M-RET" . idris-case-dwim)
+              ("C-M-x" . idris-add-clause)
+              ("C-M-z" . idris-proof-search)
               ("C-c C-q" . idris-quit)))
 
 (use-package ess :defer
   :commands R
   :bind (:map ess-mode-map
-              ("M-," . ess-eval-line)                  ("C-," . ess-eval-line)
-              ("M-." . ess-eval-function-or-paragraph) ("C-." . ess-eval-function-or-paragraph)
-              ("M-=" . ess-eval-region)                ("C-=" . ess-eval-region)
-              ("C-M-=" . ess-eval-buffer)))
+              ("M-RET" . ess-eval-line)
+              ("C-M-x" . ess-eval-function-or-paragraph)
+              ("C-M-z" . ess-eval-region)))
 
 (use-package elpy :defer
   :init (add-hook 'python-mode-hook #'elpy-mode)
   (add-hook 'elpy-mode-hook
             (lambda ()
-              (highlight-indentation-mode 0)
-              (aggressive-indent-mode 0)
-              (unbind-key "M-=" elpy-mode-map)))
+              (highlight-indentation-mode -1)
+              (aggressive-indent-mode -1)))
   :bind (:map python-mode-map
-              ("M-="   . python-shell-send-region)
-              ("C-M-=" . python-shell-send-defun)
-              ("M-+"   . python-shell-send-buffer))
+              ("C-M-x" . python-shell-send-defun)
+              ("C-M-z"   . python-shell-send-region))
   :config (elpy-enable))
 
 (use-package rust-mode :defer
@@ -491,14 +489,16 @@
     (company-auctex-init)))
 
 (use-package org :defer
-  :bind ("H-m a" . org-agenda)
+  :bind ("M-A" . org-agenda)
   :init (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
   (setq org-directory "~/sotha_sil/emacs/org"
         org-agenda-files "~/sotha_sil/emacs/org/agenda-files"
         org-archive-location "~/sotha_sil/emacs/org/archive.org::"
         org-log-done 'time)
   :defines org-latex-listings
-  :config (unbind-key "C-'" org-mode-map)
+  :config
+  (unbind-key "C-'" org-mode-map)
+  (unbind-key "M-h" org-mode-map)
   (setq org-latex-create-formula-image-program 'imagemagick
         org-latex-listings 'minted
         org-src-fontify-natively t
