@@ -25,10 +25,10 @@
 | 0       | []                                | digit-argument 0                                                | [M-0]                                               |
 |---------+-----------------------------------+-----------------------------------------------------------------+-----------------------------------------------------|
 | !       | []                                | shell-command                                                   |                                                     |
-| @       | set-mark-command                  | ~[M-@-]~                                            +mark-word+ |                                                     |
+| @       | set-mark-command                  | +mark-word+                                                     |                                                     |
 | #       | []                                | ~linum-mode~                                                    |                                                     |
 | $       | []                                | ~flyspell-mode~                                   +ispell-word+ |                                                     |
-| %       | []                                | query-replace                                                   | ~vr/query-replace~ +query-replace-regexp+           |
+| %       | []                                | query-replace                                                   | ~vr/query-replace~           +query-replace-regexp+ |
 | ^       |                                   | delete-indentation                                              |                                                     |
 | &       | []                                | async-shell-command                                             |                                                     |
 | *       | []                                | ~sp-raise-sexp~                                                 |                                                     |
@@ -47,7 +47,7 @@
 | .       | []                                | xref-find-definitions                                           | [M-.]                                               |
 | /       | []                                | ~hippie-expand~                                +dabbrev-expand+ | [M-/]                                               |
 |---------+-----------------------------------+-----------------------------------------------------------------+-----------------------------------------------------|
-| _       | ~undo-tree-undo~           +undo+ | ~undo-tree-redo~                                                | ~toggle-truncate-lines~ +negative-argument+         |
+| _       | ~undo-tree-undo~           +undo+ | ~undo-tree-redo~                                                | ~toggle-truncate-lines~         +negative-argument+ |
 | +       | []                                | ~sp-convolute-sexp~                                             |                                                     |
 | {       | [C-[]                             | backward-paragraph                                              |                                                     |
 | }       | [C-]]                             | forward-paragraph                                               |                                                     |
@@ -123,8 +123,4 @@
 | C-x u   | ~undo-tree-visualize~                                     |
 | C-x z   | repeat                                                    |
 | DEL     | ~sp-backward-delete-char~ +backward-delete-char-untabify+ |
-| M-@ b   | ~windmove-left~                                           |
-| M-@ f   | ~windmove-right~                                          |
-| M-@ n   | ~windmove-down~                                           |
-| M-@ p   | ~windmove-up~                                             |
 | M-g g   | ~avy-goto-line~                               +goto-line+ |

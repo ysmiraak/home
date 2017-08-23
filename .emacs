@@ -49,7 +49,7 @@
  ;; see also tabify, untabify, and tab-width
  '(indent-tabs-mode nil)
  ;; clipboard
- '(x-select-enable-clipboard t)
+ '(select-enable-clipboard t)
  '(save-interprogram-paste-before-kill t)
  ;; backup
  '(create-lockfiles nil)
@@ -72,8 +72,8 @@
 ;;;;;;;;;;
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-;; (add-to-list 'package-archives '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") t)
+(push '("melpa" . "http://melpa.org/packages/") package-archives)
+(push '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") package-archives)
 (package-initialize nil)
 
 (unless (package-installed-p 'use-package)
@@ -82,6 +82,9 @@
 (eval-when-compile (require 'use-package))
 (setq use-package-verbose t
       use-package-always-ensure t)
+(use-package diminish)
+(use-package delight)
+(use-package bind-key)
 
 (use-package benchmark-init :disabled
   :config (benchmark-init/activate))
@@ -99,11 +102,8 @@
   :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode-enable)
   :config
   (custom-set-faces
-   ;; I bow not yet before the Iron Crown,
-   '(region ((t (:background "#242424")))) ;; Nirn gray
-   ;; nor cast my own small golden sceptre down.
-   '(cursor ((t (:background "#DAA520")))) ;; goldenrod
-   ;; Ink and gold.
+   '(region ((t (:background "#242424"))))
+   '(cursor ((t (:background "#DAA520"))))
    '(mc/cursor-bar-face ((t (:background "#DAA520" :foreground "#242424")))))
   (use-package zenburn-theme)
   (load-theme 'zenburn t)
@@ -154,13 +154,7 @@
 (use-package ace-window :defer
   :bind ("C-x o" . ace-window))
 
-(use-package windmove :defer
-  :bind (("M-@ b" . windmove-left)
-         ("M-@ f" . windmove-right)
-         ("M-@ n" . windmove-down)
-         ("M-@ p" . windmove-up)))
-
-(use-package projectile :demand
+(use-package projectile :demand :delight '(:eval (format " [%s]" (projectile-project-name)))
   :config (projectile-mode 1)
   (setq projectile-switch-project-action 'projectile-dired
         projectile-completion-system 'ivy))
@@ -228,7 +222,7 @@
               ("M-d"   . sp-kill-word)
               ("M-DEL" . sp-backward-kill-word)
               ("C-k"   . sp-kill-hybrid-sexp))
-  :config (use-package smartparens-config)
+  :config (require 'smartparens-config)
   (smartparens-global-mode 1)
   (show-smartparens-global-mode t)
   (set-face-attribute 'sp-show-pair-match-face nil ;; ELEGENT WEAPONS
