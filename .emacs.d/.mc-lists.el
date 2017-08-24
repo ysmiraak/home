@@ -44,6 +44,7 @@
         markdown-insert-header-atx-5
         markdown-insert-header-atx-6
         org-beginning-of-line
+        org-cdlatex-math-modify
         org-cdlatex-underscore-caret
         org-cycle
         org-end-of-line
