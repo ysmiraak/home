@@ -269,7 +269,10 @@ structured editing.
 #+END_SRC
 batched editing.
 #+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'mc/cursor-bar-face nil :background "#DAA520" :foreground "#242424")
+  (when (display-graphic-p)
+    (with-eval-after-load 'multiple-cursors
+      (set-face-attribute 'mc/cursor-bar-face nil :background "#DAA520" :foreground "#242424")))
+
   (bind-keys ("M-M"   . mc/mark-more-like-this-extended)
              ("C-M-%" . vr/query-replace))
 #+END_SRC
