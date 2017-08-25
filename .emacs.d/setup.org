@@ -102,9 +102,9 @@ for mac.
 enable some disabled commands.
 #+BEGIN_SRC emacs-lisp
   (--each '(upcase-region
-           downcase-region
-           narrow-to-region
-           dired-find-alternate-file)
+            downcase-region
+            narrow-to-region
+            dired-find-alternate-file)
     (put it 'disabled nil))
 #+END_SRC
 * theme
