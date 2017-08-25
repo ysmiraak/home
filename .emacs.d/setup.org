@@ -1,6 +1,5 @@
 #+TITLE: emacs setup
 #+AUTHOR: ysmiraak
-
 * load
 make =user-init-file= like this.
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -17,7 +16,7 @@ or this for tangled setup.
   (push '("melpa" . "http://melpa.org/packages/") package-archives)
   (customize-set-variable
    'package-selected-packages
-   '(s f dash dash-functional suggest bind-key delight
+   '(s f dash dash-functional bind-key delight suggest
        benchmark-init exec-path-from-shell
        zenburn-theme powerline rainbow-delimiters
        counsel flx smex which-key magit projectile avy ace-window centered-cursor-mode
@@ -42,32 +41,37 @@ bench when necessary.
 #+BEGIN_SRC emacs-lisp :tangle no
   (benchmark-init/activate)
 #+END_SRC
+each library is setup in this order.
+- autoload
+- bind global
+- mode & hook
+- activation & delight
+- config
+- bind local
+- related
 * elisp
+extension.
 #+BEGIN_SRC emacs-lisp
-  (require 's)
-  (require 'f)
-  (require 'dash)
-  (require 'dash-functional)
+  (mapc #'require '(s f dash dash-functional bind-key delight))
   (dash-enable-font-lock)
-
-  (require 'bind-key)
-  (bind-keys ("M-Q" . suggest)
-             :map lisp-mode-shared-map
+#+END_SRC
+interaction.
+#+BEGIN_SRC emacs-lisp
+  (bind-keys ("M-Q" . suggest))
+  (--each '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook)
+    (add-hook it #'eldoc-mode))
+  (delight 'eldoc-mode nil 'eldoc)
+  (bind-keys :map lisp-mode-shared-map
              ("M-RET" . eval-last-sexp)
              ("C-M-x" . eval-defun)
              ("C-M-z" . eval-region))
-
-  (require 'delight)
-  (delight 'eldoc-mode nil 'eldoc)
-  (--each '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook)
-    (add-hook it #'eldoc-mode))
-
+#+END_SRC
+some helpers.
+#+BEGIN_SRC emacs-lisp
   (defun unbind-keys (m &rest ks)
     (--each ks (unbind-key it m)))
-
   (defun add-hooks (h &rest fs)
     (--each (nreverse fs) (add-hook h it)))
-
   (defun cset (&rest sym-vals)
     (-each (-partition-all 2 sym-vals)
       (-applify #'customize-set-variable)))
@@ -98,11 +102,11 @@ emacsclient.
 for mac.
 #+BEGIN_SRC emacs-lisp
   (when (equal 'ns window-system)
-    (toggle-frame-fullscreen)
-    (bind-keys ("<C-s-f>" . toggle-frame-fullscreen) ("<C-s-268632070>" . toggle-frame-fullscreen))
-    (cset 'insert-directory-program "gls")
     (exec-path-from-shell-initialize)
-    (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL")))
+    (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL"))
+    (cset 'insert-directory-program "gls")
+    (bind-keys ("<C-s-f>" . toggle-frame-fullscreen) ("<C-s-268632070>" . toggle-frame-fullscreen))
+    (toggle-frame-fullscreen))
 #+END_SRC
 enable some disabled commands.
 #+BEGIN_SRC emacs-lisp
@@ -130,13 +134,12 @@ save me some typing.
 fancier face on graphic devices.
 #+BEGIN_SRC emacs-lisp
   (when (display-graphic-p)
-    (custom-set-faces
-     '(region ((t (:background "#242424"))))
-     '(cursor ((t (:background "#DAA520")))))
+    (add-hooks 'prog-mode-hook #'rainbow-delimiters-mode-enable)
     (load-theme 'zenburn t)
-    (global-hl-line-mode 1)
     (powerline-center-theme)
-    (add-hooks 'prog-mode-hook #'rainbow-delimiters-mode-enable))
+    (set-face-attribute 'region nil :background "#242424")
+    (set-face-attribute 'cursor nil :background "#DAA520")
+    (global-hl-line-mode 1))
 #+END_SRC
 cursor.
 #+BEGIN_SRC emacs-lisp
@@ -146,42 +149,42 @@ cursor.
 #+END_SRC
 never wrap lines.
 #+BEGIN_SRC emacs-lisp
+  (bind-keys ("M-#"   . linum-mode)
+             ("C-M-_" . toggle-truncate-lines)
+             ("C-M--" . toggle-truncate-lines))
   (cset 'truncate-lines t)
-  (bind-keys ("C-M-_" . toggle-truncate-lines)
-             ("C-M--" . toggle-truncate-lines)
-             ("M-#"   . linum-mode))
 #+END_SRC
 * navigation
 within emacs.
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("C-s" . swiper) ("M-x" . counsel-M-x))
+  (bind-keys ("M-@" . swiper) ("M-x" . counsel-M-x))
   (ivy-mode 1)
   (delight 'ivy-mode nil 'ivy)
-  (cset 'ivy-re-builders-alist '((read-file-name-internal . ivy--regex-ignore-order)
-                                 (swiper                  . ivy--regex-plus)
-                                 (t                       . ivy--regex-fuzzy))
+  (cset 'ivy-re-builders-alist '((swiper . ivy--regex-plus)
+                                 (t      . ivy--regex-fuzzy))
         'ivy-height            13)
-
+  (bind-keys :map ivy-minibuffer-map
+             ("M-n" . ivy-next-line)      ("C-n"   . ivy-next-history-element)
+             ("M-p" . ivy-previous-line)  ("C-p"   . ivy-previous-history-element)
+             ("C-j" . ivy-immediate-done) ("C-M-j" . ivy-alt-done))
   (which-key-mode 1)
   (delight 'which-key-mode nil 'which-key)
 #+END_SRC
 among projects.
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-G" . magit-status))
-
   (projectile-mode 1)
   (delight 'projectile-mode '(:eval (format " [%s]" (projectile-project-name))) 'projectile)
   (cset 'projectile-switch-project-action 'projectile-dired
         'projectile-completion-system     'ivy)
+  (bind-keys ("M-G" . magit-status))
 #+END_SRC
 to jump around.
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-'"     . avy-goto-char-2)
              ("M-\""    . avy-pop-mark)
              ("M-g g"   . avy-goto-line)
-             ("M-g M-g" . avy-goto-line))
-
-  (bind-keys ("C-x o" . ace-window))
+             ("M-g M-g" . avy-goto-line)
+             ("C-x o"   . ace-window))
 #+END_SRC
 for scrolling.
 #+BEGIN_SRC emacs-lisp
@@ -191,18 +194,15 @@ for scrolling.
 * editing
 enhanced behavior.
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("C--". undo-tree-undo))
+  (bind-keys  ("C--"   . undo-tree-undo)
+              ("C-M-y" . browse-kill-ring)
+              ("M-z" . zzz-to-char)
+              ("M-u" . fix-word-upcase)
+              ("M-l" . fix-word-downcase)
+              ("M-c" . fix-word-capitalize)
+              ("C-x C-b" . ibuffer))
   (global-undo-tree-mode 1)
   (delight 'undo-tree-mode nil 'undo-tree)
-
-  (bind-keys ("C-M-y" . browse-kill-ring))
-
-  (bind-keys ("M-z" . zzz-to-char))
-
-  (bind-keys ("M-u" . fix-word-upcase)
-             ("M-l" . fix-word-downcase)
-             ("M-c" . fix-word-capitalize))
-
   (cset 'same-window-buffer-names '("*Buffer List*")
         'indent-tabs-mode         nil
         'fill-column              81)
@@ -211,22 +211,18 @@ extra convenience.
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-F" . vimish-fold-toggle)
              ("M-J" . vimish-fold-avy)
-             ("M-K" . vimish-fold-delete))
-
-  (bind-keys ("<M-left>"  . drag-stuff-left)
+             ("M-K" . vimish-fold-delete)
+             ("<M-left>"  . drag-stuff-left)
              ("<M-right>" . drag-stuff-right)
              ("<M-down>"  . drag-stuff-down)
-             ("<M-up>"    . drag-stuff-up))
-
-  (bind-keys ("M-I" . global-aggressive-indent-mode)
+             ("<M-up>"    . drag-stuff-up)
+             ("M-I" . global-aggressive-indent-mode)
              ("C-j" . newline-and-indent))
   (global-aggressive-indent-mode 1)
   (delight 'aggressive-indent-mode " i" 'aggressive-indent)
-
   (bind-keys ("M-D" . global-hungry-delete-mode))
   (global-hungry-delete-mode 1)
   (delight 'hungry-delete-mode " d" 'hungry-delete)
-
   (global-whitespace-cleanup-mode 1)
   (delight 'whitespace-cleanup-mode nil 'whitespace-cleanup-mode)
 #+END_SRC
@@ -267,26 +263,26 @@ structured editing.
              ("M-p"     . sp-previous-sexp)
              ("M-{"     . sp-extract-before-sexp)
              ("M-}"     . sp-dedent-adjust-sexp))
-
   (show-smartparens-global-mode 1)
   (set-face-attribute 'sp-show-pair-match-face    nil :background "#181818" :foreground "#A41210" :weight 'bold)
   (set-face-attribute 'sp-show-pair-mismatch-face nil :background "#161616" :foreground "#003B6F" :weight 'black)
 #+END_SRC
 batched editing.
 #+BEGIN_SRC emacs-lisp
+  (bind-keys ("M-M"   . mc/mark-more-like-this-extended))
   (when (display-graphic-p)
     (with-eval-after-load 'multiple-cursors
       (set-face-attribute 'mc/cursor-bar-face nil :background "#DAA520" :foreground "#242424")))
-
-  (bind-keys ("M-M"   . mc/mark-more-like-this-extended)
-             ("C-M-%" . vr/query-replace))
+  (bind-keys ("C-M-%" . vr/query-replace))
 #+END_SRC
 region editing.
 #+BEGIN_SRC emacs-lisp
+  (bind-keys ("M-h" . er/expand-region))
   (require 'region-bindings-mode)
   (region-bindings-mode-enable)
-  (bind-keys ("M-h" . er/expand-region)
-             :map region-bindings-mode-map
+  (bind-keys :map region-bindings-mode-map
+             ("$" . flyspell-region)
+             (";" . comment-or-uncomment-region)
              ("b" . comment-box)
              ("d" . delete-region)
              ("f" . vimish-fold)
@@ -294,15 +290,11 @@ region editing.
              ("i" . indent-region)
              ("k" . kill-region)
              ("l" . downcase-region)
-             ("m" . mc/mark-all-in-region)
-             ("M" . vr/mc-mark)
+             ("m" . mc/mark-all-in-region) ("M" . vr/mc-mark)
              ("n" . mc/edit-lines)
-             ("r" . replace-string)
-             ("R" . vr/replace)
+             ("r" . replace-string)        ("R" . vr/replace)
              ("u" . upcase-region)
-             ("w" . kill-ring-save)
-             (";" . comment-or-uncomment-region)
-             ("$" . flyspell-region))
+             ("w" . kill-ring-save))
 #+END_SRC
 auto-completion.
 #+BEGIN_SRC emacs-lisp
@@ -319,56 +311,54 @@ auto-completion.
             try-expand-whole-kill
             try-complete-lisp-symbol-partially
             try-complete-lisp-symbol)))
-
+  (bind-keys ("C-M-i" . company-complete))
   (global-company-mode 1)
   (company-quickhelp-mode 1)
   (delight 'company-mode nil 'company)
-  (bind-keys ("C-M-i" . company-complete)
-             :map company-active-map
-             ("M-h" . company-quickhelp-manual-begin))
-  (unbind-keys company-active-map "TAB" "<tab>")
   (cset 'company-idle-delay                0.2
         'company-minimum-prefix-length     2
         'company-tooltip-align-annotations t
         'company-selection-wrap-around     t
         'company-quickhelp-delay           nil)
+  (unbind-keys company-active-map "TAB" "<tab>")
+  (bind-keys :map company-active-map ("M-h" . company-quickhelp-manual-begin))
 #+END_SRC
 snippet.
 #+BEGIN_SRC emacs-lisp
   (yas-global-mode 1)
   (delight 'yas-minor-mode nil 'yasnippet)
 #+END_SRC
-error check.
+spell check.
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-$" . flyspell-mode))
   (with-eval-after-load 'flyspell
     (delight 'flyspell-mode " $" 'flyspell)
-    (bind-keys :map flyspell-mode-map ("C-;" . flyspell-correct-word-before-point)))
-
+    (unbind-keys flyspell-mode-map "C-M-i")
+    (bind-keys :map flyspell-mode-map ("C-;" . flyspell-correct-word-before-point))
+    (cset 'ispell-program-name "aspell"))
+#+END_SRC
+error check.
+#+BEGIN_SRC emacs-lisp
+  (add-hooks 'shell-mode-hook #'flycheck-mode)
   (with-eval-after-load 'flycheck
     (flycheck-pos-tip-mode))
-  (add-hooks 'shell-mode-hook #'flycheck-mode)
 #+END_SRC
 * clojure
 #+BEGIN_SRC emacs-lisp
+  (bind-keys ("M-S" . cider-scratch))
   (add-hooks 'clojure-mode-hook    #'eldoc-mode #'clj-refactor-mode)
   (add-hooks 'cider-repl-mode-hook #'eldoc-mode #'clj-refactor-mode)
-
-  (bind-keys ("M-S" . cider-scratch))
-
   (with-eval-after-load 'cider
-    (bind-keys :map cider-mode-map
-               ("M-RET" . cider-eval-last-sexp)
-               ("C-M-x" . cider-eval-defun-at-point)
-               ("C-M-z" . cider-eval-region))
-
     (cset 'nrepl-hide-special-buffers          t
           'cider-font-lock-dynamically         t
           'cider-prefer-local-resources        t
           'cider-allow-jack-in-without-project t
           'cider-doc-xref-regexp               "\\[\\[\\(.*?\\)\\]\\]"
-          'cider-repl-history-file             (f-expand "cider-history" user-emacs-directory)))
-
+          'cider-repl-history-file             (f-expand "cider-history" user-emacs-directory))
+    (bind-keys :map cider-mode-map
+               ("M-RET" . cider-eval-last-sexp)
+               ("C-M-x" . cider-eval-defun-at-point)
+               ("C-M-z" . cider-eval-region)))
   (with-eval-after-load 'clj-refactor
     (cljr-add-keybindings-with-prefix "M-R")
     (cset 'cljr-suppress-middleware-warnings t))
@@ -377,11 +367,11 @@ error check.
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'geiser-mode-hook #'flycheck-mode)
   (with-eval-after-load 'geiser
+    (cset 'geiser-active-implementations '(chez))
     (bind-keys :map scheme-mode-map
                ("M-RET" . geiser-eval-last-sexp)
                ("C-M-x" . geiser-eval-definition)
-               ("C-M-z" . geiser-eval-region))
-    (cset 'geiser-active-implementations '(chez)))
+               ("C-M-z" . geiser-eval-region)))
 #+END_SRC
 * prolog
 #+BEGIN_SRC emacs-lisp
@@ -392,7 +382,6 @@ error check.
 * idris
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'idris-mode-hook 'eldoc-mode-hook (-partial #'aggressive-indent-mode -1))
-
   (with-eval-after-load 'idris-mode
     (bind-keys :map idris-mode-map
                ("M-RET"   . idris-case-dwim)
@@ -408,7 +397,6 @@ error check.
              #'flycheck-rust-setup
              #'cargo-minor-mode
              #'racer-mode)
-
   (with-eval-after-load 'rust-mode
     (cset 'racer-rust-src-path
           (funcall (if (equal 'ns window-system)
@@ -422,7 +410,6 @@ error check.
              #'elpy-mode
              (-partial #'highlight-indentation-mode -1)
              (-partial #'aggressive-indent-mode -1))
-
   (with-eval-after-load 'python-mode
     (bind-keys :map python-mode-map
                ("C-M-x" . python-shell-send-defun)
@@ -432,7 +419,6 @@ error check.
 * javascript
 #+BEGIN_SRC emacs-lisp
   (push '("\\.js\\'" . js2-mode) auto-mode-alist)
-
   (add-hooks 'js2-mode-hook  #'flycheck-mode)
   (add-hooks 'css-mode-hook  #'flycheck-mode)
   (add-hooks 'html-mode-hook #'flycheck-mode)
@@ -449,9 +435,7 @@ error check.
 #+BEGIN_SRC emacs-lisp
   (push '("README\\.md\\'" . gfm-mode)      auto-mode-alist)
   (push '("\\.[Rr]md\\'"   . markdown-mode) auto-mode-alist)
-
   (add-hooks 'markdown-mode-hook #'flyspell-mode #'flycheck-mode)
-
   (with-eval-after-load 'markdown-mode
     (cset 'markdown-enable-math t))
 #+END_SRC
@@ -465,11 +449,7 @@ error check.
              #'turn-on-cdlatex
              #'turn-on-reftex
              (-partial #'set 'TeX-command-default "xelatexmk"))
-
   (with-eval-after-load 'tex
-    (with-eval-after-load 'company
-      (company-auctex-init))
-    (unbind-keys cdlatex-mode-map "<" "(" "[" "{")
     (push '("xelatexmk"
             "latexmk -pdf -pdflatex=\"xelatex -interaction=nonstopmode -shell-escape -synctex=1\" %s"
             TeX-run-TeX nil t :help "run xelatexmk on file")
@@ -481,16 +461,17 @@ error check.
     (cset 'TeX-engine              'xetex
           'TeX-auto-save           t
           'TeX-parse-self          t
-          'reftex-plug-into-AUCTeX t))
+          'reftex-plug-into-AUCTeX t)
+    (with-eval-after-load 'company
+      (company-auctex-init)))
+  (with-eval-after-load 'cdlatex
+    (unbind-keys cdlatex-mode-map "<" "(" "[" "{"))
 #+END_SRC
 * org
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'org-mode-hook #'flyspell-mode #'turn-on-org-cdlatex)
-
   (bind-keys ("M-A" . org-agenda))
-
+  (add-hooks 'org-mode-hook #'flyspell-mode #'turn-on-org-cdlatex)
   (with-eval-after-load 'org
-    (unbind-keys org-mode-map "C-'" "M-h")
     (cset 'org-directory                          "~/sotha_sil/emacs/org"
           'org-agenda-files                       "~/sotha_sil/emacs/org/agenda-files"
           'org-archive-location                   "~/sotha_sil/emacs/org/archive.org::"
@@ -507,14 +488,13 @@ error check.
             ("" "rotating" nil)
             ("normalem" "ulem" t)
             ("" "amsmath" t)
-            ("" "hyperref" nil))))
+            ("" "hyperref" nil)))
+    (unbind-keys org-mode-map "C-M-i" "M-h"))
 #+END_SRC
 * summary
-
 - dead on terminal: []
 - forced translate: [target]
 - override default: +old+ ~new~
-
 |         | C-                                | M-                                                              | C-M-                                        |
 |---------+-----------------------------------+-----------------------------------------------------------------+---------------------------------------------|
 | DEL     | [DEL]                             | ~sp-backward-kill-word~                    +backward-kill-word+ | [C-M-h]                                     |
@@ -538,7 +518,7 @@ error check.
 | 0       | []                                | digit-argument 0                                                | [M-0]                                       |
 |---------+-----------------------------------+-----------------------------------------------------------------+---------------------------------------------|
 | !       | []                                | shell-command                                                   |                                             |
-| @       | set-mark-command                  | +mark-word+                                                     |                                             |
+| @       | set-mark-command                  | ~swiper~                                            +mark-word+ |                                             |
 | #       | []                                | ~linum-mode~                                                    |                                             |
 | $       | []                                | ~flyspell-mode~                                   +ispell-word+ |                                             |
 | %       | []                                | query-replace                                                   | ~vr/query-replace~   +query-replace-regexp+ |
@@ -590,7 +570,7 @@ error check.
 | p       | previous-line                     | ~sp-previous-sexp~                                              | ~sp-indent-adjust-sexp~     +backward-list+ |
 | q       | quoted-insert                     | fill-paragraph                                                  | ~sp-rewrap-sexp~           +indent-pp-sexp+ |
 | r       | isearch-backward                  | move-to-window-line-top-bottom                                  | isearch-backward-regexp                     |
-| s       | ~swiper~        +isearch-forward+ | [M-s-]                                                          | isearch-forward-regexp                      |
+| s       | isearch-forward                   | [M-s-]                                                          | isearch-forward-regexp                      |
 | t       | transpose-chars                   | transpose-words                                                 | ~sp-transpose-sexp~       +transpose-sexps+ |
 | u       | universal-argument                | ~fix-word-upcase~                                 +upcase-word+ | ~sp-backward-up-sexp~    +backward-up-list+ |
 | v       | scroll-up-command                 | scroll-down-command                                             | scroll-other-window                         |
@@ -598,9 +578,7 @@ error check.
 | x       | [C-x-]                            | ~counsel-M-x~                        +execute-extended-command+ | eval-defun                                  |
 | y       | yank                              | yank-pop                                                        | ~browse-kill-ring~                          |
 | z       | suspend-frame                     | ~zzz-to-char~                                     +zap-to-char+ | eval-region                                 |
-
 on text terminals, shift does not work with ctrl.
-
 |   | M-                                |
 |---+-----------------------------------|
 | A | ~org-agenda~                      |
@@ -629,11 +607,10 @@ on text terminals, shift does not work with ctrl.
 | X |                                   |
 | Y |                                   |
 | Z |                                   |
-
 others, incomplete.
-
 | C-h i     | info                                                      |
 | C-h r     | info-emacs-manual                                         |
+| C-x C-b   | ~ibuffer~                                  +list-buffers+ |
 | C-x C-SPC | pop-global-mark                                           |
 | C-x C-t   | ~sp-transpose-hybrid-sexp~              +transpose-lines+ |
 | C-x f     | set-fill-column                                           |
