@@ -59,14 +59,14 @@ bench when necessary.
 
   (require 'delight)
   (delight 'eldoc-mode nil 'eldoc)
-  (-each '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook)
-    (-rpartial #'add-hook #'eldoc-mode))
+  (--each '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook)
+    (add-hook it #'eldoc-mode))
 
   (defun unbind-keys (m &rest ks)
     (--each ks (unbind-key it m)))
 
   (defun add-hooks (h &rest fs)
-    (-each fs (-partial #'add-hook h)))
+    (--each fs (add-hook h it)))
 
   (defun cset (&rest sym-vals)
     (-each (-partition-all 2 sym-vals)
@@ -101,11 +101,11 @@ for mac.
 #+END_SRC
 enable some disabled commands.
 #+BEGIN_SRC emacs-lisp
-  (-each '(upcase-region
+  (--each '(upcase-region
            downcase-region
            narrow-to-region
            dired-find-alternate-file)
-    (-cut put <> 'disabled nil))
+    (put it 'disabled nil))
 #+END_SRC
 * theme
 simpler style.
