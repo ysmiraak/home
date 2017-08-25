@@ -66,7 +66,7 @@ bench when necessary.
     (--each ks (unbind-key it m)))
 
   (defun add-hooks (h &rest fs)
-    (--each fs (add-hook h it)))
+    (--each (nreverse fs) (add-hook h it)))
 
   (defun cset (&rest sym-vals)
     (-each (-partition-all 2 sym-vals)
@@ -89,6 +89,11 @@ clipboard.
 #+BEGIN_SRC emacs-lisp
   (cset 'select-enable-clipboard             t
         'save-interprogram-paste-before-kill t)
+#+END_SRC
+emacsclient.
+#+BEGIN_SRC emacs-lisp
+  (require 'server)
+  (unless (server-running-p) (server-start))
 #+END_SRC
 for mac.
 #+BEGIN_SRC emacs-lisp
@@ -473,7 +478,6 @@ error check.
     (push '("skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
           TeX-view-program-list)
     (push '(output-pdf "skim") TeX-view-program-selection)
-    (server-start)
     (cset 'TeX-engine              'xetex
           'TeX-auto-save           t
           'TeX-parse-self          t

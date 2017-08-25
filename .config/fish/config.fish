@@ -1,4 +1,7 @@
 set -g -x EMAIL ysmiraak@gmail.com
+set -g -x ALTERNATE_EDITOR emacs
+set -g -x EDITOR emacsclient
+set -g -x VISUAL emacsclient
 
 set -g -x LANG en_US.UTF-8
 set -g -x LC_ALL en_US.UTF-8
