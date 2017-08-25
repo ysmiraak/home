@@ -1,4 +1,4 @@
-personal_ws-1.1 en 465 
+personal_ws-1.1 en 470 
 hashmap
 Magnus
 Dragonguard
@@ -161,6 +161,7 @@ textwidth
 unigrams
 netch
 Aedra
+melpa
 mit
 injective
 HOOM
@@ -229,6 +230,7 @@ SHEOG
 pre
 tokenizer
 stopwords
+RET
 MHARA
 POV
 tagset
@@ -322,6 +324,7 @@ repl
 Sami
 natbib
 Vershu
+alist
 sigil
 ribcage
 THENDR
@@ -364,6 +367,7 @@ Enantiomorph
 softmax
 Khizumet
 Hatoor
+el
 dimensionality
 bigram
 SEHT
@@ -436,6 +440,7 @@ yu
 Daedroth
 intensionally
 Narsis
+elisp
 Atreides
 sharmat
 Bal
