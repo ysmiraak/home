@@ -192,19 +192,40 @@ for scrolling.
   (bind-keys ("M-L" . global-centered-cursor-mode))
 #+END_SRC
 * editing
-enhanced behavior.
+undo-tree.
 #+BEGIN_SRC emacs-lisp
-  (bind-keys  ("C--"   . undo-tree-undo)
-              ("C-M-y" . browse-kill-ring)
-              ("M-z" . zzz-to-char)
-              ("M-u" . fix-word-upcase)
-              ("M-l" . fix-word-downcase)
-              ("M-c" . fix-word-capitalize)
-              ("C-x C-b" . ibuffer))
+  (bind-keys  ("C--"   . undo-tree-undo))
   (global-undo-tree-mode 1)
   (delight 'undo-tree-mode nil 'undo-tree)
-  (cset 'same-window-buffer-names '("*Buffer List*")
-        'indent-tabs-mode         nil
+#+END_SRC
+ibuffer.
+#+BEGIN_SRC emacs-lisp
+  (bind-keys ("C-x C-b" . ibuffer))
+  (add-hooks 'ibuffer-mode-hook (-partial #'ibuffer-switch-to-saved-filter-groups "default"))
+  (cset 'ibuffer-saved-filter-groups
+        '(("default"
+           ("emacs" (or (name . "^\\*scratch\\*$")
+                        (name . "^\\*Messages\\*$")))
+           ("cider" (or (name . "^\\*cider")
+                        (name . "^\\*nrepl")))
+           ("help"  (or (mode . help-mode)
+                        (mode . apropos-mode)
+                        (mode . Info-mode)
+                        (name . "^\\*Backtrace\\*$")))
+           ("dired"     (mode . dired-mode))
+           ("magit"     (name . "^\\*magit"))
+           (""          (name . ""))))
+        'ibuffer-show-empty-filter-groups nil
+        'ibuffer-expert t)
+#+END_SRC
+enhanced behavior.
+#+BEGIN_SRC emacs-lisp
+  (bind-keys ("C-M-y" . browse-kill-ring)
+             ("M-z" . zzz-to-char)
+             ("M-u" . fix-word-upcase)
+             ("M-l" . fix-word-downcase)
+             ("M-c" . fix-word-capitalize))
+  (cset 'indent-tabs-mode         nil
         'fill-column              81)
 #+END_SRC
 extra convenience.
@@ -349,8 +370,7 @@ error check.
   (add-hooks 'clojure-mode-hook    #'eldoc-mode #'clj-refactor-mode)
   (add-hooks 'cider-repl-mode-hook #'eldoc-mode #'clj-refactor-mode)
   (with-eval-after-load 'cider
-    (cset 'nrepl-hide-special-buffers          t
-          'cider-font-lock-dynamically         t
+    (cset 'cider-font-lock-dynamically         t
           'cider-prefer-local-resources        t
           'cider-allow-jack-in-without-project t
           'cider-doc-xref-regexp               "\\[\\[\\(.*?\\)\\]\\]"
