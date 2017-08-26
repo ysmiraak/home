@@ -81,13 +81,11 @@ prevent custom from editing my files.
 #+BEGIN_SRC emacs-lisp
   (cset 'custom-file (f-expand "custom.el" user-emacs-directory))
 #+END_SRC
-backup.
+no lock. no auto-save. no backup.
 #+BEGIN_SRC emacs-lisp
-  (cset 'create-lockfiles       nil
-        'auto-save-default      nil
-        'version-control        t
-        'delete-old-versions    t
-        'backup-directory-alist `(("." . ,temporary-file-directory)))
+  (cset 'create-lockfiles           nil
+        'auto-save-default          nil
+        'auto-save-list-file-prefix nil)
 #+END_SRC
 clipboard.
 #+BEGIN_SRC emacs-lisp
@@ -201,9 +199,9 @@ undo-tree.
 ibuffer.
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-x C-b" . ibuffer))
-  (add-hooks 'ibuffer-mode-hook (-partial #'ibuffer-switch-to-saved-filter-groups "default"))
+  (add-hooks 'ibuffer-mode-hook (-partial #'ibuffer-switch-to-saved-filter-groups "ysmiraak"))
   (cset 'ibuffer-saved-filter-groups
-        '(("default"
+        '(("ysmiraak"
            ("emacs" (or (name . "^\\*scratch\\*$")
                         (name . "^\\*Messages\\*$")))
            ("cider" (or (name . "^\\*cider")
@@ -214,9 +212,14 @@ ibuffer.
                         (name . "^\\*Backtrace\\*$")))
            ("dired"     (mode . dired-mode))
            ("magit"     (name . "^\\*magit"))
+           ("tmp"       (name . "^\\*.*\\*$"))
            (""          (name . ""))))
         'ibuffer-show-empty-filter-groups nil
         'ibuffer-expert t)
+#+END_SRC
+i do not use abbrev.
+#+BEGIN_SRC emacs-lisp
+  (cset 'save-abbrevs nil)
 #+END_SRC
 enhanced behavior.
 #+BEGIN_SRC emacs-lisp
@@ -324,7 +327,6 @@ auto-completion.
     (cset 'hippie-expand-try-functions-list
           '(try-complete-file-name-partially
             try-complete-file-name
-            try-expand-all-abbrevs
             try-expand-dabbrev
             try-expand-dabbrev-visible
             try-expand-dabbrev-all-buffers
