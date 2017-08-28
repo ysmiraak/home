@@ -49,6 +49,7 @@
         org-cycle
         org-end-of-line
         org-force-self-insert
+        org-metaright
         org-return-indent
         org-self-insert-command
         org-yank

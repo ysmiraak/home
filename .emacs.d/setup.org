@@ -1,19 +1,22 @@
 #+TITLE: emacs setup
 #+AUTHOR: ysmiraak
-* load
-make =user-init-file= like this.
+* init
+[[https://www.gnu.org/software/emacs/][emacs 25]] is required.
+make this the =user-init-file= to tangle and load this setup.
 #+BEGIN_SRC emacs-lisp :tangle no
   (package-initialize)
   (org-babel-load-file (expand-file-name "setup.org" user-emacs-directory))
 #+END_SRC
-or this for tangled setup.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (package-initialize)
-  (load-file (expand-file-name "setup.el" user-emacs-directory))
-#+END_SRC
-* library
+the [[https://melpa.org/#/][melpa repo]] hosts the most update-to-date packages.
 #+BEGIN_SRC emacs-lisp
   (push '("melpa" . "http://melpa.org/packages/") package-archives)
+#+END_SRC
+occasionally, some update is buggy. just revert to the [[https://stable.melpa.org/#/][stable version]].
+#+BEGIN_SRC emacs-lisp :tangle no
+  (push '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") package-archives)
+#+END_SRC
+i use these packages.
+#+BEGIN_SRC emacs-lisp
   (customize-set-variable
    'package-selected-packages
    '(s f dash dash-functional bind-key delight suggest
@@ -28,20 +31,18 @@ or this for tangled setup.
        rust-mode cargo flycheck-rust racer elpy js2-mode rainbow-mode
        ess csv-mode markdown-mode latex-preview-pane cdlatex company-auctex))
 #+END_SRC
-or use the stable versions.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (push '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") package-archives)
-#+END_SRC
-to install the packages above, change =:tangle no= to =:tangle yes= below, or manually execute the commands.
+to install these packages, change =:tangle no= to =:tangle yes= for this code block, or manually execute the commands.
 #+BEGIN_SRC emacs-lisp :tangle no
   (package-refresh-contents)
   (package-install-selected-packages)
 #+END_SRC
-bench when necessary.
+some packages are autoloaded, namely only loaded when used.
+others, since they are always used, are loaded during initialization.
+if emacs takes too long to initialize, [[https://github.com/dholm/benchmark-init-el][benchmark-init]] helps to tell why.
 #+BEGIN_SRC emacs-lisp :tangle no
   (benchmark-init/activate)
 #+END_SRC
-each library is setup in this order.
+in this setup, each package is configured in this order.
 - autoload
 - bind global
 - mode & hook
@@ -49,13 +50,20 @@ each library is setup in this order.
 - config
 - bind local
 - related
-* elisp
-extension.
+* plus
+my modifications and extensions for emacs.
+** elisp
+modern [[https://github.com/magnars/s.el][string]], [[https://github.com/rejeep/f.el][file]], and [[https://github.com/magnars/dash.el#installation][list]] libraries to make elisp usable for me.
+[[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] simplifies mode-map management with =bind-keys=, =unbind-key=, and =describe-personal-keybindings=.
+[[https://www.emacswiki.org/emacs/DelightedModes][delight]] keeps the mode-line clean.
 #+BEGIN_SRC emacs-lisp
   (mapc #'require '(s f dash dash-functional bind-key delight))
   (dash-enable-font-lock)
 #+END_SRC
-interaction.
+[[https://github.com/Wilfred/suggest.el][suggest]] is cool. [[https://www.emacswiki.org/emacs/ElDoc][eldoc]] is handy.
+for interactive evaluation, i bind =M-RET= for last sexp or line, =C-M-x= for defun or block, and =C-M-z= for region.
+this applies to all language-specific modes which offers the options.
+many also offer buffer evaluation, but i rarely need that, and =C-x h C-M-z= also does the trick.
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-Q" . suggest))
   (--each '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook)
@@ -76,45 +84,38 @@ some helpers.
     (-each (-partition-all 2 sym-vals)
       (-applify #'customize-set-variable)))
 #+END_SRC
-* system
-prevent custom from editing my files.
+** system
+to prevent custom from editing my =user-init-file=.
 #+BEGIN_SRC emacs-lisp
   (cset 'custom-file (f-expand "custom.el" user-emacs-directory))
 #+END_SRC
-no lock. no auto-save. no backup.
+no lock. no auto-save. no backup. cuz [[https://git-scm.com/][git]].
 #+BEGIN_SRC emacs-lisp
   (cset 'create-lockfiles           nil
         'auto-save-default          nil
         'auto-save-list-file-prefix nil)
 #+END_SRC
-clipboard.
-#+BEGIN_SRC emacs-lisp
-  (cset 'select-enable-clipboard             t
-        'save-interprogram-paste-before-kill t)
-#+END_SRC
-emacsclient.
+for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
 #+BEGIN_SRC emacs-lisp
   (require 'server)
   (unless (server-running-p) (server-start))
 #+END_SRC
-for mac.
+for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see =dired-use-ls-dired=), and fullscreen to work on [[https://www.emacswiki.org/emacs/MacOSTweaks][mac]].
 #+BEGIN_SRC emacs-lisp
   (when (equal 'ns window-system)
     (exec-path-from-shell-initialize)
     (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL"))
-    (cset 'insert-directory-program "gls")
+    (cset 'insert-directory-program (executable-find "gls"))
     (bind-keys ("<C-s-f>" . toggle-frame-fullscreen) ("<C-s-268632070>" . toggle-frame-fullscreen))
     (toggle-frame-fullscreen))
 #+END_SRC
-enable some disabled commands.
+removes some safety measures.
+they encourage recklessness.
 #+BEGIN_SRC emacs-lisp
-  (--each '(upcase-region
-            downcase-region
-            narrow-to-region
-            dired-find-alternate-file)
-    (put it 'disabled nil))
+  (cset 'disabled-command-function nil)
+  (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
-* theme
+** theme
 simpler style.
 #+BEGIN_SRC emacs-lisp
   (cset 'uniquify-buffer-name-style 'forward
@@ -124,10 +125,6 @@ simpler style.
         'scroll-bar-mode            nil
         'column-number-mode         t
         'ring-bell-function         'ignore)
-#+END_SRC
-save me some typing.
-#+BEGIN_SRC emacs-lisp
-  (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 fancier face on graphic devices.
 #+BEGIN_SRC emacs-lisp
@@ -152,7 +149,7 @@ never wrap lines.
              ("C-M--" . toggle-truncate-lines))
   (cset 'truncate-lines t)
 #+END_SRC
-* navigation
+** navigation
 within emacs.
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-@" . swiper) ("M-x" . counsel-M-x))
@@ -189,7 +186,7 @@ for scrolling.
   (autoload 'global-centered-cursor-mode "centered-cursor-mode")
   (bind-keys ("M-L" . global-centered-cursor-mode))
 #+END_SRC
-* editing
+** editing
 undo-tree.
 #+BEGIN_SRC emacs-lisp
   (bind-keys  ("C--"   . undo-tree-undo))
@@ -366,7 +363,8 @@ error check.
   (with-eval-after-load 'flycheck
     (flycheck-pos-tip-mode))
 #+END_SRC
-* clojure
+* lang
+** clojure
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-S" . cider-scratch))
   (add-hooks 'clojure-mode-hook    #'eldoc-mode #'clj-refactor-mode)
@@ -385,7 +383,7 @@ error check.
     (cljr-add-keybindings-with-prefix "M-R")
     (cset 'cljr-suppress-middleware-warnings t))
 #+END_SRC
-* scheme
+** scheme
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'geiser-mode-hook #'flycheck-mode)
   (with-eval-after-load 'geiser
@@ -395,13 +393,13 @@ error check.
                ("C-M-x" . geiser-eval-definition)
                ("C-M-z" . geiser-eval-region)))
 #+END_SRC
-* prolog
+** prolog
 #+BEGIN_SRC emacs-lisp
   (push '("\\.pl$" . prolog-mode) auto-mode-alist)
   (with-eval-after-load 'prolog
     (bind-keys :map prolog-mode-map ("M-RET" . ediprolog-dwim)))
 #+END_SRC
-* idris
+** idris
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'idris-mode-hook 'eldoc-mode-hook (-partial #'aggressive-indent-mode -1))
   (with-eval-after-load 'idris-mode
@@ -411,7 +409,7 @@ error check.
                ("C-M-z"   . idris-proof-search)
                ("C-c C-q" . idris-quit)))
 #+END_SRC
-* rust
+** rust
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'rust-mode-hook
              #'eldoc-mode
@@ -426,7 +424,7 @@ error check.
                      #'getenv)
                    "RUST_SRC_PATH")))
 #+END_SRC
-* python
+** python
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'python-mode-hook
              #'elpy-mode
@@ -438,14 +436,14 @@ error check.
                ("C-M-z" . python-shell-send-region))
     (elpy-enable))
 #+END_SRC
-* javascript
+** javascript
 #+BEGIN_SRC emacs-lisp
   (push '("\\.js\\'" . js2-mode) auto-mode-alist)
   (add-hooks 'js2-mode-hook  #'flycheck-mode)
   (add-hooks 'css-mode-hook  #'flycheck-mode)
   (add-hooks 'html-mode-hook #'flycheck-mode)
 #+END_SRC
-* r
+** r
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'ess
     (bind-keys :map ess-mode-map
@@ -453,7 +451,7 @@ error check.
                ("C-M-x" . ess-eval-function-or-paragraph)
                ("C-M-z" . ess-eval-region)))
 #+END_SRC
-* markdown
+** markdown
 #+BEGIN_SRC emacs-lisp
   (push '("README\\.md\\'" . gfm-mode)      auto-mode-alist)
   (push '("\\.[Rr]md\\'"   . markdown-mode) auto-mode-alist)
@@ -461,7 +459,7 @@ error check.
   (with-eval-after-load 'markdown-mode
     (cset 'markdown-enable-math t))
 #+END_SRC
-* tex
+** tex
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'LaTeX-mode-hook
              #'flyspell-mode
@@ -489,7 +487,7 @@ error check.
   (with-eval-after-load 'cdlatex
     (unbind-keys cdlatex-mode-map "<" "(" "[" "{"))
 #+END_SRC
-* org
+** org
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-A" . org-agenda))
   (add-hooks 'org-mode-hook #'flyspell-mode #'turn-on-org-cdlatex)
