@@ -93,7 +93,8 @@ no lock. no auto-save. no backup. cuz [[https://git-scm.com/][git]].
 #+BEGIN_SRC emacs-lisp
   (cset 'create-lockfiles           nil
         'auto-save-default          nil
-        'auto-save-list-file-prefix nil)
+        'auto-save-list-file-prefix nil
+        'make-backup-files          nil)
 #+END_SRC
 for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
 #+BEGIN_SRC emacs-lisp
@@ -225,8 +226,7 @@ enhanced behavior.
              ("M-u" . fix-word-upcase)
              ("M-l" . fix-word-downcase)
              ("M-c" . fix-word-capitalize))
-  (cset 'indent-tabs-mode         nil
-        'fill-column              81)
+  (cset 'indent-tabs-mode nil)
 #+END_SRC
 extra convenience.
 #+BEGIN_SRC emacs-lisp

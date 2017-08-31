@@ -28,7 +28,9 @@
         end-of-visual-line
         ess-smart-comma
         ess-yank
+        eval-print-last-sexp
         fill-paragraph
+        fix-word-downcase
         forward-sentence
         indent-for-tab-command
         indent-new-comment-line
@@ -99,11 +101,13 @@
         magit-section-forward
         markdown-preview
         mouse-set-region
+        multiple-cursors-mode
         org-backward-sentence
         org-table-copy-down
         projectile-global-mode
         python-nav-backward-block
         python-shell-send-defun
+        shell-command-on-region
         smex
         tab-to-tab-stop
         toggle-frame-fullscreen
