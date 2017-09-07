@@ -253,6 +253,7 @@ structured editing.
   (smartparens-global-mode 1)
   (delight 'smartparens-mode nil 'smartparens)
   (bind-keys :map smartparens-mode-map
+             ("C-M-@"   . sp-select-previous-thing-exchange)
              ("C-M-a"   . sp-beginning-of-sexp)
              ("C-M-b"   . sp-backward-sexp)
              ("C-M-d"   . sp-down-sexp)
@@ -276,6 +277,7 @@ structured editing.
              ("M-)"     . sp-splice-sexp-killing-forward)
              ("M-*"     . sp-convolute-sexp)
              ("M-+"     . sp-join-sexp)
+             ("M-@"     . sp-select-next-thing)
              ("M-DEL"   . sp-backward-kill-word)
              ("M-["     . sp-absorb-sexp)
              ("M-]"     . sp-forward-slurp-sexp)
@@ -538,7 +540,7 @@ error check.
 | 0       | []                                | digit-argument 0                                                | [M-0]                                       |
 |---------+-----------------------------------+-----------------------------------------------------------------+---------------------------------------------|
 | !       | []                                | shell-command                                                   |                                             |
-| @       | set-mark-command                  | mark-word                                                       | mark-sexp                                   |
+| @       | set-mark-command                  | sp-select-next-thing                                +mark-word+ | sp-select-previous-thing-ex     +mark-sexp+ |
 | #       | []                                | ~linum-mode~                                                    |                                             |
 | $       | []                                | ~flyspell-mode~                                   +ispell-word+ |                                             |
 | %       | []                                | query-replace                                                   | ~vr/query-replace~   +query-replace-regexp+ |
