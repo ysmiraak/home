@@ -153,7 +153,7 @@ never wrap lines.
 ** navigation
 within emacs.
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-@" . swiper) ("M-x" . counsel-M-x))
+  (bind-keys ("C-M-s" . swiper) ("M-x" . counsel-M-x))
   (ivy-mode 1)
   (delight 'ivy-mode nil 'ivy)
   (cset 'ivy-re-builders-alist '((swiper . ivy--regex-plus)
@@ -237,13 +237,13 @@ extra convenience.
              ("<M-right>" . drag-stuff-right)
              ("<M-down>"  . drag-stuff-down)
              ("<M-up>"    . drag-stuff-up)
+             ("M-D" . global-hungry-delete-mode)
              ("M-I" . global-aggressive-indent-mode)
              ("C-j" . newline-and-indent))
-  (global-aggressive-indent-mode 1)
-  (delight 'aggressive-indent-mode " i" 'aggressive-indent)
-  (bind-keys ("M-D" . global-hungry-delete-mode))
   (global-hungry-delete-mode 1)
   (delight 'hungry-delete-mode " d" 'hungry-delete)
+  (global-aggressive-indent-mode 1)
+  (delight 'aggressive-indent-mode " i" 'aggressive-indent)
   (global-whitespace-cleanup-mode 1)
   (delight 'whitespace-cleanup-mode nil 'whitespace-cleanup-mode)
 #+END_SRC
@@ -538,7 +538,7 @@ error check.
 | 0       | []                                | digit-argument 0                                                | [M-0]                                       |
 |---------+-----------------------------------+-----------------------------------------------------------------+---------------------------------------------|
 | !       | []                                | shell-command                                                   |                                             |
-| @       | set-mark-command                  | ~swiper~                                            +mark-word+ |                                             |
+| @       | set-mark-command                  | mark-word                                                       | mark-sexp                                   |
 | #       | []                                | ~linum-mode~                                                    |                                             |
 | $       | []                                | ~flyspell-mode~                                   +ispell-word+ |                                             |
 | %       | []                                | query-replace                                                   | ~vr/query-replace~   +query-replace-regexp+ |
@@ -570,7 +570,7 @@ error check.
 | ~       | []                                | not-modified                                                    |                                             |
 | <       | []                                | beginning-of-buffer                                             |                                             |
 | >       | []                                | end-of-buffer                                                   |                                             |
-| ?       | []                                | xref-find-regerences                                            |                                             |
+| ?       | []                                | xref-find-references                                            |                                             |
 |---------+-----------------------------------+-----------------------------------------------------------------+---------------------------------------------|
 | a       | move-beginning-of-line            | backward-sentence                                               | ~sp-beginning-of-sexp~ +beginning-of-defun+ |
 | b       | backward-char                     | backward-word                                                   | ~sp-backward-sexp~          +backward-sexp+ |
@@ -590,7 +590,7 @@ error check.
 | p       | previous-line                     | ~sp-previous-sexp~                                              | ~sp-indent-adjust-sexp~     +backward-list+ |
 | q       | quoted-insert                     | fill-paragraph                                                  | ~sp-rewrap-sexp~           +indent-pp-sexp+ |
 | r       | isearch-backward                  | move-to-window-line-top-bottom                                  | isearch-backward-regexp                     |
-| s       | isearch-forward                   | [M-s-]                                                          | isearch-forward-regexp                      |
+| s       | isearch-forward                   | [M-s-]                                                          | ~swiper~           +isearch-forward-regexp+ |
 | t       | transpose-chars                   | transpose-words                                                 | ~sp-transpose-sexp~       +transpose-sexps+ |
 | u       | universal-argument                | ~fix-word-upcase~                                 +upcase-word+ | ~sp-backward-up-sexp~    +backward-up-list+ |
 | v       | scroll-up-command                 | scroll-down-command                                             | scroll-other-window                         |
