@@ -401,9 +401,15 @@ error check.
   (with-eval-after-load 'prolog
     (bind-keys :map prolog-mode-map ("M-RET" . ediprolog-dwim)))
 #+END_SRC
+** haskell
+#+BEGIN_SRC emacs-lisp
+  (add-hooks 'haskell-mode-hook #'interactive-haskell-mode)
+  (with-eval-after-load 'haskell-indentation
+    (unbind-keys haskell-indentation-mode-map ";"))
+#+END_SRC
 ** idris
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'idris-mode-hook 'eldoc-mode-hook (-partial #'aggressive-indent-mode -1))
+  (add-hooks 'idris-mode-hook #'eldoc-mode (-partial #'aggressive-indent-mode -1))
   (with-eval-after-load 'idris-mode
     (bind-keys :map idris-mode-map
                ("M-RET"   . idris-case-dwim)
