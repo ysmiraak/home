@@ -4,7 +4,7 @@
                   [lein-kibit "0.1.2" :exclusions [org.clojure/clojure]]
                   [jonase/eastwood "0.2.4"]]}
  :repl {:dependencies [^:displace [org.clojure/clojure "1.9.0-alpha17"]
-                       [ysmiraak "2017.08.15"]
+                       [ysmiraak "2017.09.11"]
                        [com.cemerick/pomegranate "0.3.1"]]
         :repl-options {:init-ns ysmiraak}
         :global-vars {*warn-on-reflection* true

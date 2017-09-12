@@ -123,6 +123,7 @@ simpler style.
         'inhibit-startup-screen     t
         'initial-scratch-message    nil
         'tool-bar-mode              nil
+        'menu-bar-mode              nil
         'scroll-bar-mode            nil
         'column-number-mode         t
         'ring-bell-function         'ignore)
@@ -403,7 +404,7 @@ error check.
 #+END_SRC
 ** haskell
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'haskell-mode-hook #'interactive-haskell-mode)
+  (add-hooks 'haskell-mode-hook #'interactive-haskell-mode (-partial #'aggressive-indent-mode -1))
   (with-eval-after-load 'haskell-indentation
     (unbind-keys haskell-indentation-mode-map ";"))
 #+END_SRC
