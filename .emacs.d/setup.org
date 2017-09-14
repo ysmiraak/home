@@ -362,7 +362,6 @@ spell check.
 #+END_SRC
 error check.
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'shell-mode-hook #'flycheck-mode)
   (with-eval-after-load 'flycheck
     (flycheck-pos-tip-mode))
 #+END_SRC
@@ -432,6 +431,10 @@ error check.
                        #'exec-path-from-shell-getenv
                      #'getenv)
                    "RUST_SRC_PATH")))
+#+END_SRC
+** shell
+#+BEGIN_SRC emacs-lisp
+  (cset 'eshell-preoutput-filter-functions '(ansi-color-apply))
 #+END_SRC
 ** python
 #+BEGIN_SRC emacs-lisp
