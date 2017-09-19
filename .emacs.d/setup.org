@@ -504,9 +504,8 @@ error check.
   (bind-keys ("M-A" . org-agenda))
   (add-hooks 'org-mode-hook #'flyspell-mode #'turn-on-org-cdlatex)
   (with-eval-after-load 'org
-    (cset 'org-directory                          "~/sotha_sil/emacs/org"
-          'org-agenda-files                       "~/sotha_sil/emacs/org/agenda-files"
-          'org-archive-location                   "~/sotha_sil/emacs/org/archive.org::"
+    (cset 'org-directory (f-expand "org" user-emacs-directory))
+    (cset 'org-agenda-files `(,(f-expand "agenda.org" org-directory))
           'org-log-done                           'time
           'org-latex-create-formula-image-program 'imagemagick
           'org-latex-listings                     'minted

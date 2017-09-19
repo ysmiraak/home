@@ -25,6 +25,7 @@
         delete-region
         dired-do-rename
         dired-mark
+        downcase-region
         end-of-visual-line
         ess-smart-comma
         ess-yank
