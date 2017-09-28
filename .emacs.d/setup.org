@@ -73,8 +73,8 @@ many also offer buffer evaluation, but i rarely need that, and =C-x h C-M-z= als
              ("M-RET" . eval-last-sexp)
              ("C-M-x" . eval-defun)
              ("C-M-z" . eval-region))
-  (unbind-keys emacs-lisp-mode-map "C-M-i")
-  (unbind-keys lisp-interaction-mode-map "C-M-i")
+  (--each `(,emacs-lisp-mode-map ,lisp-interaction-mode-map)
+    (unbind-key "C-M-i" it))
 #+END_SRC
 some helpers.
 #+BEGIN_SRC emacs-lisp
