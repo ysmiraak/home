@@ -178,11 +178,12 @@ among projects.
 #+END_SRC
 to jump around.
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-'"     . avy-goto-char-2)
+  (bind-keys ("M-'"     . avy-goto-char-timer)
              ("M-\""    . avy-pop-mark)
              ("M-g g"   . avy-goto-line)
              ("M-g M-g" . avy-goto-line)
              ("C-x o"   . ace-window))
+  (cset 'avy-timeout-seconds 0.3)
 #+END_SRC
 for scrolling.
 #+BEGIN_SRC emacs-lisp
