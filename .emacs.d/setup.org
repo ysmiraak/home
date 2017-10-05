@@ -444,8 +444,9 @@ error check.
              #'elpy-mode
              (-partial #'highlight-indentation-mode -1)
              (-partial #'aggressive-indent-mode -1))
-  (with-eval-after-load 'python-mode
+  (with-eval-after-load 'python
     (bind-keys :map python-mode-map
+               ("M-RET" . elpy-shell-send-current-statement)
                ("C-M-x" . python-shell-send-defun)
                ("C-M-z" . python-shell-send-region))
     (elpy-enable))
@@ -504,7 +505,7 @@ error check.
 ** org
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-A" . org-agenda))
-  (add-hooks 'org-mode-hook #'flyspell-mode #'turn-on-org-cdlatex)
+  (add-hooks 'org-mode-hook #'turn-on-org-cdlatex)
   (with-eval-after-load 'org
     (cset 'org-directory (f-expand "org" user-emacs-directory))
     (cset 'org-agenda-files `(,(f-expand "agenda.org" org-directory))
