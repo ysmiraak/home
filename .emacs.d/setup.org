@@ -27,7 +27,7 @@ i use these packages.
        aggressive-indent hungry-delete whitespace-cleanup-mode
        smartparens multiple-cursors visual-regexp expand-region region-bindings-mode
        company company-quickhelp yasnippet flycheck flycheck-pos-tip
-       clojure-mode cider clj-refactor kibit-helper geiser ediprolog haskell-mode idris-mode
+       clojure-mode cider clj-refactor kibit-helper geiser ediprolog pasp-mode haskell-mode idris-mode
        rust-mode cargo flycheck-rust racer elpy js2-mode rainbow-mode
        ess csv-mode markdown-mode latex-preview-pane cdlatex company-auctex))
 #+END_SRC
