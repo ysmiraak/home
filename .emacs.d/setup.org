@@ -376,7 +376,7 @@ error check.
   (with-eval-after-load 'cider
     (cset 'cider-font-lock-dynamically         t
           'cider-prefer-local-resources        t
-          'cider-allow-jack-in-without-project t
+          'cider-repl-use-pretty-printing      t
           'cider-doc-xref-regexp               "\\[\\[\\(.*?\\)\\]\\]"
           'cider-repl-history-file             (f-expand "cider-history" user-emacs-directory))
     (bind-keys :map cider-mode-map
