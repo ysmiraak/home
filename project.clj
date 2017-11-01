@@ -17,6 +17,6 @@
                  [org.clojure/core.async "0.3.443" :exclusions [org.clojure/tools.analyzer.jvm]]
                  [criterium "0.4.4"]]
   :repl-options {:init-ns ysmiraak}
-  :codox {:output-path "doc"
+  :codox {:output-path "docs"
           :source-uri "https://github.com/ysmiraak/home/blob/master/{filepath}#L{line}"
           :metadata {:doc/format :markdown}})
