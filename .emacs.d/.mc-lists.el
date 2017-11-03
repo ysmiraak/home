@@ -33,6 +33,7 @@
         fill-paragraph
         fix-word-downcase
         forward-sentence
+        hungry-delete-backward
         indent-for-tab-command
         indent-new-comment-line
         keyboard-quit
