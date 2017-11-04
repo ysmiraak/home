@@ -1,0 +1,10 @@
+* home
+
+- [[https://github.com/ysmiraak/home/blob/master/.emacs.d/setup.org][emacs setup.]]
+- [[https://ysmiraak.github.io/home/][a library of stolen ideas.]]
+
+* license
+
+copyright © 2017 ysmiraak
+
+distributed under the eclipse public license either version 1.0 or (at your option) any later version.

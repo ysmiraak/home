@@ -510,6 +510,7 @@ error check.
   (with-eval-after-load 'org
     (cset 'org-directory (f-expand "org" user-emacs-directory))
     (cset 'org-agenda-files `(,(f-expand "agenda.org" org-directory))
+          'org-adapt-indentation                  nil
           'org-log-done                           'time
           'org-latex-create-formula-image-program 'imagemagick
           'org-latex-listings                     'minted
