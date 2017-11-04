@@ -1,7 +1,7 @@
 * home
 
-- [[https://github.com/ysmiraak/home/blob/master/.emacs.d/setup.org][emacs setup.]]
-- [[https://ysmiraak.github.io/home/][a library of stolen ideas.]]
+- [[https://github.com/ysmiraak/home/blob/master/.emacs.d/setup.org][emacs setup]]
+- [[https://ysmiraak.github.io/home/][a library of stolen ideas]]
 
 * license
 
