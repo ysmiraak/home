@@ -368,6 +368,11 @@ error check.
     (flycheck-pos-tip-mode))
 #+END_SRC
 * lang
+#+BEGIN_SRC emacs-lisp
+  (add-hooks 'eval-expression-minibuffer-setup-hook
+             #'eldoc-mode
+             #'smartparens-mode)
+#+END_SRC
 ** clojure
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-S" . cider-scratch))
