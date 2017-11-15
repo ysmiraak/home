@@ -155,7 +155,9 @@ never wrap lines.
 ** navigation
 within emacs.
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("C-M-s" . swiper) ("M-x" . counsel-M-x))
+  (bind-keys ("C-M-s"   . swiper)
+             ("M-x"     . counsel-M-x)
+             ("C-x C-f" . counsel-find-file))
   (ivy-mode 1)
   (delight 'ivy-mode nil 'ivy)
   (cset 'ivy-re-builders-alist '((swiper . ivy--regex-plus)
