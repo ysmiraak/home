@@ -143,14 +143,18 @@ they encourage recklessness.
 ** theme
 simpler style.
 #+BEGIN_SRC emacs-lisp
-  (cset 'uniquify-buffer-name-style 'forward
-        'inhibit-startup-screen     t
-        'initial-scratch-message    nil
-        'menu-bar-mode              nil
-        'tool-bar-mode              nil
-        'scroll-bar-mode            nil
-        'column-number-mode         t
-        'ring-bell-function         'ignore)
+  (cset 'uniquify-buffer-name-style        'forward
+        'inhibit-startup-screen            t
+        'initial-scratch-message           nil
+        'menu-bar-mode                     nil
+        'tool-bar-mode                     nil
+        'scroll-bar-mode                   nil
+        'line-number-mode                  t
+        'column-number-mode                t
+        'display-time-mode                 t
+        'display-time-format               "%H:%M %a %y-%m-%d"
+        'display-time-default-load-average nil
+        'ring-bell-function                'ignore)
 #+END_SRC
 fancier face on graphic devices.
 #+BEGIN_SRC emacs-lisp
