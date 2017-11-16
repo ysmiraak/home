@@ -115,6 +115,10 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
 [[https://github.com/ch11ng/exwm][emacs x window manager]].
 #+BEGIN_SRC emacs-lisp
   (when (equal 'x window-system)
+    (cset 'menu-bar-mode                     nil
+          'display-time-mode                 t
+          'display-time-format               "%H:%M %a %y-%m-%d"
+          'display-time-default-load-average nil)
     (require 'exwm)
     (add-hooks 'exwm-manage-finish-hook #'exwm-layout-toggle-mode-line)
     (add-hooks 'exwm-update-class-hook (lambda () (exwm-workspace-rename-buffer exwm-class-name)))
@@ -143,18 +147,14 @@ they encourage recklessness.
 ** theme
 simpler style.
 #+BEGIN_SRC emacs-lisp
-  (cset 'uniquify-buffer-name-style        'forward
-        'inhibit-startup-screen            t
-        'initial-scratch-message           nil
-        'menu-bar-mode                     nil
-        'tool-bar-mode                     nil
-        'scroll-bar-mode                   nil
-        'line-number-mode                  t
-        'column-number-mode                t
-        'display-time-mode                 t
-        'display-time-format               "%H:%M %a %y-%m-%d"
-        'display-time-default-load-average nil
-        'ring-bell-function                'ignore)
+  (cset 'uniquify-buffer-name-style 'forward
+        'inhibit-startup-screen     t
+        'initial-scratch-message    nil
+        'tool-bar-mode              nil
+        'scroll-bar-mode            nil
+        'line-number-mode           t
+        'column-number-mode         t
+        'ring-bell-function         'ignore)
 #+END_SRC
 fancier face on graphic devices.
 #+BEGIN_SRC emacs-lisp
