@@ -1,5 +1,7 @@
-custom.el
+/eshell
 /elpa
-projectile-bookmarks.eld
-setup.el
-smex-items
+/custom.el
+/projectile-bookmarks.eld
+/setup.el
+/smex-items
+/tramp

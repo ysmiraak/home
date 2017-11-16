@@ -1,4 +1,8 @@
 *history
+/.Xauthority
+/.cache
+/.xinitrc
+/.xserverrc
 /Applications
 /Desktop
 /Documents

@@ -20,7 +20,7 @@ i use these packages.
   (customize-set-variable
    'package-selected-packages
    '(s f dash dash-functional bind-key delight suggest
-       benchmark-init exec-path-from-shell
+       benchmark-init exec-path-from-shell exwm
        zenburn-theme powerline rainbow-delimiters
        counsel flx smex which-key magit projectile avy ace-window centered-cursor-mode
        undo-tree browse-kill-ring zzz-to-char fix-word vimish-fold drag-stuff
@@ -112,6 +112,28 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
     (bind-keys ("<C-s-f>" . toggle-frame-fullscreen) ("<C-s-268632070>" . toggle-frame-fullscreen))
     (toggle-frame-fullscreen))
 #+END_SRC
+[[https://github.com/ch11ng/exwm][emacs x window manager]].
+#+BEGIN_SRC emacs-lisp
+  (when (equal 'x window-system)
+    (require 'exwm)
+    (add-hooks 'exwm-manage-finish-hook #'exwm-layout-toggle-mode-line)
+    (add-hooks 'exwm-update-class-hook (lambda () (exwm-workspace-rename-buffer exwm-class-name)))
+    (defun exwm-shell-command (command)
+      (interactive (list (read-shell-command "$ ")))
+      (start-process-shell-command command nil command))
+    (--map (exwm-input-set-key (kbd (car it)) (cdr it))
+           '(("s-a" . windmove-left)
+             ("s-s" . windmove-down)
+             ("s-w" . windmove-up)
+             ("s-d" . windmove-right)
+             ("s-r" . exwm-reset)
+             ("s-&" . exwm-shell-command)
+             ("s-0" . (lambda () (interactive) (exwm-shell-command "slock")))
+             ("s-1" . (lambda () (interactive) (exwm-shell-command "firefox")))
+             ("s-2" . (lambda () (interactive) (exwm-shell-command "vlc")))))
+    (defalias 'suspend-frame #'eshell)
+    (exwm-enable))
+#+END_SRC
 removes some safety measures.
 they encourage recklessness.
 #+BEGIN_SRC emacs-lisp
@@ -124,6 +146,7 @@ simpler style.
   (cset 'uniquify-buffer-name-style 'forward
         'inhibit-startup-screen     t
         'initial-scratch-message    nil
+        'menu-bar-mode              nil
         'tool-bar-mode              nil
         'scroll-bar-mode            nil
         'column-number-mode         t
