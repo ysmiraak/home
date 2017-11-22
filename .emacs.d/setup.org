@@ -481,7 +481,7 @@ error check.
              (-partial #'aggressive-indent-mode -1))
   (with-eval-after-load 'python
     (bind-keys :map python-mode-map
-               ("M-RET" . elpy-shell-send-statement-and-step)
+               ("M-RET" . elpy-shell-send-statement)
                ("C-M-x" . python-shell-send-defun)
                ("C-M-z" . python-shell-send-region))
     (defun elpy-shell--flash-and-message-region (beg end) nil)
