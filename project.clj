@@ -3,7 +3,7 @@
   :url "https://github.com/ysmiraak/ysmiraak"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.9.0-beta4"]
+  :dependencies [[org.clojure/clojure "1.9.0-RC2"]
                  [org.clojure/test.check "0.9.0"]
                  [swiss-arrows "1.0.0"]
                  [uncomplicate/fluokitten "0.6.0"]
