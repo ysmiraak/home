@@ -6,6 +6,6 @@
 (let [native (ns-publics 'uncomplicate.neanderthal.native)
       real   (ns-publics 'uncomplicate.neanderthal.real)
       core   (ns-publics 'uncomplicate.neanderthal.core)]
-  (doseq [sym ['dv 'dge 'dtr]] (var-alias (native sym) sym))
+  (doseq [[sym var] native] (var-alias var sym))
   (doseq [[sym var] real] (var-alias var sym))
   (doseq [[sym var] core] (when-not (real sym) (var-alias var sym))))
