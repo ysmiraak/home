@@ -78,11 +78,13 @@
         sp-kill-sexp
         sp-kill-word
         sp-newline
+        sp-next-sexp
         sp-rewrap-sexp
         sp-splice-sexp
         sp-splice-sexp-killing-backward
         sp-splice-sexp-killing-forward
         sp-split-sexp
+        sp-transpose-sexp
         wrap-with-parens
         yas-expand
         ))
