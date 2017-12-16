@@ -7,6 +7,7 @@
         TeX-insert-backslash
         backward-sentence
         backward-sexp
+        beginning-of-buffer
         beginning-of-visual-line
         c-electric-slash
         cdlatex-math-modify
