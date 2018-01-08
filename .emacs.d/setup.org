@@ -551,6 +551,7 @@ error check.
           'org-latex-create-formula-image-program 'imagemagick
           'org-latex-listings                     'minted
           'org-src-fontify-natively               t
+          'org-latex-with-hyperref                nil
           'org-latex-default-packages-alist
           '(("" "fontspec" t)
             ("" "graphicx" t)
