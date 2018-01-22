@@ -32,7 +32,9 @@
         ess-yank
         eval-print-last-sexp
         fill-paragraph
+        fix-word-capitalize
         fix-word-downcase
+        fix-word-upcase
         forward-sentence
         hungry-delete-backward
         indent-for-tab-command
