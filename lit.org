@@ -1,0 +1,47 @@
+* math
+| gallier_quaintance.2017 | algebra topology differential optimization |
+| hatcher.2001            | algebraic topology                         |
+* ga:math
+| bayro-corrochano_scheuermann.2010 | computing    |
+| buchholz.2005                     | neural       |
+| dorst_doran_lasenby.2002          | cs           |
+| dorst_mann.2002.1                 | intro        |
+| dorst_mann.2002.2                 | app          |
+| hitzer.2013                       | intro        |
+| hitzer_nitta_kuroe.2013           | app          |
+| lundholm_svensson.2016            | app          |
+| mann_fontijne_dorst.2007          | cs           |
+| mcdonald.2016.1                   | construction |
+| mcdonald.2016.2                   | survey       |
+* arch:math
+| arbib_manes.1975      | intro                |
+| awodey.2010           | intro                |
+| baez.1997             | intro ncat           |
+| lawvere.1963          | functorial semantics |
+| lawvere_schanuel.1997 | intro dialogue       |
+| leinster.2000         | yoneda               |
+| leinster.2016         | intro basic          |
+| mac-lane.1971         | work                 |
+| simmons.2010          | intro exercises      |
+| smith.2016            | intro gentle         |
+| spivak.2013           | intro science        |
+* arch:cs
+* hott:math
+| martin-löf.1980 | intuitionistic type |
+| univalent.2013  | hott                |
+* cs
+| bagwell.2001 | hamt |
+| hoard.2015   | csp  |
+* lisp:cs
+| abelson_sussman.1996 | sicp                 |
+| flatt_.1999          | pl as os             |
+| friedman_wise.1976   | cons should not eval |
+| graham.1993          | on lisp              |
+| graham.1996          | ansi common lisp     |
+| graham.2002          | roots                |
+| mccarthy.1960        | lisp                 |
+* haskell:cs
+| harris_marlow_jones.2005 | shared-memory multiprocessor |
+| wadler_blott.1988        | ad hoc polymorphism          |
+* nlp
+* nn
