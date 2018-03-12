@@ -1,4 +1,4 @@
-personal_ws-1.1 en 488 
+personal_ws-1.1 en 495 
 hashmap
 Magnus
 Dragonguard
@@ -46,6 +46,7 @@ timeline
 edu
 functor
 lcccccccccccccccccc
+CRF
 tuebingen
 Vasconic
 bibtex
@@ -76,8 +77,8 @@ HYAET
 SEHTI
 smallskip
 NHST
-delexicalized
 dilations
+delexicalized
 Altmer
 hypersphere
 nerevar
@@ -149,6 +150,7 @@ LKHAN
 autoload
 Szabolcsi
 sentential
+resampling
 azura
 Shaie
 feedbacks
@@ -228,6 +230,7 @@ png
 overfitting
 Padhome
 Mehrunes
+tokenized
 Utta's
 AYEM
 Ayem
@@ -236,6 +239,7 @@ AVSs
 rgb
 initializers
 SHEOG
+POS
 RET
 pre
 tokenizer
@@ -267,6 +271,7 @@ combinatory
 computable
 Sil
 QUD
+RNN
 treebank
 Trinimac
 http
@@ -291,6 +296,7 @@ Gnisis
 sublist
 unmaintainable
 enumi
+discriminative
 Lexically
 allcolors
 compositionality
@@ -370,9 +376,9 @@ de
 interpretable
 memoization
 hormonally
+strided
 Resdaynia
 Barfok
-strided
 adam
 modus
 Enantiomorph
@@ -382,7 +388,6 @@ Khizumet
 Hatoor
 dimensionality
 bigram
-SEHT
 Seht
 maxout
 incrementing
@@ -399,6 +404,7 @@ Uyghur
 printbibliography
 lc
 Kh
+overfitted
 scriptsize
 dired
 RKHT
@@ -429,6 +435,7 @@ equalities
 modelling
 ALTADOON
 ensp
+accuracies
 th
 lcccccccccccc
 quadratically

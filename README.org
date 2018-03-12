@@ -2,6 +2,7 @@
 
 - [[https://github.com/ysmiraak/home/blob/master/.emacs.d/setup.org][emacs setup]]
 - [[https://ysmiraak.github.io/home/][a library of stolen ideas]]
+- [[https://github.com/ysmiraak/home/blob/master/lit.org][literature index]]
 
 * license
 
