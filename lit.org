@@ -62,22 +62,27 @@
 | healy_caudell_goldsmith.2008 | human categorization and similarity     |
 | kissinger_uijlen.2017        | causal structure                        |
 | mazzola.2001                 | music theory                            |
-* cs
-| bagwell.2001 | hamt |
-| hoard.2015   | csp  |
-| hughes.1990  | fp   |
-* ga_math
+* clif_cs_math
 | bayro-corrochano_scheuermann.2010 | computing    |
-| buchholz.2005                     | neural       |
+| buchholz.2005                     | nn           |
+| buchholz_sommer.2008              | mlp          |
 | dorst_doran_lasenby.2002          | cs           |
 | dorst_mann.2002.1                 | intro        |
 | dorst_mann.2002.2                 | app          |
 | hitzer.2013                       | intro        |
 | hitzer_nitta_kuroe.2013           | app          |
+| iconip.2011.pdf                   | nn           |
+| kuroe.2011                        | rnn          |
 | lundholm_svensson.2016            | app          |
 | mann_fontijne_dorst.2007          | cs           |
 | mcdonald.2016.1                   | construction |
 | mcdonald.2016.2                   | survey       |
+| pearson_bisset.1994               | nn           |
+| sommer.2001                       | computing    |
+* cs
+| bagwell.2001 | hamt |
+| hoard.2015   | csp  |
+| hughes.1990  | fp   |
 * haskell_cs
 | harris_marlow_jones.2005 | shared-memory multiprocessor       |
 | wadler_blott.1988        | ad hoc polymorphism                |
