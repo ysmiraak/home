@@ -69,14 +69,18 @@
 | dorst_doran_lasenby.2002          | cs           |
 | dorst_mann.2002.1                 | intro        |
 | dorst_mann.2002.2                 | app          |
+| gull_lasenby_doran.1993.pdf       | not real     |
 | hitzer.2013                       | intro        |
 | hitzer_nitta_kuroe.2013           | app          |
 | iconip.2011.pdf                   | nn           |
 | kuroe.2011                        | rnn          |
+| lasenby_doran.1996.pdf            | unified      |
 | lundholm_svensson.2016            | app          |
+| macdonald.2010.pdf                | intro        |
+| macdonald.2012.pdf                | calculus     |
+| macdonald.2016.1                  | construction |
+| macdonald.2016.2                  | survey       |
 | mann_fontijne_dorst.2007          | cs           |
-| mcdonald.2016.1                   | construction |
-| mcdonald.2016.2                   | survey       |
 | pearson_bisset.1994               | nn           |
 | sommer.2001                       | computing    |
 * cs
