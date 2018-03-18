@@ -1,117 +1,132 @@
 * arch_cs
-| asperti_longo.1991            | intro working                                 |
-| escardó_oliva.2009            | bar recursion                                 |
-| goguen.1989                   | unification                                   |
-| hagino.1987                   | categorical programming language              |
-| healy.2000                    | neural modeling and graphical representations |
-| hinze.2012                    | generic programming with adjunctions          |
-| hinze.2012                    | sorting                                       |
-| hinze_james.2010              | reason isomorphically                         |
-| hutton_meijer.1998            | monadic parsing                               |
-| hyland.2013                   | lambda calculus                               |
-| hyland_power.2007             | universal algebra lawvere theories and monads |
-| mcbride.2007                  | clowns jokers                                 |
-| mcbride.2011                  | kleisli arrows                                |
-| mcbride_paterson.2008         | applicative                                   |
-| meijer_fokkinga_paterson.1991 | bananas lenses envelopes and barbed wire      |
-| milewski.2017                 | intro                                         |
-| moggi.1989                    | computation and monads                        |
-| pierce.1988                   | intro taste                                   |
-| plotkin_power.2002.1          | effects and operations                        |
-| plotkin_power.2002.2          | computation determine monads                  |
-| rydeheard_burstall.1988       | computational category theory                 |
-| silva_oliveira.2008           | galculator                                    |
-| tate_stepp__lerner.2010       | generating compiler optimizations             |
-| wadler.1989                   | theorems for free                             |
-| wadler.1990                   | comprehending monads                          |
-| yanofsky.2010                 | definition of algorithm                       |
-| yanofsky.2017                 | theoretical computer science                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| asperti_longo.1991                                           | intro working                                                |
+| escardó_oliva.2009                                           | bar recursion                                                |
+| goguen.1989                                                  | unification                                                  |
+| hagino.1987                                                  | categorical programming language                             |
+| healy.2000                                                   | neural modeling and graphical representations                |
+| hinze.2012                                                   | generic programming with adjunctions                         |
+| hinze.2012                                                   | sorting                                                      |
+| hinze_james.2010                                             | reason isomorphically                                        |
+| hutton_meijer.1998                                           | monadic parsing                                              |
+| hyland.2013                                                  | lambda calculus                                              |
+| hyland_power.2007                                            | universal algebra lawvere theories and monads                |
+| mcbride.2007                                                 | clowns jokers                                                |
+| mcbride.2011                                                 | kleisli arrows                                               |
+| mcbride_paterson.2008                                        | applicative                                                  |
+| meijer_fokkinga_paterson.1991                                | bananas lenses envelopes and barbed wire                     |
+| milewski.2017                                                | intro                                                        |
+| moggi.1989                                                   | computation and monads                                       |
+| pierce.1988                                                  | intro taste                                                  |
+| plotkin_power.2002.1                                         | effects and operations                                       |
+| plotkin_power.2002.2                                         | computation determine monads                                 |
+| rydeheard_burstall.1988                                      | computational category theory                                |
+| silva_oliveira.2008                                          | galculator                                                   |
+| tate_stepp__lerner.2010                                      | generating compiler optimizations                            |
+| wadler.1989                                                  | theorems for free                                            |
+| wadler.1990                                                  | comprehending monads                                         |
+| yanofsky.2010                                                | definition of algorithm                                      |
+| yanofsky.2017                                                | theoretical computer science                                 |
 * arch_math
-| arbib_manes.1975      | intro                      |
-| awodey.2010           | intro                      |
-| baez.1997             | intro ncat                 |
-| barr_wells.2005       | toposes triples theories   |
-| došen.1998            | deductive systems          |
-| goldblatt.2014        | topos                      |
-| kostecki.2011         | intro topos                |
-| lawvere.1963          | functorial semantics       |
-| lawvere_schanuel.1997 | intro dialogue             |
-| leinster.2000         | yoneda                     |
-| leinster.2016         | intro basic                |
-| mac-lane.1971         | work                       |
-| mclarty.2006          | two constructivist aspects |
-| schulman.2016         | logic                      |
-| simmons.2010          | intro exercises            |
-| smith.2016            | intro gentle               |
-| spivak.2013           | intro science              |
-| streicher.2003        | intro logic                |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| arbib_manes.1975                                             | intro                                                        |
+| awodey.2010                                                  | intro                                                        |
+| baez.1997                                                    | intro ncat                                                   |
+| barr_wells.2005                                              | toposes triples theories                                     |
+| došen.1998                                                   | deductive systems                                            |
+| goldblatt.2014                                               | topos                                                        |
+| kostecki.2011                                                | intro topos                                                  |
+| lawvere.1963                                                 | functorial semantics                                         |
+| lawvere_schanuel.1997                                        | intro dialogue                                               |
+| leinster.2000                                                | yoneda                                                       |
+| leinster.2016                                                | intro basic                                                  |
+| mac-lane.1971                                                | work                                                         |
+| mclarty.2006                                                 | two constructivist aspects                                   |
+| schulman.2016                                                | logic                                                        |
+| simmons.2010                                                 | intro exercises                                              |
+| smith.2016                                                   | intro gentle                                                 |
+| spivak.2013                                                  | intro science                                                |
+| streicher.2003                                               | intro logic                                                  |
 * arch_nlp
-| asudeh.2014                 | monad                              |
-| bolt_.2017                  | concept composition                |
-| coecke_sadrzadeh_clark.2010 | compositional distributional model |
-| reyes_.1999                 | nouns                              |
-| smith.2010                  | galois syntax semantics            |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| asudeh.2014                                                  | monad                                                        |
+| bolt_.2017                                                   | concept composition                                          |
+| coecke_sadrzadeh_clark.2010                                  | compositional distributional model                           |
+| reyes_.1999                                                  | nouns                                                        |
+| smith.2010                                                   | galois syntax semantics                                      |
 * arch_sc
-| andreatta_.2013              | creativity                              |
-| arzi-gonczarowski.1999       | analogy perception                      |
-| baas_emmeche.1997            | emergence explanation                   |
-| baez_fritz_leinster.2011     | entropy                                 |
-| baez_stay.2009               | physics topology logic computation      |
-| baianu_brown_glazebrook.2011 | complex meta-systems ontology emergence |
-| brown_porter.2008            | neuroscience                            |
-| healy_caudell_goldsmith.2008 | human categorization and similarity     |
-| kissinger_uijlen.2017        | causal structure                        |
-| mazzola.2001                 | music theory                            |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| andreatta_.2013                                              | creativity                                                   |
+| arzi-gonczarowski.1999                                       | analogy perception                                           |
+| baas_emmeche.1997                                            | emergence explanation                                        |
+| baez_fritz_leinster.2011                                     | entropy                                                      |
+| baez_stay.2009                                               | physics topology logic computation                           |
+| baianu_brown_glazebrook.2011                                 | complex meta-systems ontology emergence                      |
+| brown_porter.2008                                            | neuroscience                                                 |
+| healy_caudell_goldsmith.2008                                 | human categorization and similarity                          |
+| kissinger_uijlen.2017                                        | causal structure                                             |
+| mazzola.2001                                                 | music theory                                                 |
 * clif_cs_math
-| bayro-corrochano_scheuermann.2010 | computing    |
-| buchholz.2005                     | nn           |
-| buchholz_sommer.2008              | mlp          |
-| dorst_doran_lasenby.2002          | cs           |
-| dorst_mann.2002.1                 | intro        |
-| dorst_mann.2002.2                 | app          |
-| gull_lasenby_doran.1993.pdf       | not real     |
-| hitzer.2013                       | intro        |
-| hitzer_nitta_kuroe.2013           | app          |
-| iconip.2011.pdf                   | nn           |
-| kuroe.2011                        | rnn          |
-| lasenby_doran.1996.pdf            | unified      |
-| lundholm_svensson.2016            | app          |
-| macdonald.2010.pdf                | intro        |
-| macdonald.2012.pdf                | calculus     |
-| macdonald.2016.1                  | construction |
-| macdonald.2016.2                  | survey       |
-| mann_fontijne_dorst.2007          | cs           |
-| pearson_bisset.1994               | nn           |
-| sommer.2001                       | computing    |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| bayro-corrochano_arana-daniel_vallejo-gutidrres.2004         | clifford svm                                                 |
+| bayro-corrochano_scheuermann.2010                            | computing                                                    |
+| bromborsky_.2014                                             | intro                                                        |
+| buchholz.2005                                                | nn                                                           |
+| buchholz_sommer.2008                                         | mlp                                                          |
+| dorst_doran_lasenby.2002                                     | cs                                                           |
+| dorst_mann.2002.1                                            | intro                                                        |
+| dorst_mann.2002.2                                            | app                                                          |
+| gaudet_maida.2018                                            | nn quaternion                                                |
+| gull_lasenby_doran.1993.pdf                                  | not real                                                     |
+| hitzer.2013                                                  | intro                                                        |
+| hitzer_nitta_kuroe.2013                                      | app                                                          |
+| iconip.2011.pdf                                              | nn                                                           |
+| kuroe.2011                                                   | rnn                                                          |
+| lasenby_doran.1996.pdf                                       | unified                                                      |
+| lundholm_svensson.2016                                       | app                                                          |
+| macdonald.2010.pdf                                           | intro                                                        |
+| macdonald.2012.pdf                                           | calculus                                                     |
+| macdonald.2016.1                                             | construction                                                 |
+| macdonald.2016.2                                             | survey                                                       |
+| mann_fontijne_dorst.2007                                     | cs                                                           |
+| pearson_bisset.1994                                          | nn                                                           |
+| sommer.2001                                                  | computing                                                    |
+| trabelsi_.2018                                               | nn complex                                                   |
 * cs
-| bagwell.2001 | hamt |
-| hoard.2015   | csp  |
-| hughes.1990  | fp   |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| bagwell.2001                                                 | hamt                                                         |
+| hoard.2015                                                   | csp                                                          |
+| hughes.1990                                                  | fp                                                           |
 * haskell_cs
-| harris_marlow_jones.2005 | shared-memory multiprocessor       |
-| wadler_blott.1988        | ad hoc polymorphism                |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| harris_marlow_jones.2005                                     | shared-memory multiprocessor                                 |
+| wadler_blott.1988                                            | ad hoc polymorphism                                          |
 * lisp_cs
-| abelson_sussman.1996 | sicp                 |
-| flatt_.1999          | pl as os             |
-| friedman_wise.1976   | cons should not eval |
-| graham.1993          | on lisp              |
-| graham.1996          | ansi common lisp     |
-| graham.2002          | roots                |
-| mccarthy.1960        | lisp                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| abelson_sussman.1996                                         | sicp                                                         |
+| flatt_.1999                                                  | pl as os                                                     |
+| friedman_wise.1976                                           | cons should not eval                                         |
+| graham.1993                                                  | on lisp                                                      |
+| graham.1996                                                  | ansi common lisp                                             |
+| graham.2002                                                  | roots                                                        |
+| mccarthy.1960                                                | lisp                                                         |
 * math
-| cheng.2004              | morality                                   |
-| gallier_quaintance.2017 | algebra topology differential optimization |
-| hatcher.2001            | algebraic topology                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| cheng.2004                                                   | morality                                                     |
+| gallier_quaintance.2017                                      | algebra topology differential optimization                   |
+| hatcher.2001                                                 | algebraic topology                                           |
 * type_cs_math
-| ahmed.2004                      | mutable state                        |
-| altenkirch_McBride_mckinna.2005 | why dependent types matter           |
-| duba_harper_macqueen.1991       | first-class continuations            |
-| lön_swierstra.2007              | dependent type implementation        |
-| martin-löf.1980                 | intuitionistic type                  |
-| milner.1978                     | polymorphism                         |
-| milner_tofte.1991               | co-induction in relational semantics |
-| morris.1973                     | types are not sets                   |
-| oury_swierstra.2008             | power of pi                          |
-| reynolds.1983                   | parametric polymorphism              |
-| univalent.2013                  | homotopy type theory                 |
-| wright_felleisen.1992           | syntactic approach to soundness      |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ahmed.2004                                                   | mutable state                                                |
+| altenkirch_.2010                                             | pi sigma                                                     |
+| altenkirch_McBride_mckinna.2005                              | why dependent types matter                                   |
+| duba_harper_macqueen.1991                                    | first-class continuations                                    |
+| lön_swierstra.2007                                           | dependent type implementation                                |
+| martin-löf.1980                                              | intuitionistic type                                          |
+| milner.1978                                                  | polymorphism                                                 |
+| milner_tofte.1991                                            | co-induction in relational semantics                         |
+| morris.1973                                                  | types are not sets                                           |
+| oury_swierstra.2008                                          | power of pi                                                  |
+| reynolds.1983                                                | parametric polymorphism                                      |
+| univalent.2013                                               | homotopy type theory                                         |
+| wright_felleisen.1992                                        | syntactic approach to soundness                              |
