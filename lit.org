@@ -126,7 +126,7 @@
 | 1991 | milner_tofte              | co-induction in relational semantics                         |
 | 1992 | wright_felleisen          | syntactic approach to soundness                              |
 | 2004 | ahmed                     | mutable state                                                |
-| 2005 | altenkirch_McBride_mckinna | why dependent types matter                                   |
+| 2005 | altenkirch_               | why dependent types matter                                   |
 | 2007 | lön_swierstra             | dependent type implementation                                |
 | 2008 | oury_swierstra            | power of pi                                                  |
 | 2010 | altenkirch_               | pi sigma                                                     |
