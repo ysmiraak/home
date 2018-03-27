@@ -40,6 +40,8 @@
 | 2003 | streicher                 | intro logic                                                  |
 | 2005 | barr_wells                | toposes triples theories                                     |
 | 2006 | mclarty                   | two constructivist aspects                                   |
+| 2007 | krömer                    | history                                                      |
+| 2009 | marquis                   | history geometrical                                          |
 | 2010 | awodey                    | intro                                                        |
 | 2010 | simmons                   | intro exercises                                              |
 | 2011 | kostecki                  | intro topos                                                  |
@@ -48,6 +50,7 @@
 | 2016 | leinster                  | intro basic                                                  |
 | 2016 | schulman                  | logic                                                        |
 | 2016 | smith                     | intro gentle                                                 |
+| 2018 | fong_spivak               | applied                                                      |
 * arch_nlp
 |  <4> | <25>                      | <60>                                                         |
 | 1999 | reyes_                    | nouns                                                        |
