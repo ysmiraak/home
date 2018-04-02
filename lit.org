@@ -1,0 +1,136 @@
+* arch_cs
+|  <4> | <25>                      | <60>                                                         |
+| 1987 | hagino                    | categorical programming language                             |
+| 1988 | pierce                    | intro taste                                                  |
+| 1988 | rydeheard_burstall        | computational category theory                                |
+| 1989 | goguen                    | unification                                                  |
+| 1989 | moggi                     | computation and monads                                       |
+| 1989 | wadler                    | theorems for free                                            |
+| 1990 | wadler                    | comprehending monads                                         |
+| 1991 | asperti_longo             | intro working                                                |
+| 1991 | meijer_fokkinga_paterson  | bananas lenses envelopes and barbed wire                     |
+| 1998 | hutton_meijer             | monadic parsing                                              |
+| 2000 | healy                     | neural modeling and graphical representations                |
+| 2002 | plotkin_power.1           | effects and operations                                       |
+| 2002 | plotkin_power.2           | computation determine monads                                 |
+| 2007 | hyland_power              | universal algebra lawvere theories and monads                |
+| 2007 | mcbride                   | clowns jokers                                                |
+| 2008 | mcbride_paterson          | applicative                                                  |
+| 2008 | silva_oliveira            | galculator                                                   |
+| 2009 | escardó_oliva             | bar recursion                                                |
+| 2010 | hinze                     | adjoint folds and unfolds                                    |
+| 2010 | hinze_james               | reason isomorphically                                        |
+| 2010 | tate_stepp__lerner        | generating compiler optimizations                            |
+| 2010 | yanofsky                  | definition of algorithm                                      |
+| 2011 | mcbride                   | kleisli arrows                                               |
+| 2012 | hinze                     | generic programming with adjunctions                         |
+| 2012 | hinze_                    | sorting                                                      |
+| 2013 | hyland                    | lambda calculus                                              |
+| 2017 | milewski                  | intro                                                        |
+| 2017 | yanofsky                  | theoretical computer science                                 |
+* arch_math
+|  <4> | <25>                      | <60>                                                         |
+| 1963 | lawvere                   | functorial semantics                                         |
+| 1971 | mac-lane                  | work                                                         |
+| 1975 | arbib_manes               | intro                                                        |
+| 1997 | baez                      | intro ncat                                                   |
+| 1997 | lawvere_schanuel          | intro dialogue                                               |
+| 1998 | došen                     | deductive systems                                            |
+| 2000 | leinster                  | yoneda                                                       |
+| 2003 | streicher                 | intro logic                                                  |
+| 2005 | barr_wells                | toposes triples theories                                     |
+| 2006 | mclarty                   | two constructivist aspects                                   |
+| 2007 | krömer                    | history                                                      |
+| 2009 | marquis                   | history geometrical                                          |
+| 2010 | awodey                    | intro                                                        |
+| 2010 | simmons                   | intro exercises                                              |
+| 2011 | kostecki                  | intro topos                                                  |
+| 2013 | spivak                    | intro science                                                |
+| 2014 | goldblatt                 | topos                                                        |
+| 2016 | leinster                  | intro basic                                                  |
+| 2016 | schulman                  | logic                                                        |
+| 2016 | smith                     | intro gentle                                                 |
+| 2018 | fong_spivak               | applied                                                      |
+* arch_nlp
+|  <4> | <25>                      | <60>                                                         |
+| 1999 | reyes_                    | nouns                                                        |
+| 2010 | coecke_sadrzadeh_clark    | compositional distributional model                           |
+| 2010 | smith                     | galois syntax semantics                                      |
+| 2014 | asudeh                    | monad                                                        |
+| 2017 | bolt_                     | concept composition                                          |
+* arch_sc
+|  <4> | <25>                      | <60>                                                         |
+| 1997 | baas_emmeche              | emergence explanation                                        |
+| 1999 | arzi-gonczarowski         | analogy perception                                           |
+| 2001 | mazzola                   | music theory                                                 |
+| 2008 | brown_porter              | neuroscience                                                 |
+| 2008 | healy_caudell_goldsmith   | human categorization and similarity                          |
+| 2009 | baez_stay                 | physics topology logic computation                           |
+| 2011 | baez_fritz_leinster       | entropy                                                      |
+| 2011 | baianu_brown_glazebrook   | complex meta-systems ontology emergence                      |
+| 2013 | andreatta_                | creativity                                                   |
+| 2017 | kissinger_uijlen          | causal structure                                             |
+* clif_cs_math
+|  <4> | <25>                      | <60>                                                         |
+| 1993 | gull_lasenby_doran        | not real                                                     |
+| 1994 | pearson_bisset            | nn                                                           |
+| 1996 | lasenby_doran             | unified                                                      |
+| 2001 | sommer                    | computing                                                    |
+| 2002 | dorst_doran_lasenby       | cs                                                           |
+| 2002 | dorst_mann.1              | intro                                                        |
+| 2002 | dorst_mann.2              | app                                                          |
+| 2004 | bayro-_arana-_vallejo-    | clifford svm                                                 |
+| 2005 | buchholz                  | nn                                                           |
+| 2007 | mann_fontijne_dorst       | cs                                                           |
+| 2008 | buchholz_sommer           | mlp                                                          |
+| 2010 | bayro-_scheuermann        | computing                                                    |
+| 2010 | macdonald                 | intro                                                        |
+| 2011 | iconip                    | nn                                                           |
+| 2011 | kuroe                     | rnn                                                          |
+| 2012 | macdonald                 | calculus                                                     |
+| 2013 | hitzer                    | intro                                                        |
+| 2013 | hitzer_nitta_kuroe        | app                                                          |
+| 2014 | bromborsky_               | intro                                                        |
+| 2016 | lundholm_svensson         | app                                                          |
+| 2016 | macdonald.1               | construction                                                 |
+| 2016 | macdonald.2               | survey                                                       |
+| 2018 | gaudet_maida              | nn quaternion                                                |
+| 2018 | trabelsi_                 | nn complex                                                   |
+* cs
+|  <4> | <25>                      | <60>                                                         |
+| 1990 | hughes                    | fp                                                           |
+| 2001 | bagwell                   | hamt                                                         |
+| 2015 | hoare                     | csp                                                          |
+* haskell_cs
+|  <4> | <25>                      | <60>                                                         |
+| 1988 | wadler_blott              | ad hoc polymorphism                                          |
+| 2005 | harris_marlow_jones       | shared-memory multiprocessor                                 |
+* lisp_cs
+|  <4> | <25>                      | <60>                                                         |
+| 1960 | mccarthy                  | lisp                                                         |
+| 1976 | friedman_wise             | cons should not eval                                         |
+| 1993 | graham                    | on lisp                                                      |
+| 1996 | abelson_sussman           | sicp                                                         |
+| 1996 | graham                    | ansi common lisp                                             |
+| 1999 | flatt_                    | pl as os                                                     |
+| 2002 | graham                    | roots                                                        |
+* math
+|  <4> | <25>                      | <60>                                                         |
+| 2001 | hatcher                   | algebraic topology                                           |
+| 2004 | cheng                     | morality                                                     |
+| 2017 | gallier_quaintance        | algebra topology differential optimization                   |
+* type_cs_math
+|  <4> | <25>                      | <60>                                                         |
+| 1973 | morris                    | types are not sets                                           |
+| 1978 | milner                    | polymorphism                                                 |
+| 1980 | martin-löf                | intuitionistic type                                          |
+| 1983 | reynolds                  | parametric polymorphism                                      |
+| 1991 | duba_harper_macqueen      | first-class continuations                                    |
+| 1991 | milner_tofte              | co-induction in relational semantics                         |
+| 1992 | wright_felleisen          | syntactic approach to soundness                              |
+| 2004 | ahmed                     | mutable state                                                |
+| 2005 | altenkirch_               | why dependent types matter                                   |
+| 2007 | lön_swierstra             | dependent type implementation                                |
+| 2008 | oury_swierstra            | power of pi                                                  |
+| 2010 | altenkirch_               | pi sigma                                                     |
+| 2013 | univalent                 | homotopy type theory                                         |

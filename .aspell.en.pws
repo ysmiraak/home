@@ -1,4 +1,4 @@
-personal_ws-1.1 en 487 
+personal_ws-1.1 en 495
 hashmap
 Magnus
 Dragonguard
@@ -46,6 +46,7 @@ timeline
 edu
 functor
 lcccccccccccccccccc
+CRF
 tuebingen
 Vasconic
 bibtex
@@ -66,6 +67,7 @@ adjunctions
 Hatoor's
 undusted
 cuz
+companding
 lexicalize
 formalisms
 noitemsep
@@ -75,6 +77,7 @@ HYAET
 SEHTI
 smallskip
 NHST
+dilations
 delexicalized
 Altmer
 hypersphere
@@ -129,6 +132,7 @@ lcc
 runtime
 CHIM
 hyperparameter
+uint
 haskell
 preprocessed
 iso
@@ -147,6 +151,7 @@ LKHAN
 autoload
 Szabolcsi
 sentential
+resampling
 azura
 Shaie
 feedbacks
@@ -194,6 +199,7 @@ MOR
 unassociated
 Lambek
 lessoning
+quantized
 pdf
 lccccc
 paddings
@@ -225,6 +231,7 @@ png
 overfitting
 Padhome
 Mehrunes
+tokenized
 Utta's
 morphism
 AYEM
@@ -234,6 +241,10 @@ AVSs
 rgb
 initializers
 SHEOG
+<<<<<<< HEAD
+=======
+POS
+>>>>>>> 1c1cec28182c49953dc35e7069c9f6f14785a946
 RET
 pre
 tokenizer
@@ -265,6 +276,7 @@ combinatory
 computable
 Sil
 QUD
+RNN
 treebank
 Trinimac
 http
@@ -290,6 +302,7 @@ exponentials
 sublist
 unmaintainable
 enumi
+discriminative
 Lexically
 allcolors
 compositionality
@@ -371,6 +384,7 @@ de
 interpretable
 memoization
 hormonally
+strided
 Resdaynia
 Barfok
 adam
@@ -382,7 +396,6 @@ Khizumet
 Hatoor
 dimensionality
 bigram
-SEHT
 Seht
 maxout
 incrementing
@@ -399,6 +412,7 @@ Uyghur
 printbibliography
 lc
 Kh
+overfitted
 scriptsize
 dired
 RKHT
@@ -429,6 +443,7 @@ equalities
 modelling
 ALTADOON
 ensp
+accuracies
 th
 lcccccccccccc
 quadratically
@@ -463,6 +478,7 @@ sharmat
 Bal
 nbsp
 Subcategorization
+companded
 Sino
 acyclic
 kuan
