@@ -53,7 +53,9 @@
 | 2018 | fong_spivak               | applied                                                      |
 * arch_nlp
 |  <4> | <25>                      | <60>                                                         |
+| 1958 | lambek                    | pregroup grammar                                             |
 | 1999 | reyes_                    | nouns                                                        |
+| 2005 | preller_lambek            | free compact 2-cat                                           |
 | 2010 | coecke_sadrzadeh_clark    | compositional distributional model                           |
 | 2010 | smith                     | galois syntax semantics                                      |
 | 2014 | asudeh                    | monad                                                        |
@@ -110,8 +112,8 @@
 | 1960 | mccarthy                  | lisp                                                         |
 | 1976 | friedman_wise             | cons should not eval                                         |
 | 1993 | graham                    | on lisp                                                      |
+| 1994 | graham                    | ansi common lisp                                             |
 | 1996 | abelson_sussman           | sicp                                                         |
-| 1996 | graham                    | ansi common lisp                                             |
 | 1999 | flatt_                    | pl as os                                                     |
 | 2002 | graham                    | roots                                                        |
 * math

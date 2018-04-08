@@ -188,9 +188,10 @@ within emacs.
              ("C-x C-f" . counsel-find-file))
   (ivy-mode 1)
   (delight 'ivy-mode nil 'ivy)
-  (cset 'ivy-re-builders-alist '((swiper . ivy--regex-plus)
-                                 (t      . ivy--regex-fuzzy))
-        'ivy-height            13)
+  (cset 'ivy-initial-inputs-alist nil
+        'ivy-re-builders-alist    '((swiper . ivy--regex-plus)
+                                    (t      . ivy--regex-fuzzy))
+        'ivy-height               13)
   (bind-keys :map ivy-minibuffer-map
              ("M-n" . ivy-next-line)      ("C-n"   . ivy-next-history-element)
              ("M-p" . ivy-previous-line)  ("C-p"   . ivy-previous-history-element)
