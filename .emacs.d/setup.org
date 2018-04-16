@@ -112,15 +112,14 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
     (bind-keys ("<C-s-f>" . toggle-frame-fullscreen) ("<C-s-268632070>" . toggle-frame-fullscreen))
     (toggle-frame-fullscreen))
 #+END_SRC
-[[https://github.com/ch11ng/exwm][emacs x window manager]].
+[[https://github.com/ch11ng/exwm][emacs x window manager]] for my arch linux.
 #+BEGIN_SRC emacs-lisp
-  (when (equal 'x window-system)
+  (when (equal "yksarch" (system-name))
     (cset 'menu-bar-mode                     nil
           'display-time-mode                 t
           'display-time-format               "%H:%M %a %y-%m-%d"
           'display-time-default-load-average nil)
     (require 'exwm)
-    (add-hooks 'exwm-manage-finish-hook #'exwm-layout-toggle-mode-line)
     (add-hooks 'exwm-update-class-hook (lambda () (exwm-workspace-rename-buffer exwm-class-name)))
     (defun exwm-shell-command (command)
       (interactive (list (read-shell-command "$ ")))
@@ -236,6 +235,7 @@ ibuffer.
         '(("ysmiraak"
            ("emacs" (or (name . "^\\*scratch\\*$")
                         (name . "^\\*Messages\\*$")))
+           ("exwm"      (mode . exwm-mode))
            ("cider" (or (name . "^\\*cider")
                         (name . "^\\*nrepl")))
            ("help"  (or (mode . help-mode)
@@ -243,7 +243,7 @@ ibuffer.
                         (mode . Info-mode)
                         (name . "^\\*Backtrace\\*$")))
            ("dired"     (mode . dired-mode))
-           ("magit"     (name . "^\\*magit"))
+           ("magit"     (name . "^\\magit"))
            ("tmp"       (name . "^\\*.*\\*$"))
            (""          (name . ""))))
         'ibuffer-show-empty-filter-groups nil

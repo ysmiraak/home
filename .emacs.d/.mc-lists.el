@@ -84,6 +84,7 @@
         sp-kill-word
         sp-newline
         sp-next-sexp
+        sp-raise-sexp
         sp-rewrap-sexp
         sp-splice-sexp
         sp-splice-sexp-killing-backward
