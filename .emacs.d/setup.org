@@ -463,12 +463,6 @@ error check.
              #'flycheck-rust-setup
              #'cargo-minor-mode
              #'racer-mode)
-  (with-eval-after-load 'rust-mode
-    (cset 'racer-rust-src-path
-          (funcall (if (equal 'ns window-system)
-                       #'exec-path-from-shell-getenv
-                     #'getenv)
-                   "RUST_SRC_PATH")))
 #+END_SRC
 ** shell
 #+BEGIN_SRC emacs-lisp
