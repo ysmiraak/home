@@ -58,8 +58,10 @@
 | 2005 | preller_lambek            | free compact 2-cat                                           |
 | 2010 | coecke_sadrzadeh_clark    | compositional distributional model                           |
 | 2010 | smith                     | galois syntax semantics                                      |
+| 2014 | gillibert_retoré          | logic formal                                                 |
 | 2014 | asudeh                    | monad                                                        |
 | 2017 | bolt_                     | concept composition                                          |
+| 2017 | hedges_sadrzadeh          | generalised quantifier theory                                |
 * arch_sc
 |  <4> | <25>                      | <60>                                                         |
 | 1997 | baas_emmeche              | emergence explanation                                        |
@@ -71,6 +73,7 @@
 | 2011 | baez_fritz_leinster       | entropy                                                      |
 | 2011 | baianu_brown_glazebrook   | complex meta-systems ontology emergence                      |
 | 2013 | andreatta_                | creativity                                                   |
+| 2017 | arjonilla_ogata           | general problem solving                                      |
 | 2017 | kissinger_uijlen          | causal structure                                             |
 * clif_cs_math
 |  <4> | <25>                      | <60>                                                         |
@@ -90,7 +93,8 @@
 | 2011 | iconip                    | nn                                                           |
 | 2011 | kuroe                     | rnn                                                          |
 | 2012 | macdonald                 | calculus                                                     |
-| 2013 | hitzer                    | intro                                                        |
+| 2013 | hitzer.1                  | geomtric operations by conformal geometric neurons           |
+| 2013 | hitzer.2                  | intro                                                        |
 | 2013 | hitzer_nitta_kuroe        | app                                                          |
 | 2014 | bromborsky_               | intro                                                        |
 | 2016 | lundholm_svensson         | app                                                          |
