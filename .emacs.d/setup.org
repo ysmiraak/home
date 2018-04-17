@@ -217,8 +217,8 @@ to jump around.
 #+END_SRC
 for scrolling.
 #+BEGIN_SRC emacs-lisp
-  (autoload 'global-centered-cursor-mode "centered-cursor-mode")
-  (bind-keys ("M-L" . global-centered-cursor-mode))
+  (autoload 'centered-cursor-mode "centered-cursor-mode")
+  (bind-keys ("M-L" . centered-cursor-mode))
 #+END_SRC
 ** editing
 undo-tree.
@@ -271,8 +271,8 @@ extra convenience.
              ("<M-right>" . drag-stuff-right)
              ("<M-down>"  . drag-stuff-down)
              ("<M-up>"    . drag-stuff-up)
-             ("M-D" . global-hungry-delete-mode)
-             ("M-I" . global-aggressive-indent-mode)
+             ("M-D" . hungry-delete-mode)
+             ("M-I" . aggressive-indent-mode)
              ("C-j" . newline-and-indent))
   (global-hungry-delete-mode 1)
   (delight 'hungry-delete-mode " d" 'hungry-delete)
