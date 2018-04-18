@@ -144,6 +144,10 @@ they encourage recklessness.
   (cset 'disabled-command-function nil)
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
+safe locals.
+#+BEGIN_SRC emacs-lisp
+  (cset 'safe-local-variable-values '((org-emphasis-alist)))
+#+END_SRC
 ** theme
 simpler style.
 #+BEGIN_SRC emacs-lisp
