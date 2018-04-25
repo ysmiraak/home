@@ -56,33 +56,52 @@ my modifications and extensions for emacs.
 modern [[https://github.com/magnars/s.el][string]], [[https://github.com/rejeep/f.el][file]], and [[https://github.com/magnars/dash.el#installation][list]] libraries to make elisp usable for me.
 [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] simplifies mode-map management with =bind-keys=, =unbind-key=, and =describe-personal-keybindings=.
 [[https://www.emacswiki.org/emacs/DelightedModes][delight]] keeps the mode-line clean.
+[[https://www.emacswiki.org/emacs/ElDoc][suggest]] for learning.
 #+BEGIN_SRC emacs-lisp
   (mapc #'require '(s f dash dash-functional bind-key delight))
   (dash-enable-font-lock)
-#+END_SRC
-[[https://github.com/Wilfred/suggest.el][suggest]] is cool. [[https://www.emacswiki.org/emacs/ElDoc][eldoc]] is handy.
-for interactive evaluation, i bind =M-RET= for last sexp or line, =C-M-x= for defun or block, and =C-M-z= for region.
-this applies to all language-specific modes which offers the options.
-many also offer buffer evaluation, but i rarely need that, and =C-x h C-M-z= also does the trick.
-#+BEGIN_SRC emacs-lisp
   (bind-keys ("M-Q" . suggest))
+#+END_SRC
+[[https://github.com/Wilfred/suggest.el][eldoc]]
+#+BEGIN_SRC emacs-lisp
   (--each '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook)
     (add-hook it #'eldoc-mode))
   (delight 'eldoc-mode nil 'eldoc)
+#+END_SRC
+to evaluate code interactively, i bind =M-RET= for region or sexp or line and =C-M-x= for defun or block.
+this applies to all language-specific modes which offers the options.
+#+BEGIN_SRC emacs-lisp
+  (defmacro def-eval-dwim (name eval-region eval-last)
+    "define NAME to interactively call either the EVAL-REGION
+  function or the EVAL-LAST function, depending on `use-region-p'.
+  both functions must be given as unquoted symbols."
+    `(defun ,name ()
+       ,(format "`%s' or `%s'" eval-region eval-last)
+       (interactive)
+       (call-interactively
+        (if (use-region-p)
+            (function ,eval-region)
+          (function ,eval-last)))))
+  (def-eval-dwim eval-dwim eval-region eval-last-sexp)
   (bind-keys :map lisp-mode-shared-map
-             ("M-RET" . eval-last-sexp)
-             ("C-M-x" . eval-defun)
-             ("C-M-z" . eval-region))
+             ("M-RET" . eval-dwim)
+             ("C-M-x" . eval-defun))
+#+END_SRC
+disable =completion-at-point= locally to favor =company-complete= globally.
+#+BEGIN_SRC emacs-lisp
   (--each `(,emacs-lisp-mode-map ,lisp-interaction-mode-map)
     (unbind-key "C-M-i" it))
 #+END_SRC
 some helpers.
 #+BEGIN_SRC emacs-lisp
   (defun unbind-keys (m &rest ks)
+    "unbind all keys in KS from mode M."
     (--each ks (unbind-key it m)))
   (defun add-hooks (h &rest fs)
+    "add all functions in FS to hook H in reverse."
     (--each (nreverse fs) (add-hook h it)))
   (defun cset (&rest sym-vals)
+    "customize each symbol to value in SYM-VALS."
     (-each (-partition-all 2 sym-vals)
       (-applify #'customize-set-variable)))
 #+END_SRC
@@ -91,7 +110,7 @@ to prevent custom from editing my =user-init-file=.
 #+BEGIN_SRC emacs-lisp
   (cset 'custom-file (f-expand "custom.el" user-emacs-directory))
 #+END_SRC
-no lock. no auto-save. no backup. cuz [[https://git-scm.com/][git]].
+no lock.  no auto-save.  no backup.  cuz [[https://git-scm.com/][git]].
 #+BEGIN_SRC emacs-lisp
   (cset 'create-lockfiles           nil
         'auto-save-default          nil
@@ -122,6 +141,7 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
     (require 'exwm)
     (add-hooks 'exwm-update-class-hook (lambda () (exwm-workspace-rename-buffer exwm-class-name)))
     (defun exwm-shell-command (command)
+      "interactive wrapper for `start-process-shell-command'"
       (interactive (list (read-shell-command "$ ")))
       (start-process-shell-command command nil command))
     (--map (exwm-input-set-key (kbd (car it)) (cdr it))
@@ -143,10 +163,6 @@ they encourage recklessness.
 #+BEGIN_SRC emacs-lisp
   (cset 'disabled-command-function nil)
   (defalias 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-safe locals.
-#+BEGIN_SRC emacs-lisp
-  (cset 'safe-local-variable-values '((org-emphasis-alist)))
 #+END_SRC
 ** theme
 simpler style.
@@ -419,10 +435,10 @@ error check.
           'cider-repl-use-pretty-printing      t
           'cider-doc-xref-regexp               "\\[\\[\\(.*?\\)\\]\\]"
           'cider-repl-history-file             (f-expand "cider-history" user-emacs-directory))
+    (def-eval-dwim eval-dwim:clojure cider-eval-region cider-eval-last-sexp)
     (bind-keys :map cider-mode-map
-               ("M-RET" . cider-eval-last-sexp)
-               ("C-M-x" . cider-eval-defun-at-point)
-               ("C-M-z" . cider-eval-region)))
+               ("M-RET" . eval-dwim:clojure)
+               ("C-M-x" . cider-eval-defun-at-point)))
   (with-eval-after-load 'clj-refactor
     (cljr-add-keybindings-with-prefix "M-R")
     (cset 'cljr-suppress-middleware-warnings t))
@@ -432,10 +448,10 @@ error check.
   (add-hooks 'geiser-mode-hook #'flycheck-mode)
   (with-eval-after-load 'geiser
     (cset 'geiser-active-implementations '(chez))
+    (def-eval-dwim eval-dwim:scheme geiser-eval-region geiser-eval-last-sexp)
     (bind-keys :map scheme-mode-map
-               ("M-RET" . geiser-eval-last-sexp)
-               ("C-M-x" . geiser-eval-definition)
-               ("C-M-z" . geiser-eval-region)))
+               ("M-RET" . eval-dwim:scheme)
+               ("C-M-x" . geiser-eval-definition)))
 #+END_SRC
 ** prolog
 #+BEGIN_SRC emacs-lisp
@@ -480,11 +496,10 @@ error check.
              (-partial #'aggressive-indent-mode -1))
   (with-eval-after-load 'python
     (cset 'elpy-shell-use-project-root nil)
+    (def-eval-dwim eval-dwim:python elpy-shell-send-region-or-buffer elpy-shell-send-statement)
     (bind-keys :map python-mode-map
-               ("M-RET" . elpy-shell-send-statement)
-               ("C-M-x" . python-shell-send-defun)
-               ("C-M-z" . python-shell-send-region))
-    (defun elpy-shell--flash-and-message-region (beg end) nil)
+               ("M-RET" . eval-dwim:python)
+               ("C-M-x" . elpy-shell-send-group))
     (elpy-enable))
 #+END_SRC
 ** javascript
@@ -497,10 +512,10 @@ error check.
 ** r
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'ess
+    (def-eval-dwim eval-dwim:ess ess-eval-region ess-eval-line)
     (bind-keys :map ess-mode-map
-               ("M-RET" . ess-eval-line)
-               ("C-M-x" . ess-eval-function-or-paragraph)
-               ("C-M-z" . ess-eval-region)))
+               ("M-RET" . eval-dwim:ess)
+               ("C-M-x" . ess-eval-paragraph)))
 #+END_SRC
 ** markdown
 #+BEGIN_SRC emacs-lisp
@@ -562,6 +577,7 @@ error check.
             ("" "amsmath" t)
             ("" "hyperref" nil)))
     (unbind-keys org-mode-map "C-M-i" "M-h"))
+  (push '(org-emphasis-alist) safe-local-variable-values)
 #+END_SRC
 * summary
 - dead on terminal: []
@@ -571,7 +587,7 @@ error check.
 |---------+------------------------+---------------+-----------------------------------+--------------------------------+-----------------------------+---------------------------|
 | DEL     | [DEL]                  |               | ~sp-backward-kill-word~           | +backward-kill-word+           | [C-M-h]                     |                           |
 | TAB     | [TAB]                  |               | [C-M-i]                           |                                | [C-M-i]                     |                           |
-| RET     | [RET]                  |               | ~eval-last-sexp~                  |                                | [M-RET]                     |                           |
+| RET     | [RET]                  |               | ~eval-dwim~                       |                                | [M-RET]                     |                           |
 | SPC     | [C-@]                  |               | just-one-space                    |                                | [M-SPC]                     |                           |
 | <up>    | <up>                   |               | ~drag-stuff-up~                   |                                | [ESC <up>]                  |                           |
 | <left>  | ~[]~                   | +left-word+   | ~drag-stuff-left~                 | +backward-word+                | [ESC <left>]                |                           |
@@ -649,7 +665,7 @@ error check.
 | w       | kill-region            |               | kill-ring-save                    |                                | ~sp-copy-sexp~              | +append-next-kill+        |
 | x       | [C-x-]                 |               | ~counsel-M-x~                     | +execute-extended-command+     | eval-defun                  |                           |
 | y       | yank                   |               | yank-pop                          |                                | ~browse-kill-ring~          |                           |
-| z       | suspend-frame          |               | ~zzz-to-char~                     | +zap-to-char+                  | eval-region                 |                           |
+| z       | suspend-frame          |               | ~zzz-to-char~                     | +zap-to-char+                  |                             |                           |
 on text terminals, shift does not work with ctrl.
 |   | M-                                |
 |---+-----------------------------------|
