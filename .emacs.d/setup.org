@@ -495,7 +495,8 @@ error check.
              (-partial #'highlight-indentation-mode -1)
              (-partial #'aggressive-indent-mode -1))
   (with-eval-after-load 'python
-    (cset 'elpy-shell-use-project-root nil)
+    (cset 'python-shell-interpreter    "python3"
+          'elpy-shell-use-project-root nil)
     (def-eval-dwim eval-dwim:python elpy-shell-send-region-or-buffer elpy-shell-send-statement)
     (bind-keys :map python-mode-map
                ("M-RET" . eval-dwim:python)
