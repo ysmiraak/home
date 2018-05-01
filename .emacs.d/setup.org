@@ -151,6 +151,7 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
              ("s-1" . ,(lambda () (interactive) (exwm-shell-command "firefox")))
              ("s-2" . ,(lambda () (interactive) (exwm-shell-command "vlc")))
              ("s-t" . ,(lambda () (interactive) (ansi-term "htop" "htop")))
+             ("s-h" . ,(lambda () (interactive) (enlarge-window-horizontally 28)))
              ("s-a" . windmove-left)
              ("s-s" . windmove-down)
              ("s-w" . windmove-up)
@@ -677,15 +678,15 @@ on text terminals, shift does not work with ctrl.
 | A | ~org-agenda~                      |
 | B |                                   |
 | C |                                   |
-| D | ~global-hungry-delete-mode~       |
+| D | ~hungry-delete-mode~              |
 | E |                                   |
 | F | ~vimish-fold-toggle~              |
 | G | ~magit-status~                    |
 | H |                                   |
-| I | ~global-aggressive-indent-mode~   |
+| I | ~aggressive-indent-mode~          |
 | J | ~vimish-fold-avy~                 |
 | K | ~vimish-fold-delete~              |
-| L | ~global-centered-cursor-mode~     |
+| L | ~centered-cursor-mode~            |
 | M | ~mc/mark-more-like-this-extended~ |
 | N |                                   |
 | O |                                   |
