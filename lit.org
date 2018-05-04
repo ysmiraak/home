@@ -96,7 +96,7 @@
 | 2013 | hitzer.1                  | geomtric operations by conformal geometric neurons           |
 | 2013 | hitzer.2                  | intro                                                        |
 | 2013 | hitzer_nitta_kuroe        | app                                                          |
-| 2014 | bromborsky_               | intro                                                        |
+| 2016 | bromborsky                | intro                                                        |
 | 2016 | lundholm_svensson         | app                                                          |
 | 2016 | macdonald.1               | construction                                                 |
 | 2016 | macdonald.2               | survey                                                       |
