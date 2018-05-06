@@ -585,7 +585,9 @@ error check.
             ("" "amsmath" t)
             ("" "hyperref" nil)))
     (unbind-keys org-mode-map "C-M-i" "M-h"))
-  (push '(org-emphasis-alist) safe-local-variable-values)
+  (--map (push it safe-local-variable-values)
+         '((org-beamer-outline-frame-title . "outline")
+           (org-emphasis-alist             . nil)))
 #+END_SRC
 * summary
 - dead on terminal: []
