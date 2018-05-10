@@ -148,7 +148,6 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
       (start-process-shell-command command nil command))
     (--map (exwm-input-set-key (kbd (car it)) (cdr it))
            `(("s-&" . exwm-shell-command)
-             ("s-r" . exwm-reset)
              ("s-0" . ,(lambda () (interactive) (exwm-shell-command "slock")))
              ("s-1" . ,(lambda () (interactive) (exwm-shell-command "firefox")))
              ("s-2" . ,(lambda () (interactive) (exwm-shell-command "vlc")))
@@ -157,7 +156,9 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
              ("s-a" . windmove-left)
              ("s-s" . windmove-down)
              ("s-w" . windmove-up)
-             ("s-d" . windmove-right)))
+             ("s-d" . windmove-right)
+             ("s-m" . exwm-input-toggle-keyboard)
+             ("s-r" . exwm-reset)))
     (defalias 'suspend-frame #'eshell)
     (exwm-enable))
 #+END_SRC
