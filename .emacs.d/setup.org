@@ -139,7 +139,6 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
           'display-time-format               "%H:%M %a %y-%m-%d"
           'display-time-default-load-average nil)
     (require 'exwm)
-    (add-hooks 'exwm-manage-finish-hook #'exwm-reset)
     (add-hooks 'exwm-floating-setup-hook #'exwm-layout-hide-mode-line)
     (add-hooks 'exwm-update-class-hook (lambda () (exwm-workspace-rename-buffer exwm-class-name)))
     (defun exwm-shell-command (command)
