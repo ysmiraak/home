@@ -38,6 +38,7 @@
         fix-word-upcase
         forward-sentence
         hungry-delete-backward
+        hungry-delete-forward
         indent-for-tab-command
         indent-new-comment-line
         keyboard-quit
@@ -76,6 +77,7 @@
         sp-delete-char
         sp-down-sexp
         sp-end-of-sexp
+        sp-forward-parallel-sexp
         sp-forward-sexp
         sp-forward-slurp-sexp
         sp-join-sexp
