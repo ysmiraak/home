@@ -1,6 +1,7 @@
 #+TITLE: emacs setup
 #+AUTHOR: ysmiraak
-* init
+* general
+** init
 [[https://www.gnu.org/software/emacs/][emacs 25]] is required.
 make this the =user-init-file= to tangle and load this setup.
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -49,8 +50,6 @@ in this setup, each package is configured in this order.
 - config
 - bind local
 - related
-* plus
-my modifications and extensions for emacs.
 ** elisp
 modern [[https://github.com/magnars/s.el][string]], [[https://github.com/rejeep/f.el][file]], and [[https://github.com/magnars/dash.el#installation][list]] libraries to make elisp usable for me.
 [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] simplifies mode-map management with =bind-keys=, =unbind-key=, and =describe-personal-keybindings=.
@@ -93,30 +92,20 @@ disable =completion-at-point= locally to favor =company-complete= globally.
 #+END_SRC
 some helpers.
 #+BEGIN_SRC emacs-lisp
+  (defun cset (&rest sym-vals)
+    "customize each symbol to value in SYM-VALS."
+    (-each (-partition-all 2 sym-vals)
+      (-applify #'customize-set-variable)))
   (defun unbind-keys (m &rest ks)
     "unbind all keys in KS from mode M."
     (--each ks (unbind-key it m)))
   (defun add-hooks (h &rest fs)
     "add all functions in FS to hook H in reverse."
     (--each (nreverse fs) (add-hook h it)))
-  (defun cset (&rest sym-vals)
-    "customize each symbol to value in SYM-VALS."
-    (-each (-partition-all 2 sym-vals)
-      (-applify #'customize-set-variable)))
+  (add-hooks 'eval-expression-minibuffer-setup-hook #'eldoc-mode #'smartparens-mode)
 #+END_SRC
 ** system
-to prevent custom from editing my =user-init-file=.
-#+BEGIN_SRC emacs-lisp
-  (cset 'custom-file (f-expand "custom.el" user-emacs-directory))
-#+END_SRC
-no lock.  no auto-save.  no backup.  cuz [[https://git-scm.com/][git]].
-#+BEGIN_SRC emacs-lisp
-  (cset 'create-lockfiles           nil
-        'auto-save-default          nil
-        'auto-save-list-file-prefix nil
-        'make-backup-files          nil)
-#+END_SRC
-for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
+[[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]]
 #+BEGIN_SRC emacs-lisp
   (require 'server)
   (unless (server-running-p) (server-start))
@@ -144,21 +133,33 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
       "interactive wrapper for `start-process-shell-command'"
       (interactive (list (read-shell-command "$ ")))
       (start-process-shell-command command nil command))
-    (--map (exwm-input-set-key (kbd (car it)) (cdr it))
-           `(("s-&" . exwm-shell-command)
-             ("s-0" . ,(lambda () (interactive) (exwm-shell-command "slock")))
-             ("s-1" . ,(lambda () (interactive) (exwm-shell-command "firefox")))
-             ("s-2" . ,(lambda () (interactive) (exwm-shell-command "vlc")))
-             ("s-t" . ,(lambda () (interactive) (ansi-term "htop" "htop")))
-             ("s-h" . ,(lambda () (interactive) (enlarge-window-horizontally 28)))
-             ("s-a" . windmove-left)
-             ("s-s" . windmove-down)
-             ("s-w" . windmove-up)
-             ("s-d" . windmove-right)
-             ("s-m" . exwm-input-toggle-keyboard)
-             ("s-r" . exwm-reset)))
+    (--each `(("s-&" . exwm-shell-command)
+              ("s-0" . ,(lambda () (interactive) (exwm-shell-command "slock")))
+              ("s-1" . ,(lambda () (interactive) (exwm-shell-command "firefox")))
+              ("s-2" . ,(lambda () (interactive) (exwm-shell-command "vlc")))
+              ("s-t" . ,(lambda () (interactive) (ansi-term "htop" "htop")))
+              ("s-h" . ,(lambda () (interactive) (enlarge-window-horizontally 28)))
+              ("s-a" . windmove-left)
+              ("s-s" . windmove-down)
+              ("s-w" . windmove-up)
+              ("s-d" . windmove-right)
+              ("s-m" . exwm-input-toggle-keyboard)
+              ("s-r" . exwm-reset))
+      (exwm-input-set-key (kbd (car it)) (cdr it)))
     (defalias 'suspend-frame #'eshell)
     (exwm-enable))
+#+END_SRC
+** safety
+to prevent custom from editing my =user-init-file=.
+#+BEGIN_SRC emacs-lisp
+  (cset 'custom-file (f-expand "custom.el" user-emacs-directory))
+#+END_SRC
+no lock.  no auto-save.  no backup.  cuz [[https://git-scm.com/][git]].
+#+BEGIN_SRC emacs-lisp
+  (cset 'create-lockfiles           nil
+        'auto-save-default          nil
+        'auto-save-list-file-prefix nil
+        'make-backup-files          nil)
 #+END_SRC
 removes some safety measures.
 they encourage recklessness.
@@ -171,7 +172,7 @@ they encourage recklessness.
   (unbind-key "C-z")
 #+END_SRC
 ** theme
-simpler style.
+- simpler style
 #+BEGIN_SRC emacs-lisp
   (cset 'uniquify-buffer-name-style 'forward
         'inhibit-startup-screen     t
@@ -182,7 +183,7 @@ simpler style.
         'column-number-mode         t
         'ring-bell-function         'ignore)
 #+END_SRC
-fancier face on graphic devices.
+- fancier face on graphic devices
 #+BEGIN_SRC emacs-lisp
   (when (display-graphic-p)
     (add-hooks 'prog-mode-hook #'rainbow-delimiters-mode-enable)
@@ -192,21 +193,20 @@ fancier face on graphic devices.
     (set-face-attribute 'cursor nil :background "#DAA520")
     (global-hl-line-mode 1))
 #+END_SRC
-cursor style.
+- cursor style
 #+BEGIN_SRC emacs-lisp
   (cset 'blink-cursor-mode              nil
         'cursor-type                    '(bar . 3)
         'cursor-in-non-selected-windows 'hollow)
 #+END_SRC
-never wrap lines.
+- never wrap lines
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-#"   . linum-mode)
-             ("C-M-_" . toggle-truncate-lines)
+  (bind-keys ("C-M-_" . toggle-truncate-lines)
              ("C-M--" . toggle-truncate-lines))
   (cset 'truncate-lines t)
 #+END_SRC
 ** navigation
-within emacs.
+*** to symbol
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-M-z"   . swiper)
              ("M-x"     . counsel-M-x)
@@ -224,36 +224,7 @@ within emacs.
   (which-key-mode 1)
   (delight 'which-key-mode nil 'which-key)
 #+END_SRC
-among projects.
-#+BEGIN_SRC emacs-lisp
-  (projectile-mode 1)
-  (delight 'projectile-mode '(:eval (format " [%s]" (projectile-project-name))) 'projectile)
-  (cset 'projectile-switch-project-action 'projectile-dired
-        'projectile-completion-system     'ivy)
-  (bind-keys ("M-G" . magit-status))
-#+END_SRC
-to jump around.
-#+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-'"     . avy-goto-char-timer)
-             ("M-\""    . avy-pop-mark)
-             ("M-g g"   . avy-goto-line)
-             ("M-g M-g" . avy-goto-line)
-             ("C-x o"   . ace-window))
-  (cset 'avy-timeout-seconds 0.3)
-#+END_SRC
-for scrolling.
-#+BEGIN_SRC emacs-lisp
-  (autoload 'centered-cursor-mode "centered-cursor-mode")
-  (bind-keys ("M-L" . centered-cursor-mode))
-#+END_SRC
-** editing
-undo-tree.
-#+BEGIN_SRC emacs-lisp
-  (bind-keys  ("C--"   . undo-tree-undo))
-  (global-undo-tree-mode 1)
-  (delight 'undo-tree-mode nil 'undo-tree)
-#+END_SRC
-ibuffer.
+*** to buffer
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-x C-b" . ibuffer))
   (add-hooks 'ibuffer-mode-hook (-partial #'ibuffer-switch-to-saved-filter-groups "ysmiraak"))
@@ -275,39 +246,32 @@ ibuffer.
         'ibuffer-show-empty-filter-groups nil
         'ibuffer-expert t)
 #+END_SRC
-i do not use abbrev.
+*** to position
 #+BEGIN_SRC emacs-lisp
-  (cset 'save-abbrevs nil)
+  (bind-keys ("M-'"     . avy-goto-char-timer)
+             ("M-\""    . avy-pop-mark)
+             ("M-g g"   . avy-goto-line)
+             ("M-g M-g" . avy-goto-line)
+             ("C-x o"   . ace-window))
+  (cset 'avy-timeout-seconds 0.3)
 #+END_SRC
-enhanced behavior.
+*** to project
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("C-M-y" . browse-kill-ring)
-             ("M-z" . zzz-to-char)
-             ("M-u" . fix-word-upcase)
-             ("M-l" . fix-word-downcase)
-             ("M-c" . fix-word-capitalize))
-  (cset 'indent-tabs-mode nil)
+  (projectile-mode 1)
+  (delight 'projectile-mode '(:eval (format " [%s]" (projectile-project-name))) 'projectile)
+  (cset 'projectile-switch-project-action 'projectile-dired
+        'projectile-completion-system     'ivy)
+  (bind-keys ("M-G" . magit-status))
 #+END_SRC
-extra convenience.
+*** to history
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-F" . vimish-fold-toggle)
-             ("M-J" . vimish-fold-avy)
-             ("M-K" . vimish-fold-delete)
-             ("<M-left>"  . drag-stuff-left)
-             ("<M-right>" . drag-stuff-right)
-             ("<M-down>"  . drag-stuff-down)
-             ("<M-up>"    . drag-stuff-up)
-             ("M-D" . hungry-delete-mode)
-             ("M-I" . aggressive-indent-mode)
-             ("C-j" . newline-and-indent))
-  (add-hooks 'before-save-hook #'whitespace-cleanup)
-  (global-hungry-delete-mode 1)
-  (delight 'hungry-delete-mode " d" 'hungry-delete)
-  (global-aggressive-indent-mode 1)
-  (delight 'aggressive-indent-mode " i" 'aggressive-indent)
-  (--map (push it aggressive-indent-excluded-modes) '(idris-mode haskell-mode))
+  (bind-keys  ("C--"   . undo-tree-undo))
+  (global-undo-tree-mode 1)
+  (delight 'undo-tree-mode nil 'undo-tree)
 #+END_SRC
-structured editing with symmetrical key chords.
+** editing
+*** structure-based
+- with revised symmetrical key chords
 |   | C        | M        | C-M      |
 |---+----------+----------+----------|
 | a | line min | buff min | sexp min |
@@ -362,15 +326,7 @@ structured editing with symmetrical key chords.
   (set-face-attribute 'sp-show-pair-match-face    nil :background "#181818" :foreground "#A41210" :weight 'bold)
   (set-face-attribute 'sp-show-pair-mismatch-face nil :background "#161616" :foreground "#003B6F" :weight 'black)
 #+END_SRC
-batched editing.
-#+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-M"   . mc/mark-more-like-this-extended))
-  (when (display-graphic-p)
-    (with-eval-after-load 'multiple-cursors
-      (set-face-attribute 'mc/cursor-bar-face nil :background "#DAA520" :foreground "#242424")))
-  (bind-keys ("C-M-%" . vr/query-replace))
-#+END_SRC
-region editing.
+*** region-based
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-h" . er/expand-region))
   (require 'region-bindings-mode)
@@ -391,7 +347,20 @@ region editing.
              ("u" . upcase-region)
              ("w" . kill-ring-save))
 #+END_SRC
-auto-completion.
+*** batched
+#+BEGIN_SRC emacs-lisp
+  (bind-keys ("M-M"   . mc/mark-more-like-this-extended))
+  (when (display-graphic-p)
+    (with-eval-after-load 'multiple-cursors
+      (set-face-attribute 'mc/cursor-bar-face nil :background "#DAA520" :foreground "#242424")))
+  (bind-keys ("C-M-%" . vr/query-replace))
+#+END_SRC
+*** completing
+- no abbrev
+#+BEGIN_SRC emacs-lisp
+  (cset 'save-abbrevs nil)
+#+END_SRC
+- symbol
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-/" . hippie-expand))
   (with-eval-after-load 'hippie-exp
@@ -417,12 +386,13 @@ auto-completion.
   (unbind-keys company-active-map "TAB" "<tab>")
   (bind-keys :map company-active-map ("M-h" . company-quickhelp-manual-begin))
 #+END_SRC
-snippet.
+- snippet
 #+BEGIN_SRC emacs-lisp
   (yas-global-mode 1)
   (delight 'yas-minor-mode nil 'yasnippet)
 #+END_SRC
-spell check.
+*** checking
+- spell
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-$" . flyspell-mode))
   (with-eval-after-load 'flyspell
@@ -431,17 +401,41 @@ spell check.
     (bind-keys :map flyspell-mode-map ("C-;" . flyspell-correct-word-before-point))
     (cset 'ispell-program-name "aspell"))
 #+END_SRC
-error check.
+- error
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'flycheck
     (flycheck-pos-tip-mode))
 #+END_SRC
-* lang
+*** misc
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'eval-expression-minibuffer-setup-hook
-             #'eldoc-mode
-             #'smartparens-mode)
+  (add-hooks 'before-save-hook #'whitespace-cleanup)
+  (autoload 'centered-cursor-mode "centered-cursor-mode")
+  (bind-keys ("M-L" . centered-cursor-mode)
+             ("M-#" . linum-mode)
+             ("M-F" . vimish-fold-toggle)
+             ("M-J" . vimish-fold-avy)
+             ("M-K" . vimish-fold-delete)
+             ("<M-left>"  . drag-stuff-left)
+             ("<M-right>" . drag-stuff-right)
+             ("<M-down>"  . drag-stuff-down)
+             ("<M-up>"    . drag-stuff-up)
+             ("C-M-y" . browse-kill-ring)
+             ("M-z" . zzz-to-char)
+             ("M-u" . fix-word-upcase)
+             ("M-l" . fix-word-downcase)
+             ("M-c" . fix-word-capitalize)
+             ("M-D" . hungry-delete-mode)
+             ("M-I" . aggressive-indent-mode)
+             ("C-j" . newline-and-indent))
+  (global-hungry-delete-mode 1)
+  (delight 'hungry-delete-mode " d" 'hungry-delete)
+  (global-aggressive-indent-mode 1)
+  (delight 'aggressive-indent-mode " i" 'aggressive-indent)
+  (--each '(idris-mode haskell-mode)
+    (push it aggressive-indent-excluded-modes))
+  (cset 'indent-tabs-mode nil)
 #+END_SRC
+* lang
 ** clojure
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-S" . cider-scratch))
@@ -463,7 +457,6 @@ error check.
 #+END_SRC
 ** scheme
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'geiser-mode-hook #'flycheck-mode)
   (with-eval-after-load 'geiser
     (cset 'geiser-active-implementations '(chez))
     (def-eval-dwim eval-dwim:scheme geiser-eval-region geiser-eval-last-sexp)
@@ -556,10 +549,6 @@ error check.
             "latexmk -pdf -pdflatex=\"xelatex -interaction=nonstopmode -shell-escape -synctex=1\" %s"
             TeX-run-TeX nil t :help "run xelatexmk on file")
           TeX-command-list)
-    ;; Skim -> Preferences -> Sync; CMD + shift + click in the pdf file for jumping to source
-    (push '("skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b %n %o %b")
-          TeX-view-program-list)
-    (push '(output-pdf "skim") TeX-view-program-selection)
     (cset 'TeX-engine              'xetex
           'TeX-auto-save           t
           'TeX-parse-self          t
@@ -598,9 +587,9 @@ error check.
                ("M-p"     . org-backward-sentence)
                ("C-M-n"   . org-forward-element)
                ("C-M-p"   . org-backward-element)))
-  (--map (push it safe-local-variable-values)
-         '((org-beamer-outline-frame-title . "outline")
-           (org-emphasis-alist             . nil)))
+  (--each '((org-beamer-outline-frame-title . "outline")
+            (org-emphasis-alist             . nil))
+    (push it safe-local-variable-values))
 #+END_SRC
 * summary
 - dead on terminal: []
