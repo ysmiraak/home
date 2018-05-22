@@ -10,7 +10,6 @@
         backward-sexp
         beginning-of-buffer
         beginning-of-visual-line
-        c-electric-slash
         cdlatex-math-modify
         cdlatex-math-symbol
         cdlatex-pbb
@@ -99,7 +98,6 @@
 
 (setq mc/cmds-to-run-once
       '(
-        abbrev-prefix-mark
         avy-goto-char-2
         cdlatex-dollar
         cider-debug-mode-send-reply
@@ -111,12 +109,10 @@
         ido-find-file
         ido-switch-buffer
         insert-semicolon-at-end-of-line
-        kill-sentence
         magit-section-forward
         markdown-preview
         mouse-set-region
         multiple-cursors-mode
-        org-backward-sentence
         org-table-copy-down
         projectile-global-mode
         python-nav-backward-block
