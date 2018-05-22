@@ -208,7 +208,7 @@ never wrap lines.
 ** navigation
 within emacs.
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("C-M-s"   . swiper)
+  (bind-keys ("C-M-z"   . swiper)
              ("M-x"     . counsel-M-x)
              ("C-x C-f" . counsel-find-file))
   (ivy-mode 1)
@@ -307,40 +307,57 @@ extra convenience.
   (delight 'aggressive-indent-mode " i" 'aggressive-indent)
   (--map (push it aggressive-indent-excluded-modes) '(idris-mode haskell-mode))
 #+END_SRC
-structured editing.
+structured editing with symmetrical key chords.
+|   | C        | M        | C-M      |
+|---+----------+----------+----------|
+| a | line min | buff min | sexp min |
+| e | line max | buff max | sexp max |
+| f | char inc | word inc | sexp inc |
+| b | char dec | word dec | sexp dec |
+| n | line inc | sent inc | para inc |
+| p | line dec | sent dec | para dec |
 #+BEGIN_SRC emacs-lisp
   (require 'smartparens-config)
   (smartparens-global-mode 1)
   (delight 'smartparens-mode nil 'smartparens)
-  (bind-keys :map smartparens-mode-map
-             ("C-M-@"   . sp-select-previous-thing-exchange)
-             ("C-M-["   . sp-backward-barf-sexp)
-             ("C-M-]"   . sp-forward-barf-sexp)
-             ("C-M-a"   . sp-beginning-of-sexp)
-             ("C-M-b"   . sp-backward-down-sexp)
-             ("C-M-d"   . sp-splice-sexp)
-             ("C-M-e"   . sp-end-of-sexp)
-             ("C-M-f"   . sp-up-sexp)
-             ("C-M-h"   . sp-rewrap-sexp)
-             ("C-M-j"   . sp-split-sexp)
-             ("C-M-k"   . sp-kill-sexp)
-             ("C-M-n"   . sp-down-sexp)
-             ("C-M-p"   . sp-backward-up-sexp)
-             ("C-M-t"   . sp-transpose-sexp)
-             ("C-M-u"   . sp-raise-sexp)
-             ("C-k"     . sp-kill-hybrid-sexp)
-             ("C-x C-t" . sp-transpose-hybrid-sexp)
-             ("M-("     . sp-splice-sexp-killing-backward)
-             ("M-)"     . sp-splice-sexp-killing-forward)
-             ("M-*"     . sp-convolute-sexp)
-             ("M-+"     . sp-join-sexp)
-             ("M-@"     . sp-select-next-thing)
+  (bind-keys ("M-a"   . beginning-of-buffer)
+             ("M-e"   . end-of-buffer)
+             ("M-n"   . forward-sentence)
+             ("M-p"   . backward-sentence)
+             ("C-M-n" . forward-paragraph)
+             ("C-M-p" . backward-paragraph)
+             :map smartparens-mode-map
+             ("C-M-a" . sp-beginning-of-sexp)
+             ("C-M-e" . sp-end-of-sexp)
+             ("C-M-f" . sp-forward-parallel-sexp)
+             ("C-M-b" . sp-backward-parallel-sexp)
+             ;; ] right [ left, M down C-M up
+             ("C-M-]" . sp-up-sexp)
+             ("C-M-[" . sp-backward-up-sexp)
+             ("M-]"   . sp-backward-down-sexp)
+             ("M-["   . sp-down-sexp)
+             ;; restructuring bindings
+             ("M-)"   . sp-forward-slurp-sexp)
+             ("M-("   . sp-backward-slurp-sexp)
+             ("M-}"   . sp-forward-barf-sexp)
+             ("M-{"   . sp-backward-barf-sexp)
+             ("M->"   . sp-splice-sexp-killing-forward)
+             ("M-<"   . sp-splice-sexp-killing-backward)
+             ("C-M-u" . sp-raise-sexp)
+             ("C-M-d" . sp-splice-sexp)
+             ("C-M-h" . sp-rewrap-sexp)
+             ("C-M-j" . sp-split-sexp)
+             ("M-+"   . sp-join-sexp)
+             ("M-*"   . sp-convolute-sexp)
+             ;; behavior enhancements
              ("M-DEL"   . sp-backward-kill-word)
-             ("M-["     . sp-backward-slurp-sexp)
-             ("M-]"     . sp-forward-slurp-sexp)
              ("M-d"     . sp-kill-word)
-             ("M-n"     . sp-forward-parallel-sexp)
-             ("M-p"     . sp-backward-parallel-sexp))
+             ("C-k"     . sp-kill-hybrid-sexp)
+             ("C-M-k"   . sp-kill-sexp)
+             ("C-M-t"   . sp-transpose-sexp)
+             ("C-x C-t" . sp-transpose-hybrid-sexp)
+             ("M-@"     . sp-select-next-thing)
+             ("C-M-@"   . sp-select-previous-thing-exchange))
   (show-smartparens-global-mode 1)
   (set-face-attribute 'sp-show-pair-match-face    nil :background "#181818" :foreground "#A41210" :weight 'bold)
   (set-face-attribute 'sp-show-pair-mismatch-face nil :background "#161616" :foreground "#003B6F" :weight 'black)
@@ -575,7 +592,12 @@ error check.
             ("normalem" "ulem" t)
             ("" "amsmath" t)
             ("" "hyperref" nil)))
-    (unbind-keys org-mode-map "C-M-i" "M-h"))
+    (unbind-keys org-mode-map "C-M-i" "M-h" "M-a" "M-e" "M-{" "M-}")
+    (bind-keys :map org-mode-map
+               ("M-n"     . org-forward-sentence)
+               ("M-p"     . org-backward-sentence)
+               ("C-M-n"   . org-forward-element)
+               ("C-M-p"   . org-backward-element)))
   (--map (push it safe-local-variable-values)
          '((org-beamer-outline-frame-title . "outline")
            (org-emphasis-alist             . nil)))
@@ -584,126 +606,129 @@ error check.
 - dead on terminal: []
 - forced translate: [target]
 - override default: +old+ ~new~
-|         | C-                     |                 | M-                                |                                | C-M-                              |                           |
-|---------+------------------------+-----------------+-----------------------------------+--------------------------------+-----------------------------------+---------------------------|
-| DEL     | [DEL]                  |                 | ~sp-backward-kill-word~           | +backward-kill-word+           | [C-M-h]                           |                           |
-| TAB     | [TAB]                  |                 | [C-M-i]                           |                                | [C-M-i]                           |                           |
-| RET     | [RET]                  |                 | ~eval-dwim~                       |                                | [M-RET]                           |                           |
-| SPC     | [C-@]                  |                 | just-one-space                    |                                | [M-SPC]                           |                           |
-| <up>    | <up>                   |                 | ~drag-stuff-up~                   |                                | [ESC <up>]                        |                           |
-| <left>  | ~[]~                   | +left-word+     | ~drag-stuff-left~                 | +backward-word+                | [ESC <left>]                      |                           |
-| <down>  | <down>                 |                 | ~drag-stuff-down~                 |                                | [ESC <down>]                      |                           |
-| <right> | ~[]~                   | +right-word+    | ~drag-stuff-right~                | +forward-word+                 | [ESC <right>]                     |                           |
-|---------+------------------------+-----------------+-----------------------------------+--------------------------------+-----------------------------------+---------------------------|
-| 1       | []                     |                 | digit-argument 1                  |                                | [M-1]                             |                           |
-| 2       | []                     |                 | digit-argument 2                  |                                | [M-2]                             |                           |
-| 3       | []                     |                 | digit-argument 3                  |                                | [M-3]                             |                           |
-| 4       | []                     |                 | digit-argument 4                  |                                | [M-4]                             |                           |
-| 5       | []                     |                 | digit-argument 5                  |                                | [M-5]                             |                           |
-| 6       | []                     |                 | digit-argument 6                  |                                | [M-6]                             |                           |
-| 7       | []                     |                 | digit-argument 7                  |                                | [M-7]                             |                           |
-| 8       | []                     |                 | digit-argument 8                  |                                | [M-8]                             |                           |
-| 9       | []                     |                 | digit-argument 9                  |                                | [M-9]                             |                           |
-| 0       | []                     |                 | digit-argument 0                  |                                | [M-0]                             |                           |
-|---------+------------------------+-----------------+-----------------------------------+--------------------------------+-----------------------------------+---------------------------|
-| !       | []                     |                 | shell-command                     |                                |                                   |                           |
-| @       | set-mark-command       |                 | sp-select-next-thing              | +mark-word+                    | sp-select-previous-thing-exchange | +mark-sexp+               |
-| #       | []                     |                 | ~linum-mode~                      |                                |                                   |                           |
-| $       | []                     |                 | ~flyspell-mode~                   | +ispell-word+                  |                                   |                           |
-| %       | []                     |                 | query-replace                     |                                | ~vr/query-replace~                | +query-replace-regexp+    |
-| ^       |                        |                 | delete-indentation                |                                |                                   |                           |
-| &       | []                     |                 | async-shell-command               |                                |                                   |                           |
-| *       | []                     |                 | ~sp-raise-sexp~                   |                                |                                   |                           |
-| (       | []                     |                 | ~sp-splice-sexp-killing-backward~ | +insert-parentheses+           |                                   |                           |
-| )       | []                     |                 | ~sp-splice-sexp-killing-forward~  | +move-past-close-and-reindent+ |                                   |                           |
-|---------+------------------------+-----------------+-----------------------------------+--------------------------------+-----------------------------------+---------------------------|
-| -       | [C-_]                  |                 | negative-argument                 |                                | [C-M-_]                           |                           |
-| =       | []                     |                 | count-words-region                |                                | [M-=]                             |                           |
-| [       | [ESC-]                 |                 | ~sp-backward-slurp-sexp~          |                                | ~sp-backward-barf-sexp~           |                           |
-| ]       | abort-recursive-edit   |                 | ~sp-forward-slurp-sexp~           |                                | ~sp-forward-barf-sexp~            |                           |
-| ;       | []                     |                 | comment-dwim                      |                                | [M-;]                             |                           |
-| '       | []                     |                 | ~avy-goto-char-2~                 | +abbrev-prefix-mark+           | [M-']                             |                           |
-| \       | toggle-input-method    |                 | delete-horizontal-space           |                                | indent-region                     |                           |
-| `       | []                     |                 | tmm-menubar                       |                                | [M-`]                             |                           |
-| ,       | []                     |                 | xref-pop-marker-stack             |                                | [M-,]                             |                           |
-| .       | []                     |                 | xref-find-definitions             |                                | [M-.]                             |                           |
-| /       | []                     |                 | ~hippie-expand~                   | +dabbrev-expand+               | [M-/]                             |                           |
-|---------+------------------------+-----------------+-----------------------------------+--------------------------------+-----------------------------------+---------------------------|
-| _       | ~undo-tree-undo~       | +undo+          | ~undo-tree-redo~                  |                                | ~toggle-truncate-lines~           | +negative-argument+       |
-| +       | []                     |                 | ~sp-join-sexp~                    |                                |                                   |                           |
-| {       | [C-[]                  |                 | backward-paragraph                |                                |                                   |                           |
-| }       | [C-]]                  |                 | forward-paragraph                 |                                |                                   |                           |
-| :       | []                     |                 | eval-expression                   |                                |                                   |                           |
-| "       | []                     |                 | ~avy-pop-mark~                    |                                |                                   |                           |
-| \mid    | [C-\]                  |                 | shell-command-on-region           |                                |                                   |                           |
-| ~       | []                     |                 | not-modified                      |                                |                                   |                           |
-| <       | []                     |                 | beginning-of-buffer               |                                |                                   |                           |
-| >       | []                     |                 | end-of-buffer                     |                                |                                   |                           |
-| ?       | []                     |                 | xref-find-references              |                                |                                   |                           |
-|---------+------------------------+-----------------+-----------------------------------+--------------------------------+-----------------------------------+---------------------------|
-| a       | move-beginning-of-line |                 | backward-sentence                 |                                | ~sp-beginning-of-sexp~            | +beginning-of-defun+      |
-| b       | backward-char          |                 | backward-word                     |                                | ~sp-backward-down-sexp~           | +backward-sexp+           |
-| c       | [C-c-]                 |                 | ~fix-word-capitalize~             | +capitalize-word+              | exit-recursive-edit               |                           |
-| d       | delete-char            |                 | ~sp-kill-word~                    | +kill-word+                    | ~sp-splice-sexp~                  | +down-list+               |
-| e       | move-end-of-line       |                 | forward-sentence                  |                                | ~sp-end-of-sexp~                  | +end-of-defun+            |
-| f       | forward-char           |                 | forward-word                      |                                | ~sp-up-sexp~                      | +forward-sexp+            |
-| g       | keyboard-quit          |                 | [M-g-]                            |                                | []                                |                           |
-| h       | [C-h-]                 |                 | ~er/expand-region~                | +mark-paragraph+               | ~sp-rewrap-sexp~                  | +mark-defun+              |
-| i       | [TAB]                  |                 | tab-to-tab-stop                   |                                | ~company-complete~                | +completion-at-point+     |
-| j       | newline-and-indent     |                 | indent-new-comment-line           |                                |                                   | +indent-new-comment-line+ |
-| k       | ~sp-kill-hybrid-sexp~  | +kill-line+     | kill-sentence                     |                                | ~sp-kill-sexp~                    | +kill-sexp+               |
-| l       | recenter-top-bottom    |                 | ~fix-word-downcase~               | +downcase-word+                | reposition-window                 |                           |
-| m       | [RET]                  |                 | back-to-indentation               |                                | [M-RET]                           |                           |
-| n       | next-line              |                 | ~sp-forward-parallel-sexp~        |                                | ~sp-down-sexp~                    | +forward-list+            |
-| o       | open-line              |                 | [M-o-]                            |                                | split-line                        |                           |
-| p       | previous-line          |                 | ~sp-backward-parallel-sexp~       |                                | ~sp-backward-up-sexp~             | +backward-list+           |
-| q       | quoted-insert          |                 | fill-paragraph                    |                                | indent-pp-sexp                    |                           |
-| r       | isearch-backward       |                 | move-to-window-line-top-bottom    |                                | isearch-backward-regexp           |                           |
-| s       | isearch-forward        |                 | [M-s-]                            |                                | ~swiper~                          | +isearch-forward-regexp+  |
-| t       | transpose-chars        |                 | transpose-words                   |                                | ~sp-transpose-sexp~               | +transpose-sexps+         |
-| u       | universal-argument     |                 | ~fix-word-upcase~                 | +upcase-word+                  | ~sp-raise-sexp~                   | +backward-up-list+        |
-| v       | scroll-up-command      |                 | scroll-down-command               |                                | scroll-other-window               |                           |
-| w       | kill-region            |                 | kill-ring-save                    |                                | append-next-kill                  |                           |
-| x       | [C-x-]                 |                 | ~counsel-M-x~                     | +execute-extended-command+     | eval-defun                        |                           |
-| y       | yank                   |                 | yank-pop                          |                                | ~browse-kill-ring~                |                           |
-| z       |                        | +suspend-frame+ | ~zzz-to-char~                     | +zap-to-char+                  |                                   |                           |
+|         | <36>                                 | <60>                                                         | <60>                                                         |
+|         | C-                                   | M-                                                           | C-M-                                                         |
+|---------+--------------------------------------+--------------------------------------------------------------+--------------------------------------------------------------|
+| DEL     | [DEL]                                | ~sp-backward-kill-word~ +backward-kill-word+                 | [C-M-h]                                                      |
+| TAB     | [TAB]                                | [C-M-i]                                                      | [C-M-i]                                                      |
+| RET     | [RET]                                | ~eval-dwim~                                                  | [M-RET]                                                      |
+| SPC     | [C-@]                                | just-one-space                                               | [M-SPC]                                                      |
+| <up>    | <up>                                 | ~drag-stuff-up~                                              | [ESC <up>]                                                   |
+| <left>  | ~[]~ +left-word+                     | ~drag-stuff-left~ +backward-word+                            | [ESC <left>]                                                 |
+| <down>  | <down>                               | ~drag-stuff-down~                                            | [ESC <down>]                                                 |
+| <right> | ~[]~ +right-word+                    | ~drag-stuff-right~ +forward-word+                            | [ESC <right>]                                                |
+|---------+--------------------------------------+--------------------------------------------------------------+--------------------------------------------------------------|
+| 1       | []                                   | digit-argument 1                                             | [M-1]                                                        |
+| 2       | []                                   | digit-argument 2                                             | [M-2]                                                        |
+| 3       | []                                   | digit-argument 3                                             | [M-3]                                                        |
+| 4       | []                                   | digit-argument 4                                             | [M-4]                                                        |
+| 5       | []                                   | digit-argument 5                                             | [M-5]                                                        |
+| 6       | []                                   | digit-argument 6                                             | [M-6]                                                        |
+| 7       | []                                   | digit-argument 7                                             | [M-7]                                                        |
+| 8       | []                                   | digit-argument 8                                             | [M-8]                                                        |
+| 9       | []                                   | digit-argument 9                                             | [M-9]                                                        |
+| 0       | []                                   | digit-argument 0                                             | [M-0]                                                        |
+|---------+--------------------------------------+--------------------------------------------------------------+--------------------------------------------------------------|
+| !       | []                                   | shell-command                                                |                                                              |
+| @       | set-mark-command                     | ~sp-select-next-thing~ +mark-word+                           | ~sp-select-previous-thing-exchange~  +mark-sexp+             |
+| #       | []                                   | ~linum-mode~                                                 |                                                              |
+| $       | []                                   | ~flyspell-mode~ +ispell-word+                                |                                                              |
+| %       | []                                   | query-replace                                                | ~vr/query-replace~ +query-replace-regexp+                    |
+| ^       |                                      | delete-indentation                                           |                                                              |
+| &       | []                                   | async-shell-command                                          |                                                              |
+| *       | []                                   | ~sp-convolute-sexp~                                          |                                                              |
+| (       | []                                   | ~sp-backward-slurp-sexp~ +insert-parentheses+                |                                                              |
+| )       | []                                   | ~sp-forward-slurp-sexp~ +move-past-close-and-reindent+       |                                                              |
+|---------+--------------------------------------+--------------------------------------------------------------+--------------------------------------------------------------|
+| -       | [C-_]                                | negative-argument                                            | [C-M-_]                                                      |
+| =       | []                                   | count-words-region                                           | [M-=]                                                        |
+| [       | [ESC-]                               | ~sp-down-sexp~                                               | ~sp-backward-up-sexp~                                        |
+| ]       | abort-recursive-edit                 | ~sp-backward-down-sexp~                                      | ~sp-up-sexp~                                                 |
+| ;       | []                                   | comment-dwim                                                 | [M-;]                                                        |
+| '       | []                                   | ~avy-goto-char-2~ +abbrev-prefix-mark+                       | [M-']                                                        |
+| \       | toggle-input-method                  | delete-horizontal-space                                      | indent-region                                                |
+| `       | []                                   | tmm-menubar                                                  | [M-`]                                                        |
+| ,       | []                                   | xref-pop-marker-stack                                        | [M-,]                                                        |
+| .       | []                                   | xref-find-definitions                                        | [M-.]                                                        |
+| /       | []                                   | ~hippie-expand~ +dabbrev-expand+                             | [M-/]                                                        |
+|---------+--------------------------------------+--------------------------------------------------------------+--------------------------------------------------------------|
+| _       | ~undo-tree-undo~ +undo+              | ~undo-tree-redo~                                             | ~toggle-truncate-lines~ +negative-argument+                  |
+| +       | []                                   | ~sp-join-sexp~                                               |                                                              |
+| {       | [C-[]                                | ~sp-backward-barf-sexp~ +backward-paragraph+                 |                                                              |
+| }       | [C-]]                                | ~sp-forward-barf-sexp~ +forward-paragraph+                   |                                                              |
+| :       | []                                   | eval-expression                                              |                                                              |
+| "       | []                                   | ~avy-pop-mark~                                               |                                                              |
+| \mid    | [C-\]                                | shell-command-on-region                                      |                                                              |
+| ~       | []                                   | not-modified                                                 |                                                              |
+| <       | []                                   | ~sp-splice-sexp-killing-backward~ +beginning-of-buffer+      |                                                              |
+| >       | []                                   | ~sp-splice-sexp-killing-forward~ +end-of-buffer+             |                                                              |
+| ?       | []                                   | xref-find-references                                         |                                                              |
+|---------+--------------------------------------+--------------------------------------------------------------+--------------------------------------------------------------|
+| a       | move-beginning-of-line               | ~beginning-of-buffer~ +backward-sentence+                    | ~sp-beginning-of-sexp~ +beginning-of-defun+                  |
+| b       | backward-char                        | backward-word                                                | ~sp-backward-parallel-sexp~ +backward-sexp+                  |
+| c       | [C-c-]                               | ~fix-word-capitalize~ +capitalize-word+                      | exit-recursive-edit                                          |
+| d       | delete-char                          | ~sp-kill-word~ +kill-word+                                   | ~sp-splice-sexp~ +down-list+                                 |
+| e       | move-end-of-line                     | ~end-of-buffer~ +forward-sentence+                           | ~sp-end-of-sexp~ +end-of-defun+                              |
+| f       | forward-char                         | forward-word                                                 | ~sp-forward-parallel-sexp~ +forward-sexp+                    |
+| g       | keyboard-quit                        | [M-g-]                                                       | []                                                           |
+| h       | [C-h-]                               | ~er/expand-region~ +mark-paragraph+                          | ~sp-rewrap-sexp~ +mark-defun+                                |
+| i       | [TAB]                                | tab-to-tab-stop                                              | ~company-complete~ +completion-at-point+                     |
+| j       | newline-and-indent                   | indent-new-comment-line                                      | ~sp-split-sexp~ +indent-new-comment-line+                    |
+| k       | ~sp-kill-hybrid-sexp~ +kill-line+    | kill-sentence                                                | ~sp-kill-sexp~ +kill-sexp+                                   |
+| l       | recenter-top-bottom                  | ~fix-word-downcase~ +downcase-word+                          | reposition-window                                            |
+| m       | [RET]                                | back-to-indentation                                          | [M-RET]                                                      |
+| n       | next-line                            | ~forward-sentence~                                           | ~forward-paragraph~ +forward-list+                           |
+| o       | open-line                            | [M-o-]                                                       | split-line                                                   |
+| p       | previous-line                        | ~backward-sentence~                                          | ~backward-paragraph~ +backward-list+                         |
+| q       | quoted-insert                        | fill-paragraph                                               | indent-pp-sexp                                               |
+| r       | isearch-backward                     | move-to-window-line-top-bottom                               | isearch-backward-regexp                                      |
+| s       | isearch-forward                      | [M-s-]                                                       | isearch-forward-regexp                                       |
+| t       | transpose-chars                      | transpose-words                                              | ~sp-transpose-sexp~ +transpose-sexps+                        |
+| u       | universal-argument                   | ~fix-word-upcase~ +upcase-word+                              | ~sp-raise-sexp~ +backward-up-list+                           |
+| v       | scroll-up-command                    | scroll-down-command                                          | scroll-other-window                                          |
+| w       | kill-region                          | kill-ring-save                                               | append-next-kill                                             |
+| x       | [C-x-]                               | ~counsel-M-x~ +execute-extended-command+                     | eval-defun                                                   |
+| y       | yank                                 | yank-pop                                                     | ~browse-kill-ring~                                           |
+| z       | +suspend-frame+                      | ~zzz-to-char~ +zap-to-char+                                  | ~swiper~                                                     |
 on text terminals, shift does not work with ctrl.
-|   | M-                                |
-|---+-----------------------------------|
-| A | ~org-agenda~                      |
-| B |                                   |
-| C |                                   |
-| D | ~hungry-delete-mode~              |
-| E |                                   |
-| F | ~vimish-fold-toggle~              |
-| G | ~magit-status~                    |
-| H |                                   |
-| I | ~aggressive-indent-mode~          |
-| J | ~vimish-fold-avy~                 |
-| K | ~vimish-fold-delete~              |
-| L | ~centered-cursor-mode~            |
-| M | ~mc/mark-more-like-this-extended~ |
-| N |                                   |
-| O |                                   |
-| P |                                   |
-| Q | ~suggest~                         |
-| R | ~cljr~                            |
-| S | ~cider-scratch~                   |
-| T |                                   |
-| U |                                   |
-| V |                                   |
-| W |                                   |
-| X |                                   |
-| Y |                                   |
-| Z |                                   |
+|   | <60>                                                         |
+|   | M-                                                           |
+|---+--------------------------------------------------------------|
+| A | ~org-agenda~                                                 |
+| B |                                                              |
+| C |                                                              |
+| D | ~hungry-delete-mode~                                         |
+| E |                                                              |
+| F | ~vimish-fold-toggle~                                         |
+| G | ~magit-status~                                               |
+| H |                                                              |
+| I | ~aggressive-indent-mode~                                     |
+| J | ~vimish-fold-avy~                                            |
+| K | ~vimish-fold-delete~                                         |
+| L | ~centered-cursor-mode~                                       |
+| M | ~mc/mark-more-like-this-extended~                            |
+| N |                                                              |
+| O |                                                              |
+| P |                                                              |
+| Q | ~suggest~                                                    |
+| R | ~cljr~                                                       |
+| S | ~cider-scratch~                                              |
+| T |                                                              |
+| U |                                                              |
+| V |                                                              |
+| W |                                                              |
+| X |                                                              |
+| Y |                                                              |
+| Z |                                                              |
 others, incomplete.
-| C-h i     | info                       |                                 |
-| C-h r     | info-emacs-manual          |                                 |
-| C-x C-b   | ~ibuffer~                  | +list-buffers+                  |
-| C-x C-SPC | pop-global-mark            |                                 |
-| C-x C-t   | ~sp-transpose-hybrid-sexp~ | +transpose-lines+               |
-| C-x f     | set-fill-column            |                                 |
-| C-x o     | ~ace-window~               | +other-window+                  |
-| C-x u     | ~undo-tree-visualize~      |                                 |
-| C-x z     | repeat                     |                                 |
-| M-g g     | ~avy-goto-line~            | +goto-line+                     |
+| <12>         | <60>                                                         |
+| C-h i        | info                                                         |
+| C-h r        | info-emacs-manual                                            |
+| C-x C-b      | ~ibuffer~ +list-buffers+                                     |
+| C-x C-SPC    | pop-global-mark                                              |
+| C-x C-t      | ~sp-transpose-hybrid-sexp~ +transpose-lines+                 |
+| C-x f        | set-fill-column                                              |
+| C-x o        | ~ace-window~ +other-window+                                  |
+| C-x u        | ~undo-tree-visualize~                                        |
+| C-x z        | repeat                                                       |
+| M-g g        | ~avy-goto-line~ +goto-line+                                  |
