@@ -3,7 +3,7 @@
 * general
 ** init
 [[https://www.gnu.org/software/emacs/][emacs 25]] is required.
-make this the =user-init-file= to tangle and load this setup.
+put this in the =user-init-file= to tangle and load this setup.
 #+BEGIN_SRC emacs-lisp :tangle no
   (package-initialize)
   (org-babel-load-file (expand-file-name "setup.org" user-emacs-directory))
@@ -12,16 +12,16 @@ the [[https://melpa.org/#/][melpa repo]] hosts the most update-to-date packages.
 #+BEGIN_SRC emacs-lisp
   (push '("melpa" . "http://melpa.org/packages/") package-archives)
 #+END_SRC
-occasionally, some update is buggy. just revert to the [[https://stable.melpa.org/#/][stable version]].
+occasionally, some update is buggy.  just revert to the [[https://stable.melpa.org/#/][stable version]].
 #+BEGIN_SRC emacs-lisp :tangle no
   (push '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/") package-archives)
 #+END_SRC
-i use these packages.
+packages i use.
 #+BEGIN_SRC emacs-lisp
   (customize-set-variable
    'package-selected-packages
    '(benchmark-init
-     dash dash-functional s f bind-key delight suggest
+     suggest dash dash-functional s f bind-key delight
      exwm exec-path-from-shell
      zenburn-theme powerline rainbow-delimiters
      counsel flx smex which-key
@@ -29,14 +29,14 @@ i use these packages.
      projectile magit undo-tree browse-kill-ring
      smartparens expand-region region-bindings-mode visual-regexp multiple-cursors
      company company-quickhelp yasnippet flycheck flycheck-pos-tip
-     drag-stuff zzz-to-char fix-word hungry-delete aggressive-indent
+     hungry-delete aggressive-indent drag-stuff fix-word zzz-to-char
      clojure-mode cider clj-refactor kibit-helper
      geiser ediprolog pasp-mode haskell-mode idris-mode
      rust-mode cargo flycheck-rust racer
      elpy js2-mode rainbow-mode ess csv-mode
      markdown-mode latex-preview-pane cdlatex company-auctex))
 #+END_SRC
-to install these packages, change =:tangle no= to =:tangle yes= for this code block, or manually execute the commands.
+to install those packages, change =:tangle no= to =:tangle yes= for this code block, or manually execute the commands.
 #+BEGIN_SRC emacs-lisp :tangle no
   (package-refresh-contents)
   (package-install-selected-packages)
@@ -47,49 +47,12 @@ if emacs takes too long to initialize, [[https://github.com/dholm/benchmark-init
 #+BEGIN_SRC emacs-lisp :tangle no
   (benchmark-init/activate)
 #+END_SRC
-in this setup, each package is configured in this order.
-- autoload
-- bind global
-- mode & hook
-- activation & delight
-- config
-- bind local
-- related
-** elisp
 modern [[https://github.com/magnars/dash.el#installation][list]], [[https://github.com/magnars/s.el][string]], and [[https://github.com/rejeep/f.el][file]] libraries to make elisp usable.
 [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] simplifies mode-map management with =bind-keys=, =unbind-key=, and =describe-personal-keybindings=.
 [[https://www.emacswiki.org/emacs/DelightedModes][delight]] keeps the mode-line clean.
 #+BEGIN_SRC emacs-lisp
   (mapc #'require '(s f dash dash-functional bind-key delight))
   (dash-enable-font-lock)
-#+END_SRC
-[[https://www.emacswiki.org/emacs/ElDoc][eldoc]]
-#+BEGIN_SRC emacs-lisp
-  (--each '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook)
-    (add-hook it #'eldoc-mode))
-  (delight 'eldoc-mode nil 'eldoc)
-#+END_SRC
-to evaluate code interactively, i bind =M-RET= for region or sexp or line and =C-M-x= for defun or block.
-this applies to all language-specific modes which offers the options.
-#+BEGIN_SRC emacs-lisp
-  (defmacro def-eval-dwim (name eval-region eval-last)
-    "define NAME to interactively call either the EVAL-REGION
-  function or the EVAL-LAST function, depending on `use-region-p'.
-  both functions must be given as unquoted symbols."
-    `(defun ,name ()
-       ,(format "`%s' or `%s'" eval-region eval-last)
-       (interactive)
-       (call-interactively
-        (if (use-region-p)
-            (function ,eval-region)
-          (function ,eval-last)))))
-  (def-eval-dwim eval-dwim eval-region eval-last-sexp)
-  (bind-keys :map lisp-mode-shared-map
-             ("M-RET" . eval-dwim)
-             ("C-M-x" . eval-defun))
-#+END_SRC
-some helpers.
-#+BEGIN_SRC emacs-lisp
   (defun cset (&rest sym-vals)
     "customize each symbol to value in SYM-VALS."
     (-each (-partition-all 2 sym-vals)
@@ -101,13 +64,14 @@ some helpers.
     "unbind all keys in KS from mode M."
     (--each ks (unbind-key it m)))
 #+END_SRC
-disable =completion-at-point= locally to favor =company-complete= globally.
-#+BEGIN_SRC emacs-lisp
-  (unbind-keys emacs-lisp-mode-map "C-M-i")
-  (unbind-keys lisp-interaction-mode-map "C-M-i" "C-j")
-  (bind-keys :map lisp-interaction-mode-map ("RET" . eval-print-last-sexp))
-  (add-hooks 'eval-expression-minibuffer-setup-hook #'eldoc-mode #'smartparens-mode)
-#+END_SRC
+in this setup, each package is configured in this order.
+- autoload
+- bind global
+- mode & hook
+- activation & delight
+- config
+- bind local
+- related
 ** system
 for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
 #+BEGIN_SRC emacs-lisp
@@ -213,21 +177,24 @@ they encourage recklessness.
 ** navigation
 *** symbol
 #+BEGIN_SRC emacs-lisp
-  (bind-key* "C-M-q" #'swiper)
-  (bind-keys ("M-x"     . counsel-M-x)
-             ("C-x C-f" . counsel-find-file))
   (ivy-mode 1)
   (delight 'ivy-mode nil 'ivy)
-  (cset 'ivy-initial-inputs-alist nil
-        'ivy-re-builders-alist    '((swiper . ivy--regex-plus)
-                                    (t      . ivy--regex-fuzzy))
-        'ivy-height               13)
-  (bind-keys :map ivy-minibuffer-map
-             ("M-n" . ivy-next-line)      ("C-n"   . ivy-next-history-element)
-             ("M-p" . ivy-previous-line)  ("C-p"   . ivy-previous-history-element)
-             ("C-j" . ivy-immediate-done) ("C-M-j" . ivy-alt-done))
+  (cset 'ivy-re-builders-alist '((swiper . ivy--regex-plus) (t . ivy--regex-fuzzy))
+        'ivy-initial-inputs-alist nil
+        'ivy-height 13
+        'ivy-wrap t)
+  (bind-keys :map ivy-mode-map
+             ("C-M-q"   . swiper)
+             ("M-x"     . counsel-M-x)
+             ("C-x C-f" . counsel-find-file)
+             :map ivy-minibuffer-map
+             ("M-n" . ivy-next-line)      ("C-n" . ivy-next-history-element)
+             ("M-p" . ivy-previous-line)  ("C-p" . ivy-previous-history-element)
+             ("C-j" . ivy-immediate-done)
+             ("M-'" . ivy-avy))
   (which-key-mode 1)
   (delight 'which-key-mode nil 'which-key)
+  (delight 'eldoc-mode nil 'eldoc)
 #+END_SRC
 *** buffer
 #+BEGIN_SRC emacs-lisp
@@ -275,6 +242,7 @@ they encourage recklessness.
 *** history
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-M-y" . browse-kill-ring)
+             :map undo-tree-map
              ("C--"   . undo-tree-undo))
   (global-undo-tree-mode 1)
   (delight 'undo-tree-mode nil 'undo-tree)
@@ -365,7 +333,7 @@ with revised symmetrical bindings.
     (with-eval-after-load 'multiple-cursors
       (set-face-attribute 'mc/cursor-bar-face nil :background "#DAA520" :foreground "#242424")))
 #+END_SRC
-*** completing
+*** completion
 - no abbrev
 #+BEGIN_SRC emacs-lisp
   (cset 'save-abbrevs nil)
@@ -384,7 +352,6 @@ with revised symmetrical bindings.
             try-expand-whole-kill
             try-complete-lisp-symbol-partially
             try-complete-lisp-symbol)))
-  (bind-keys ("C-M-i" . company-complete))
   (global-company-mode 1)
   (company-quickhelp-mode 1)
   (delight 'company-mode nil 'company)
@@ -394,7 +361,8 @@ with revised symmetrical bindings.
         'company-selection-wrap-around     t
         'company-quickhelp-delay           nil)
   (unbind-keys company-active-map "TAB" "<tab>")
-  (bind-keys :map company-active-map ("M-h" . company-quickhelp-manual-begin))
+  (bind-keys :map company-active-map ("M-h" . company-quickhelp-manual-begin)
+             :map company-mode-map ("C-M-i" . company-complete))
 #+END_SRC
 - snippet
 #+BEGIN_SRC emacs-lisp
@@ -407,7 +375,6 @@ with revised symmetrical bindings.
   (bind-keys ("M-$" . flyspell-mode))
   (with-eval-after-load 'flyspell
     (delight 'flyspell-mode " $" 'flyspell)
-    (unbind-keys flyspell-mode-map "C-M-i")
     (bind-keys :map flyspell-mode-map ("C-;" . flyspell-correct-word-before-point))
     (cset 'ispell-program-name "aspell"))
 #+END_SRC
@@ -416,27 +383,63 @@ with revised symmetrical bindings.
   (with-eval-after-load 'flycheck
     (flycheck-pos-tip-mode))
 #+END_SRC
-*** misc
+*** whitespace
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'before-save-hook #'whitespace-cleanup)
-  (bind-keys ("<M-left>"  . drag-stuff-left)
-             ("<M-right>" . drag-stuff-right)
-             ("<M-down>"  . drag-stuff-down)
-             ("<M-up>"    . drag-stuff-up)
-             ("M-z" . zzz-to-char)
-             ("M-u" . fix-word-upcase)
-             ("M-l" . fix-word-downcase)
-             ("M-c" . fix-word-capitalize)
-             ("C-j" . newline-and-indent))
   (global-hungry-delete-mode 1)
   (delight 'hungry-delete-mode " d" 'hungry-delete)
+#+END_SRC
+*** indentation
+#+BEGIN_SRC emacs-lisp
   (global-aggressive-indent-mode 1)
   (delight 'aggressive-indent-mode " i" 'aggressive-indent)
   (--each '(idris-mode haskell-mode)
     (push it aggressive-indent-excluded-modes))
-  (cset 'indent-tabs-mode nil)
+  (cset 'electric-indent-mode nil
+        'indent-tabs-mode     nil)
+  (bind-keys :map smartparens-mode-map ("C-j" . newline-and-indent))
+#+END_SRC
+*** miscellaneous
+#+BEGIN_SRC emacs-lisp
+  (bind-keys ("<M-right>" . drag-stuff-right)
+             ("<M-left>"  . drag-stuff-left)
+             ("<M-down>"  . drag-stuff-down)
+             ("<M-up>"    . drag-stuff-up)
+             ("M-c" . fix-word-capitalize)
+             ("M-l" . fix-word-downcase)
+             ("M-u" . fix-word-upcase)
+             ("M-z" . zzz-to-char))
+#+END_SRC
+** eval
+to evaluate code interactively, i bind =M-RET= for region or sexp or line and =C-M-x= for defun or block.
+this applies to all language-specific modes which offers the options.
+#+BEGIN_SRC emacs-lisp
+  (defmacro def-eval-dwim (name eval-region eval-last)
+    "define NAME to interactively call either the EVAL-REGION
+  function or the EVAL-LAST function, depending on `use-region-p'.
+  both functions must be given as unquoted symbols."
+    `(defun ,name ()
+       ,(format "`%s' or `%s'" eval-region eval-last)
+       (interactive)
+       (call-interactively
+        (if (use-region-p)
+            (function ,eval-region)
+          (function ,eval-last)))))
 #+END_SRC
 * lang
+** elisp
+#+BEGIN_SRC emacs-lisp
+  (--each '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook)
+    (add-hook it #'eldoc-mode))
+  (add-hooks 'eval-expression-minibuffer-setup-hook #'eldoc-mode #'smartparens-mode)
+  (def-eval-dwim eval-dwim:elisp eval-region eval-last-sexp)
+  (bind-keys :map emacs-lisp-mode-map
+             ("M-RET" . eval-dwim:elisp)
+             ("C-M-x" . eval-defun)
+             :map lisp-interaction-mode-map
+             ("RET"   . eval-print-last-sexp)
+             ("M-RET" . eval-dwim:elisp))
+#+END_SRC
 ** clojure
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'clojure-mode-hook    #'eldoc-mode #'clj-refactor-mode)
@@ -516,6 +519,7 @@ with revised symmetrical bindings.
 #+END_SRC
 ** r
 #+BEGIN_SRC emacs-lisp
+  (add-hooks 'inferior-ess-mode-hook #'smartparens-mode)
   (with-eval-after-load 'ess
     (def-eval-dwim eval-dwim:ess ess-eval-region ess-eval-line)
     (bind-keys :map ess-mode-map
@@ -574,7 +578,7 @@ with revised symmetrical bindings.
             ("normalem" "ulem" t)
             ("" "amsmath" t)
             ("" "hyperref" nil)))
-    (unbind-keys org-mode-map "C-M-i" "M-h" "M-a" "M-e" "M-{" "M-}")
+    (unbind-keys org-mode-map "M-h" "M-a" "M-e" "M-{" "M-}")
     (bind-keys :map org-mode-map
                ("M-n"     . org-forward-sentence)
                ("M-p"     . org-backward-sentence)
