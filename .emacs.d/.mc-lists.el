@@ -71,6 +71,7 @@
         sp-backward-down-sexp
         sp-backward-kill-sexp
         sp-backward-kill-word
+        sp-backward-parallel-sexp
         sp-backward-sexp
         sp-beginning-of-sexp
         sp-delete-char

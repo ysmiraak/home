@@ -494,6 +494,7 @@ this applies to all language-specific modes which offers the options.
 #+END_SRC
 ** shell
 #+BEGIN_SRC emacs-lisp
+  (add-hooks 'eshell-mode-hook #'smartparens-mode)
   (cset 'eshell-preoutput-filter-functions '(ansi-color-apply))
 #+END_SRC
 ** python
