@@ -270,11 +270,12 @@ they encourage recklessness.
   (delight 'projectile-mode '(:eval (format " [%s]" (projectile-project-name))) 'projectile)
   (cset 'projectile-switch-project-action 'projectile-dired
         'projectile-completion-system     'ivy)
+  (bind-keys ("C-x g" . magit-status))
 #+END_SRC
 *** history
 #+BEGIN_SRC emacs-lisp
-  (bind-keys  ("C-M-y" . browse-kill-ring)
-              ("C--"   . undo-tree-undo))
+  (bind-keys ("C-M-y" . browse-kill-ring)
+             ("C--"   . undo-tree-undo))
   (global-undo-tree-mode 1)
   (delight 'undo-tree-mode nil 'undo-tree)
 #+END_SRC
