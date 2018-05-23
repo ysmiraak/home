@@ -59,13 +59,11 @@ in this setup, each package is configured in this order.
 modern [[https://github.com/magnars/dash.el#installation][list]], [[https://github.com/magnars/s.el][string]], and [[https://github.com/rejeep/f.el][file]] libraries to make elisp usable.
 [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] simplifies mode-map management with =bind-keys=, =unbind-key=, and =describe-personal-keybindings=.
 [[https://www.emacswiki.org/emacs/DelightedModes][delight]] keeps the mode-line clean.
-[[https://www.emacswiki.org/emacs/ElDoc][suggest]] for learning.
 #+BEGIN_SRC emacs-lisp
   (mapc #'require '(s f dash dash-functional bind-key delight))
   (dash-enable-font-lock)
-  (bind-keys ("M-Q" . suggest))
 #+END_SRC
-[[https://github.com/Wilfred/suggest.el][eldoc]]
+[[https://www.emacswiki.org/emacs/ElDoc][eldoc]]
 #+BEGIN_SRC emacs-lisp
   (--each '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook)
     (add-hook it #'eldoc-mode))
@@ -143,7 +141,6 @@ for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
               ("s-m" . exwm-input-toggle-keyboard)
               ("s-r" . exwm-reset))
       (exwm-input-set-key (kbd (car it)) (cdr it)))
-    (defalias 'suspend-frame #'eshell)
     (exwm-enable))
 #+END_SRC
 for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see =dired-use-ls-dired=), and fullscreen to work on [[https://www.emacswiki.org/emacs/MacOSTweaks][mac]].
@@ -173,8 +170,10 @@ they encourage recklessness.
   (cset 'disabled-command-function nil)
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
+=suspend-frame= is only useful on text terminals.
 =C-z= often interferes with =C-c C-z=.  stick to =C-x C-z= instead.
 #+BEGIN_SRC emacs-lisp
+  (when (display-graphic-p) (defalias 'suspend-frame #'eshell))
   (unbind-key "C-z")
 #+END_SRC
 ** theme
@@ -214,8 +213,8 @@ they encourage recklessness.
 ** navigation
 *** symbol
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("C-M-z"   . swiper)
-             ("M-x"     . counsel-M-x)
+  (bind-key* "C-M-q" #'swiper)
+  (bind-keys ("M-x"     . counsel-M-x)
              ("C-x C-f" . counsel-find-file))
   (ivy-mode 1)
   (delight 'ivy-mode nil 'ivy)
@@ -255,10 +254,8 @@ they encourage recklessness.
 *** position
 #+BEGIN_SRC emacs-lisp
   (autoload 'centered-cursor-mode "centered-cursor-mode")
-  (bind-keys ("M-L" . centered-cursor-mode)
-             ("M-F" . vimish-fold-toggle)
-             ("M-J" . vimish-fold-avy)
-             ("M-K" . vimish-fold-delete)
+  (bind-keys ("C-M-z" . vimish-fold-delete)
+             ("C-x f" . vimish-fold-avy)
              ("C-x o" . ace-window)
              ("M-#"    . linum-mode)
              ("M-g g"   . avy-goto-line)
@@ -273,7 +270,6 @@ they encourage recklessness.
   (delight 'projectile-mode '(:eval (format " [%s]" (projectile-project-name))) 'projectile)
   (cset 'projectile-switch-project-action 'projectile-dired
         'projectile-completion-system     'ivy)
-  (bind-keys ("M-G" . magit-status))
 #+END_SRC
 *** history
 #+BEGIN_SRC emacs-lisp
@@ -284,7 +280,7 @@ they encourage recklessness.
 #+END_SRC
 ** editing
 *** structure-based
-with revised symmetrical key chords.
+with revised symmetrical bindings.
 |   | C        | M        | C-M      |
 |---+----------+----------+----------|
 | a | line min | buff min | sexp min |
@@ -362,11 +358,11 @@ with revised symmetrical key chords.
 #+END_SRC
 *** batched
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-M"   . mc/mark-more-like-this-extended))
+  (bind-keys ("C-M-\\" . mc/mark-more-like-this-extended)
+             ("C-M-%"  . vr/query-replace))
   (when (display-graphic-p)
     (with-eval-after-load 'multiple-cursors
       (set-face-attribute 'mc/cursor-bar-face nil :background "#DAA520" :foreground "#242424")))
-  (bind-keys ("C-M-%" . vr/query-replace))
 #+END_SRC
 *** completing
 - no abbrev
@@ -430,8 +426,6 @@ with revised symmetrical key chords.
              ("M-u" . fix-word-upcase)
              ("M-l" . fix-word-downcase)
              ("M-c" . fix-word-capitalize)
-             ("M-D" . hungry-delete-mode)
-             ("M-I" . aggressive-indent-mode)
              ("C-j" . newline-and-indent))
   (global-hungry-delete-mode 1)
   (delight 'hungry-delete-mode " d" 'hungry-delete)
@@ -444,7 +438,6 @@ with revised symmetrical key chords.
 * lang
 ** clojure
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-S" . cider-scratch))
   (add-hooks 'clojure-mode-hook    #'eldoc-mode #'clj-refactor-mode)
   (add-hooks 'cider-repl-mode-hook #'eldoc-mode #'clj-refactor-mode)
   (with-eval-after-load 'cider
@@ -458,7 +451,7 @@ with revised symmetrical key chords.
                ("M-RET" . eval-dwim:clojure)
                ("C-M-x" . cider-eval-defun-at-point)))
   (with-eval-after-load 'clj-refactor
-    (cljr-add-keybindings-with-prefix "M-R")
+    (cljr-add-keybindings-with-prefix "C-z")
     (cset 'cljr-suppress-middleware-warnings t))
 #+END_SRC
 ** scheme
@@ -486,11 +479,7 @@ with revised symmetrical key chords.
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'idris-mode-hook #'eldoc-mode)
   (with-eval-after-load 'idris-mode
-    (bind-keys :map idris-mode-map
-               ("M-RET"   . idris-case-dwim)
-               ("C-M-x"   . idris-add-clause)
-               ("C-M-z"   . idris-proof-search)
-               ("C-c C-q" . idris-quit)))
+    (bind-keys :map idris-mode-map ("C-c C-q" . idris-quit)))
 #+END_SRC
 ** rust
 #+BEGIN_SRC emacs-lisp
@@ -566,12 +555,9 @@ with revised symmetrical key chords.
 #+END_SRC
 ** org
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-A" . org-agenda))
   (add-hooks 'org-mode-hook #'turn-on-org-cdlatex)
   (with-eval-after-load 'org
-    (cset 'org-directory (f-expand "org" user-emacs-directory))
-    (cset 'org-agenda-files `(,(f-expand "agenda.org" org-directory))
-          'org-adapt-indentation                  nil
+    (cset 'org-adapt-indentation                  nil
           'org-log-done                           'time
           'org-latex-create-formula-image-program 'imagemagick
           'org-latex-listings                     'minted
@@ -598,6 +584,8 @@ with revised symmetrical key chords.
     (push it safe-local-variable-values))
 #+END_SRC
 * summary
+ctrl does not work with uppercase on text terminals.
+meta does but i do not need those bindings yet.
 - dead on terminal: []
 - forced translate: [target]
 - override default: +old+ ~new~
@@ -641,7 +629,7 @@ with revised symmetrical key chords.
 | ]       | abort-recursive-edit                 | ~sp-backward-down-sexp~                                      | ~sp-up-sexp~                                                 |
 | ;       | []                                   | comment-dwim                                                 | [M-;]                                                        |
 | '       | []                                   | ~avy-goto-char-2~ +abbrev-prefix-mark+                       | [M-']                                                        |
-| \       | toggle-input-method                  | delete-horizontal-space                                      | indent-region                                                |
+| \       | toggle-input-method                  | delete-horizontal-space                                      | ~mc/mark-more-like-this-extended~ +indent-region+            |
 | `       | []                                   | tmm-menubar                                                  | [M-`]                                                        |
 | ,       | []                                   | xref-pop-marker-stack                                        | [M-,]                                                        |
 | .       | []                                   | xref-find-definitions                                        | [M-.]                                                        |
@@ -675,7 +663,7 @@ with revised symmetrical key chords.
 | n       | next-line                            | ~forward-sentence~                                           | ~forward-paragraph~ +forward-list+                           |
 | o       | open-line                            | [M-o-]                                                       | split-line                                                   |
 | p       | previous-line                        | ~backward-sentence~                                          | ~backward-paragraph~ +backward-list+                         |
-| q       | quoted-insert                        | fill-paragraph                                               | indent-pp-sexp                                               |
+| q       | quoted-insert                        | fill-paragraph                                               | ~swiper~                                                     |
 | r       | isearch-backward                     | move-to-window-line-top-bottom                               | isearch-backward-regexp                                      |
 | s       | isearch-forward                      | [M-s-]                                                       | isearch-forward-regexp                                       |
 | t       | transpose-chars                      | transpose-words                                              | ~sp-transpose-sexp~ +transpose-sexps+                        |
@@ -684,45 +672,16 @@ with revised symmetrical key chords.
 | w       | kill-region                          | kill-ring-save                                               | append-next-kill                                             |
 | x       | [C-x-]                               | ~counsel-M-x~ +execute-extended-command+                     | eval-defun                                                   |
 | y       | yank                                 | yank-pop                                                     | ~browse-kill-ring~                                           |
-| z       | +suspend-frame+                      | ~zzz-to-char~ +zap-to-char+                                  | ~swiper~                                                     |
-on text terminals, shift does not work with ctrl.
-|   | <60>                                                         |
-|   | M-                                                           |
-|---+--------------------------------------------------------------|
-| A | ~org-agenda~                                                 |
-| B |                                                              |
-| C |                                                              |
-| D | ~hungry-delete-mode~                                         |
-| E |                                                              |
-| F | ~vimish-fold-toggle~                                         |
-| G | ~magit-status~                                               |
-| H |                                                              |
-| I | ~aggressive-indent-mode~                                     |
-| J | ~vimish-fold-avy~                                            |
-| K | ~vimish-fold-delete~                                         |
-| L | ~centered-cursor-mode~                                       |
-| M | ~mc/mark-more-like-this-extended~                            |
-| N |                                                              |
-| O |                                                              |
-| P |                                                              |
-| Q | ~suggest~                                                    |
-| R | ~cljr~                                                       |
-| S | ~cider-scratch~                                              |
-| T |                                                              |
-| U |                                                              |
-| V |                                                              |
-| W |                                                              |
-| X |                                                              |
-| Y |                                                              |
-| Z |                                                              |
-others, incomplete.
+| z       | ~cljr~ +suspend-frame+               | ~zzz-to-char~ +zap-to-char+                                  | ~vimish-fold-delete~                                         |
+prefixed bindings, incomplete.
 | <12>         | <60>                                                         |
 | C-h i        | info                                                         |
 | C-h r        | info-emacs-manual                                            |
-| C-x C-b      | ~ibuffer~ +list-buffers+                                     |
 | C-x C-SPC    | pop-global-mark                                              |
+| C-x C-b      | ~ibuffer~ +list-buffers+                                     |
 | C-x C-t      | ~sp-transpose-hybrid-sexp~ +transpose-lines+                 |
-| C-x f        | set-fill-column                                              |
+| C-x f        | ~vimish-fold-avy~ +set-fill-column+                          |
+| C-x g        | ~magit-status~                                               |
 | C-x o        | ~ace-window~ +other-window+                                  |
 | C-x u        | ~undo-tree-visualize~                                        |
 | C-x z        | repeat                                                       |
