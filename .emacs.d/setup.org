@@ -20,16 +20,21 @@ i use these packages.
 #+BEGIN_SRC emacs-lisp
   (customize-set-variable
    'package-selected-packages
-   '(s f dash dash-functional bind-key delight suggest
-       benchmark-init exec-path-from-shell exwm
-       zenburn-theme powerline rainbow-delimiters
-       counsel flx smex which-key magit projectile avy ace-window centered-cursor-mode
-       undo-tree browse-kill-ring zzz-to-char fix-word vimish-fold drag-stuff aggressive-indent hungry-delete
-       smartparens multiple-cursors visual-regexp expand-region region-bindings-mode
-       company company-quickhelp yasnippet flycheck flycheck-pos-tip
-       clojure-mode cider clj-refactor kibit-helper geiser ediprolog pasp-mode haskell-mode idris-mode
-       rust-mode cargo flycheck-rust racer elpy js2-mode rainbow-mode
-       ess csv-mode markdown-mode latex-preview-pane cdlatex company-auctex))
+   '(benchmark-init
+     dash dash-functional s f bind-key delight suggest
+     exwm exec-path-from-shell
+     zenburn-theme powerline rainbow-delimiters
+     counsel flx smex which-key
+     centered-cursor-mode vimish-fold ace-window avy
+     projectile magit undo-tree browse-kill-ring
+     smartparens expand-region region-bindings-mode visual-regexp multiple-cursors
+     company company-quickhelp yasnippet flycheck flycheck-pos-tip
+     drag-stuff zzz-to-char fix-word hungry-delete aggressive-indent
+     clojure-mode cider clj-refactor kibit-helper
+     geiser ediprolog pasp-mode haskell-mode idris-mode
+     rust-mode cargo flycheck-rust racer
+     elpy js2-mode rainbow-mode ess csv-mode
+     markdown-mode latex-preview-pane cdlatex company-auctex))
 #+END_SRC
 to install these packages, change =:tangle no= to =:tangle yes= for this code block, or manually execute the commands.
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -51,7 +56,7 @@ in this setup, each package is configured in this order.
 - bind local
 - related
 ** elisp
-modern [[https://github.com/magnars/s.el][string]], [[https://github.com/rejeep/f.el][file]], and [[https://github.com/magnars/dash.el#installation][list]] libraries to make elisp usable for me.
+modern [[https://github.com/magnars/dash.el#installation][list]], [[https://github.com/magnars/s.el][string]], and [[https://github.com/rejeep/f.el][file]] libraries to make elisp usable.
 [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] simplifies mode-map management with =bind-keys=, =unbind-key=, and =describe-personal-keybindings=.
 [[https://www.emacswiki.org/emacs/DelightedModes][delight]] keeps the mode-line clean.
 [[https://www.emacswiki.org/emacs/ElDoc][suggest]] for learning.
@@ -85,39 +90,31 @@ this applies to all language-specific modes which offers the options.
              ("M-RET" . eval-dwim)
              ("C-M-x" . eval-defun))
 #+END_SRC
-disable =completion-at-point= locally to favor =company-complete= globally.
-#+BEGIN_SRC emacs-lisp
-  (--each `(,emacs-lisp-mode-map ,lisp-interaction-mode-map)
-    (unbind-key "C-M-i" it))
-#+END_SRC
 some helpers.
 #+BEGIN_SRC emacs-lisp
   (defun cset (&rest sym-vals)
     "customize each symbol to value in SYM-VALS."
     (-each (-partition-all 2 sym-vals)
       (-applify #'customize-set-variable)))
-  (defun unbind-keys (m &rest ks)
-    "unbind all keys in KS from mode M."
-    (--each ks (unbind-key it m)))
   (defun add-hooks (h &rest fs)
     "add all functions in FS to hook H in reverse."
     (--each (nreverse fs) (add-hook h it)))
+  (defun unbind-keys (m &rest ks)
+    "unbind all keys in KS from mode M."
+    (--each ks (unbind-key it m)))
+#+END_SRC
+disable =completion-at-point= locally to favor =company-complete= globally.
+#+BEGIN_SRC emacs-lisp
+  (unbind-keys emacs-lisp-mode-map "C-M-i")
+  (unbind-keys lisp-interaction-mode-map "C-M-i" "C-j")
+  (bind-keys :map lisp-interaction-mode-map ("RET" . eval-print-last-sexp))
   (add-hooks 'eval-expression-minibuffer-setup-hook #'eldoc-mode #'smartparens-mode)
 #+END_SRC
 ** system
-[[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]]
+for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
 #+BEGIN_SRC emacs-lisp
   (require 'server)
   (unless (server-running-p) (server-start))
-#+END_SRC
-for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see =dired-use-ls-dired=), and fullscreen to work on [[https://www.emacswiki.org/emacs/MacOSTweaks][mac]].
-#+BEGIN_SRC emacs-lisp
-  (when (equal 'ns window-system)
-    (exec-path-from-shell-initialize)
-    (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL"))
-    (cset 'insert-directory-program (executable-find "gls"))
-    (bind-keys ("<C-s-f>" . toggle-frame-fullscreen) ("<C-s-268632070>" . toggle-frame-fullscreen))
-    (toggle-frame-fullscreen))
 #+END_SRC
 [[https://github.com/ch11ng/exwm][emacs x window manager]] for my arch linux.
 #+BEGIN_SRC emacs-lisp
@@ -148,6 +145,15 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
       (exwm-input-set-key (kbd (car it)) (cdr it)))
     (defalias 'suspend-frame #'eshell)
     (exwm-enable))
+#+END_SRC
+for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see =dired-use-ls-dired=), and fullscreen to work on [[https://www.emacswiki.org/emacs/MacOSTweaks][mac]].
+#+BEGIN_SRC emacs-lisp
+  (when (equal 'ns window-system)
+    (exec-path-from-shell-initialize)
+    (exec-path-from-shell-copy-envs '("PATH" "LANG" "LC_ALL" "EMAIL"))
+    (cset 'insert-directory-program (executable-find "gls"))
+    (bind-keys ("<C-s-f>" . toggle-frame-fullscreen) ("<C-s-268632070>" . toggle-frame-fullscreen))
+    (toggle-frame-fullscreen))
 #+END_SRC
 ** safety
 to prevent custom from editing my =user-init-file=.
@@ -206,7 +212,7 @@ they encourage recklessness.
   (cset 'truncate-lines t)
 #+END_SRC
 ** navigation
-*** to symbol
+*** symbol
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-M-z"   . swiper)
              ("M-x"     . counsel-M-x)
@@ -224,7 +230,7 @@ they encourage recklessness.
   (which-key-mode 1)
   (delight 'which-key-mode nil 'which-key)
 #+END_SRC
-*** to buffer
+*** buffer
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-x C-b" . ibuffer))
   (add-hooks 'ibuffer-mode-hook (-partial #'ibuffer-switch-to-saved-filter-groups "ysmiraak"))
@@ -246,16 +252,22 @@ they encourage recklessness.
         'ibuffer-show-empty-filter-groups nil
         'ibuffer-expert t)
 #+END_SRC
-*** to position
+*** position
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("M-'"     . avy-goto-char-timer)
-             ("M-\""    . avy-pop-mark)
+  (autoload 'centered-cursor-mode "centered-cursor-mode")
+  (bind-keys ("M-L" . centered-cursor-mode)
+             ("M-F" . vimish-fold-toggle)
+             ("M-J" . vimish-fold-avy)
+             ("M-K" . vimish-fold-delete)
+             ("C-x o" . ace-window)
+             ("M-#"    . linum-mode)
              ("M-g g"   . avy-goto-line)
              ("M-g M-g" . avy-goto-line)
-             ("C-x o"   . ace-window))
+             ("M-\""  . avy-pop-mark)
+             ("M-'" . avy-goto-char-timer))
   (cset 'avy-timeout-seconds 0.3)
 #+END_SRC
-*** to project
+*** project
 #+BEGIN_SRC emacs-lisp
   (projectile-mode 1)
   (delight 'projectile-mode '(:eval (format " [%s]" (projectile-project-name))) 'projectile)
@@ -263,15 +275,16 @@ they encourage recklessness.
         'projectile-completion-system     'ivy)
   (bind-keys ("M-G" . magit-status))
 #+END_SRC
-*** to history
+*** history
 #+BEGIN_SRC emacs-lisp
-  (bind-keys  ("C--"   . undo-tree-undo))
+  (bind-keys  ("C-M-y" . browse-kill-ring)
+              ("C--"   . undo-tree-undo))
   (global-undo-tree-mode 1)
   (delight 'undo-tree-mode nil 'undo-tree)
 #+END_SRC
 ** editing
 *** structure-based
-- with revised symmetrical key chords
+with revised symmetrical key chords.
 |   | C        | M        | C-M      |
 |---+----------+----------+----------|
 | a | line min | buff min | sexp min |
@@ -409,17 +422,10 @@ they encourage recklessness.
 *** misc
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'before-save-hook #'whitespace-cleanup)
-  (autoload 'centered-cursor-mode "centered-cursor-mode")
-  (bind-keys ("M-L" . centered-cursor-mode)
-             ("M-#" . linum-mode)
-             ("M-F" . vimish-fold-toggle)
-             ("M-J" . vimish-fold-avy)
-             ("M-K" . vimish-fold-delete)
-             ("<M-left>"  . drag-stuff-left)
+  (bind-keys ("<M-left>"  . drag-stuff-left)
              ("<M-right>" . drag-stuff-right)
              ("<M-down>"  . drag-stuff-down)
              ("<M-up>"    . drag-stuff-up)
-             ("C-M-y" . browse-kill-ring)
              ("M-z" . zzz-to-char)
              ("M-u" . fix-word-upcase)
              ("M-l" . fix-word-downcase)
