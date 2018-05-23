@@ -394,8 +394,7 @@ with revised symmetrical bindings.
   (delight 'aggressive-indent-mode " i" 'aggressive-indent)
   (--each '(idris-mode haskell-mode)
     (push it aggressive-indent-excluded-modes))
-  (cset 'electric-indent-mode nil
-        'indent-tabs-mode     nil)
+  (cset 'indent-tabs-mode nil)
   (bind-keys :map smartparens-mode-map ("C-j" . newline-and-indent))
 #+END_SRC
 *** miscellaneous
