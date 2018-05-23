@@ -241,10 +241,9 @@ they encourage recklessness.
 #+END_SRC
 *** history
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("C-M-y" . browse-kill-ring)
-             :map undo-tree-map
-             ("C--"   . undo-tree-undo))
+  (bind-keys ("C-M-y" . browse-kill-ring))
   (global-undo-tree-mode 1)
+  (bind-keys :map undo-tree-map ("C--" . undo-tree-undo))
   (delight 'undo-tree-mode nil 'undo-tree)
 #+END_SRC
 ** editing
