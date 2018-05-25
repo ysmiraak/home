@@ -220,7 +220,7 @@ they encourage recklessness.
 #+END_SRC
 *** position
 #+BEGIN_SRC emacs-lisp
-  (autoload 'centered-cursor-mode "centered-cursor-mode")
+  (autoload 'centered-cursor-mode "centered-cursor-mode" nil t)
   (bind-keys ("C-M-z" . vimish-fold-delete)
              ("C-x f" . vimish-fold-avy)
              ("C-x o" . ace-window)
@@ -681,11 +681,12 @@ prefixed bindings, incomplete.
 | <12>         | <60>                                                         |
 | C-h i        | info                                                         |
 | C-h r        | info-emacs-manual                                            |
-| C-x C-SPC    | pop-global-mark                                              |
 | C-x C-b      | ~ibuffer~ +list-buffers+                                     |
+| C-x C-SPC    | pop-global-mark                                              |
 | C-x C-t      | ~sp-transpose-hybrid-sexp~ +transpose-lines+                 |
 | C-x f        | ~vimish-fold-avy~ +set-fill-column+                          |
 | C-x g        | ~magit-status~                                               |
+| C-x l        | count-lines-page                                             |
 | C-x o        | ~ace-window~ +other-window+                                  |
 | C-x u        | ~undo-tree-visualize~                                        |
 | C-x z        | repeat                                                       |
