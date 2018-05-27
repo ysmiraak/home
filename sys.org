@@ -1,0 +1,14 @@
+* windows
+** after update
+*** for dual booting compatibility
+- disable fast startup
+- utc
+*** cleanup
+- change font
+- disable cortana
+- disable useless icons for "This PC" in file explorer
+** backup c: on sul
+- "Disk Cleanup", "Clean up system files"
+- go to "Backup and Restore"
+- erase old system image and backup
+- back up now
