@@ -512,9 +512,6 @@ this applies to all language-specific modes which offers the options.
 ** javascript
 #+BEGIN_SRC emacs-lisp
   (push '("\\.js\\'" . js2-mode) auto-mode-alist)
-  (add-hooks 'js2-mode-hook  #'flycheck-mode)
-  (add-hooks 'css-mode-hook  #'flycheck-mode)
-  (add-hooks 'html-mode-hook #'flycheck-mode)
 #+END_SRC
 ** r
 #+BEGIN_SRC emacs-lisp
@@ -529,14 +526,13 @@ this applies to all language-specific modes which offers the options.
 #+BEGIN_SRC emacs-lisp
   (push '("README\\.md\\'" . gfm-mode)      auto-mode-alist)
   (push '("\\.[Rr]md\\'"   . markdown-mode) auto-mode-alist)
-  (add-hooks 'markdown-mode-hook #'flyspell-mode #'flycheck-mode)
   (with-eval-after-load 'markdown-mode
-    (cset 'markdown-enable-math t))
+    (cset 'markdown-enable-math t)
+    (unbind-keys markdown-mode-map "DEL"))
 #+END_SRC
 ** tex
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'LaTeX-mode-hook
-             #'flyspell-mode
              #'flycheck-mode
              #'LaTeX-math-mode
              #'latex-preview-pane-enable

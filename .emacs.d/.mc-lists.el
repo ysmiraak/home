@@ -51,6 +51,7 @@
         markdown-insert-header-atx-4
         markdown-insert-header-atx-5
         markdown-insert-header-atx-6
+        markdown-outdent-or-delete
         org-beginning-of-line
         org-cdlatex-math-modify
         org-cdlatex-underscore-caret
