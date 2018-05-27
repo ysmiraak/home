@@ -1,13 +1,52 @@
+* arch
+
+** aurman
+
+aurman -Syu
+
+aurman -Rns
+
+aurman -Qe
+
+** mkinitcpio
+
+mkinitcpio -p linux
+
+** grub
+
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=UR
+
+grub-mkconfig -o /boot/grub/grub.cfg
+
+* mac
+
+#+BEGIN_SRC
+cd (brew --repo)
+git remote set-url origin https://github.com/Homebrew/brew.git
+git remote set-url origin https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git
+
+cd (brew --repo)/Library/Taps/homebrew/homebrew-core
+git remote set-url origin https://github.com/Homebrew/homebrew-core.git
+git remote set-url origin https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git
+#+END_SRC
+
 * windows
+
 ** after update
+
 *** for dual booting compatibility
+
 - disable fast startup
 - utc
+
 *** cleanup
+
 - change font
 - disable cortana
 - disable useless icons for "This PC" in file explorer
+
 ** backup c: on sul
+
 - "Disk Cleanup", "Clean up system files"
 - go to "Backup and Restore"
 - erase old system image and backup
