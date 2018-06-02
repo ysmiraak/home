@@ -22,7 +22,7 @@ packages i use.
    'package-selected-packages
    '(benchmark-init
      suggest dash dash-functional s f bind-key delight
-     exwm exec-path-from-shell
+     exwm multi-term exec-path-from-shell
      zenburn-theme powerline rainbow-delimiters
      counsel flx smex which-key
      centered-cursor-mode vimish-fold ace-window avy
@@ -96,8 +96,8 @@ for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
               ("s-0" . ,(lambda () (interactive) (exwm-shell-command "slock")))
               ("s-1" . ,(lambda () (interactive) (exwm-shell-command "firefox")))
               ("s-2" . ,(lambda () (interactive) (exwm-shell-command "vlc")))
-              ("s-t" . ,(lambda () (interactive) (ansi-term "htop" "htop")))
               ("s-h" . ,(lambda () (interactive) (enlarge-window-horizontally 28)))
+              ("s-t" . proced)
               ("s-a" . windmove-left)
               ("s-s" . windmove-down)
               ("s-w" . windmove-up)
@@ -131,13 +131,15 @@ no lock.  no auto-save.  no backup.  cuz [[https://git-scm.com/][git]].
 removes some safety measures.
 they encourage recklessness.
 #+BEGIN_SRC emacs-lisp
-  (cset 'disabled-command-function nil)
+  (cset 'disabled-command-function nil
+        'dired-recursive-deletes 'always
+        'dired-recursive-copies  'always)
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 =suspend-frame= is only useful on text terminals.
 =C-z= often interferes with =C-c C-z=.  stick to =C-x C-z= instead.
 #+BEGIN_SRC emacs-lisp
-  (when (display-graphic-p) (defalias 'suspend-frame #'eshell))
+  (when (display-graphic-p) (defalias 'suspend-frame #'multi-term))
   (unbind-key "C-z")
 #+END_SRC
 ** theme
