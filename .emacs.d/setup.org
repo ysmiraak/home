@@ -22,7 +22,7 @@ packages i use.
    'package-selected-packages
    '(benchmark-init
      suggest dash dash-functional s f bind-key delight
-     exwm multi-term exec-path-from-shell
+     exwm exec-path-from-shell
      zenburn-theme powerline rainbow-delimiters
      counsel flx smex which-key
      centered-cursor-mode vimish-fold ace-window avy
@@ -97,7 +97,8 @@ for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
               ("s-1" . ,(lambda () (interactive) (exwm-shell-command "firefox")))
               ("s-2" . ,(lambda () (interactive) (exwm-shell-command "vlc")))
               ("s-h" . ,(lambda () (interactive) (enlarge-window-horizontally 28)))
-              ("s-t" . proced)
+              ("s-t" . ,(lambda () (interactive) (ansi-term shell-file-name)))
+              ("s-p" . proced)
               ("s-a" . windmove-left)
               ("s-s" . windmove-down)
               ("s-w" . windmove-up)
@@ -139,8 +140,10 @@ they encourage recklessness.
 =suspend-frame= is only useful on text terminals.
 =C-z= often interferes with =C-c C-z=.  stick to =C-x C-z= instead.
 #+BEGIN_SRC emacs-lisp
-  (when (display-graphic-p) (defalias 'suspend-frame #'multi-term))
   (unbind-key "C-z")
+  (when (display-graphic-p) (defalias 'suspend-frame #'eshell))
+  (add-hooks 'eshell-mode-hook #'smartparens-mode #'company-diable-idle)
+  (cset 'eshell-preoutput-filter-functions '(ansi-color-apply))
 #+END_SRC
 ** theme
 - simpler style
@@ -356,6 +359,12 @@ with revised symmetrical bindings.
   (global-company-mode 1)
   (company-quickhelp-mode 1)
   (delight 'company-mode nil 'company)
+  (defun company-diable-idle ()
+    "diable idle completion."
+    (interactive)
+    (unless (local-variable-p 'company-idle-delay)
+      (make-local-variable 'company-idle-delay))
+    (setq company-idle-delay nil))
   (cset 'company-idle-delay                0.2
         'company-minimum-prefix-length     2
         'company-tooltip-align-annotations t
@@ -493,11 +502,6 @@ this applies to all language-specific modes which offers the options.
              #'flycheck-rust-setup
              #'cargo-minor-mode
              #'racer-mode)
-#+END_SRC
-** shell
-#+BEGIN_SRC emacs-lisp
-  (add-hooks 'eshell-mode-hook #'smartparens-mode)
-  (cset 'eshell-preoutput-filter-functions '(ansi-color-apply))
 #+END_SRC
 ** python
 #+BEGIN_SRC emacs-lisp
