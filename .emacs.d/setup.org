@@ -326,6 +326,7 @@ with revised symmetrical bindings.
              ("m" . mc/mark-all-in-region) ("M" . vr/mc-mark)
              ("n" . mc/edit-lines)
              ("r" . replace-string)        ("R" . vr/replace)
+             ("s" . sort-lines)
              ("u" . upcase-region)
              ("w" . kill-ring-save))
 #+END_SRC
