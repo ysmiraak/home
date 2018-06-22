@@ -30,7 +30,7 @@ packages i use.
      smartparens expand-region region-bindings-mode visual-regexp multiple-cursors
      company company-quickhelp yasnippet flycheck flycheck-pos-tip
      hungry-delete aggressive-indent drag-stuff fix-word zzz-to-char
-     clojure-mode cider clj-refactor kibit-helper
+     clojure-mode cider clj-refactor
      geiser ediprolog pasp-mode haskell-mode idris-mode
      rust-mode cargo flycheck-rust racer
      elpy js2-mode rainbow-mode ess csv-mode

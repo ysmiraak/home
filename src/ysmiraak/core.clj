@@ -89,23 +89,14 @@
   ```
   data & array programming
   ```
-  | lib               | namespace                       | arg        |
-  |-------------------+---------------------------------+------------|
-  | :double           | uncomplicate.neanderthal.math   | :as d      |
-  | :native           | ysmiraak.native                 | :as f      |
-  | :native/linalg    | uncomplicate.neanderthal.linalg | :as linalg |
-  | :native/aux       | uncomplicate.neanderthal.aux    | :as aux    |
-  | :native*          | uncomplicate.neanderthal*       |            |
-  | :matrix           | clojure.core.matrix             | :as a      |
-  | :vectorz          | clojure.core.matrix             | :as a      |
-  | :matrix/selection | clojure.core.matrix.selection   | :as sel    |
-  | :matrix/linear    | clojure.core.matrix.linear      | :as linear |
-  | :matrix/random    | clojure.core.matrix.random      | :as rand   |
-  | :matrix/stats     | clojure.core.matrix.stats       | :as stats  |
-  | :matrix/dataset   | clojure.core.matrix.dataset     | :as ds     |
-  | :matrix*          | clojure.core.matrix*            |            |
-  | :vectorz*         | clojure.core.matrix*            |            |
-  | :csv              | clojure.data.csv                | :as csv    |
+  | lib            | namespace                          | arg        |
+  |----------------+------------------------------------+------------|
+  | :double        | uncomplicate.neanderthal.math      | :as d      |
+  | :native        | ysmiraak.native                    | :as f      |
+  | :native/vect   | uncomplicate.neanderthal.vect-math | :as v      |
+  | :native/linalg | uncomplicate.neanderthal.linalg    | :as linalg |
+  | :native*       | uncomplicate.neanderthal*          |            |
+  | :csv           | clojure.data.csv                   | :as csv    |
   ```
   misc
   ```
@@ -118,9 +109,7 @@
    (case lib
      :spec*    (mapv library [:spec :spec/gen :spec/test])
      :logic*   (mapv library [:logic :logic/fd :logic/nom :logic/pldb])
-     :native*  (mapv library [:double :native :native/linalg :native/aux])
-     :matrix*  (mapv library [:matrix  :matrix/selection :matrix/random :matrix/stats :matrix/dataset])
-     :vectorz* (mapv library [:vectorz :matrix/selection :matrix/random :matrix/stats :matrix/dataset])
+     :native*  (mapv library [:double :native :native/vect :native/linalg])
      :clojure* (mapv library [:spec* :test :string :edn :instant :repl :pprint :inspector :javadoc :browse :shell :io :set :reducers])
      (library lib nil)))
   ([lib arg]
@@ -152,23 +141,15 @@
            :logic/nom  '[clojure.core.logic.nominal   nom]
            :logic/pldb '[clojure.core.logic.pldb      pldb]
            ;; array & numeric
-           :double           '[uncomplicate.neanderthal.math   d]
-           :native           '[ysmiraak.native                 f]
-           :native/linalg    '[uncomplicate.neanderthal.linalg linalg]
-           :native/aux       '[uncomplicate.neanderthal.aux    aux]
-           :matrix           '[clojure.core.matrix             a]
-           :vectorz          '[clojure.core.matrix             a]
-           :matrix/selection '[clojure.core.matrix.selection   sel]
-           :matrix/linear    '[clojure.core.matrix.linear      linear]
-           :matrix/random    '[clojure.core.matrix.random      rand]
-           :matrix/stats     '[clojure.core.matrix.stats       stats]
-           :matrix/dataset   '[clojure.core.matrix.dataset     ds]
-           :int-map          '[clojure.data.int-map            z]
-           :csv              '[clojure.data.csv                csv]
+           :double           '[uncomplicate.neanderthal.math      d]
+           :native           '[ysmiraak.native                    f]
+           :native/vect      '[uncomplicate.neanderthal.vect-math v]
+           :native/linalg    '[uncomplicate.neanderthal.linalg    linalg]
+           :csv              '[clojure.data.csv csv]
            ;; misc
            :async '[clojure.core.async c]
            :criterium '[criterium.core b]
-           ;; q w E r t, a s d f g, z X c V b
+           ;; q w E r t, A s d f g, Z X c v b
            (throw (ex-info "`lib` unknown." {:lib lib})))
          (as-> [ns arg']
              (let [arg (or arg arg')]
@@ -176,8 +157,4 @@
                  simple-symbol? [ns :as arg]
                  sequential?    (into [ns] arg)
                  (throw (ex-info "`arg` must be simple-symbol or sequential." {:arg arg})))))
-         (doto require
-           (do (case lib
-                 :fluokitten (require 'uncomplicate.fluokitten.jvm)
-                 :vectorz (eval '(clojure.core.matrix/set-current-implementation :vectorz))
-                 nil)))))))
+         (doto require)))))
