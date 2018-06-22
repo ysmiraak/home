@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+lein ancient upgrade-profiles :allow-all
+lein ancient upgrade :allow-all :check-clojure

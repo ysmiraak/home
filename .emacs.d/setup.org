@@ -455,18 +455,16 @@ this applies to all language-specific modes which offers the options.
   (add-hooks 'clojure-mode-hook    #'eldoc-mode #'clj-refactor-mode)
   (add-hooks 'cider-repl-mode-hook #'eldoc-mode #'clj-refactor-mode)
   (with-eval-after-load 'cider
-    (cset 'cider-font-lock-dynamically         t
-          'cider-prefer-local-resources        t
-          'cider-repl-use-pretty-printing      t
-          'cider-doc-xref-regexp               "\\[\\[\\(.*?\\)\\]\\]"
-          'cider-repl-history-file             (f-expand "cider-history" user-emacs-directory))
+    (cset 'cider-font-lock-dynamically    t
+          'cider-repl-use-pretty-printing t
+          'cider-repl-print-length        11
+          'cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]")
     (def-eval-dwim eval-dwim:clojure cider-eval-region cider-eval-last-sexp)
     (bind-keys :map cider-mode-map
                ("M-RET" . eval-dwim:clojure)
                ("C-M-x" . cider-eval-defun-at-point)))
   (with-eval-after-load 'clj-refactor
-    (cljr-add-keybindings-with-prefix "C-z")
-    (cset 'cljr-suppress-middleware-warnings t))
+    (cljr-add-keybindings-with-prefix "C-z"))
 #+END_SRC
 ** scheme
 #+BEGIN_SRC emacs-lisp
