@@ -5,7 +5,7 @@ export ALTERNATE_EDITOR=emacs
 export EDITOR=emacsclient
 export VISUAL=emacsclient
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/lib/intel64:/opt/intel/mkl/lib/intel64
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/cuda/extras/CUPTI/lib64:/opt/intel/lib/intel64:/opt/intel/mkl/lib/intel64
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
