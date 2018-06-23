@@ -87,29 +87,28 @@
   | :logic/pldb | clojure.core.logic.pldb      | :as pldb       |
   | :logic*     | clojure.core.logic*          |                |
   ```
-  data & array programming
+  numeric & array programming
   ```
-  | lib            | namespace                          | arg        |
-  |----------------+------------------------------------+------------|
-  | :double        | uncomplicate.neanderthal.math      | :as d      |
-  | :native        | ysmiraak.native                    | :as f      |
-  | :native/vect   | uncomplicate.neanderthal.vect-math | :as v      |
-  | :native/linalg | uncomplicate.neanderthal.linalg    | :as linalg |
-  | :native*       | uncomplicate.neanderthal*          |            |
-  | :csv           | clojure.data.csv                   | :as csv    |
+  | lib            | namespace                       | arg        |
+  |----------------+---------------------------------+------------|
+  | :double        | uncomplicate.neanderthal.math   | :as d      |
+  | :native        | ysmiraak.native                 | :as f      |
+  | :native/linalg | uncomplicate.neanderthal.linalg | :as linalg |
+  | :native*       | uncomplicate.neanderthal*       |            |
   ```
   misc
   ```
-  | lib        | namespace          | arg   |
-  |------------+--------------------+-------|
-  | :async     | clojure.core.async | :as c |
-  | :criterium | criterium.core     | :as b |
+  | lib    | namespace          | arg     |
+  |--------+--------------------+---------|
+  | :csv   | clojure.data.csv   | :as csv |
+  | :async | clojure.core.async | :as a   |
+  | :bench | criterium.core     | :as b   |
   ```"
   ([lib]
    (case lib
      :spec*    (mapv library [:spec :spec/gen :spec/test])
      :logic*   (mapv library [:logic :logic/fd :logic/nom :logic/pldb])
-     :native*  (mapv library [:double :native :native/vect :native/linalg])
+     :native*  (mapv library [:double :native :native/linalg])
      :clojure* (mapv library [:spec* :test :string :edn :instant :repl :pprint :inspector :javadoc :browse :shell :io :set :reducers])
      (library lib nil)))
   ([lib arg]
@@ -140,16 +139,17 @@
            :logic/fd   '[clojure.core.logic.fd        fd]
            :logic/nom  '[clojure.core.logic.nominal   nom]
            :logic/pldb '[clojure.core.logic.pldb      pldb]
-           ;; array & numeric
-           :double           '[uncomplicate.neanderthal.math      d]
-           :native           '[ysmiraak.native                    f]
-           :native/vect      '[uncomplicate.neanderthal.vect-math v]
-           :native/linalg    '[uncomplicate.neanderthal.linalg    linalg]
-           :csv              '[clojure.data.csv csv]
+           ;; numeric & array
+           :double        '[uncomplicate.neanderthal.math   d]
+           :native        '[ysmiraak.native                 f]
+           :native/linalg '[uncomplicate.neanderthal.linalg linalg]
            ;; misc
-           :async '[clojure.core.async c]
-           :criterium '[criterium.core b]
-           ;; q w E r t, A s d f g, Z X c v b
+           :csv   '[clojure.data.csv   csv]
+           :async '[clojure.core.async a]
+           :bench '[criterium.core     b]
+           ;; q w E r t
+           ;; a s d f g
+           ;; Z X C V b
            (throw (ex-info "`lib` unknown." {:lib lib})))
          (as-> [ns arg']
              (let [arg (or arg arg')]

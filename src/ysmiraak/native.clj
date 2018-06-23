@@ -1,11 +1,13 @@
 (ns ysmiraak.native
   "[uncomplicate.neanderthal](http://neanderthal.uncomplicate.org/) native only."
   (:require [ysmiraak.core :refer [var-alias]]
-            [uncomplicate.neanderthal core aux real native]))
+            [uncomplicate.neanderthal core aux real native vect-math]))
 
-(let [core   (ns-publics 'uncomplicate.neanderthal.core)
-      aux    (ns-publics 'uncomplicate.neanderthal.aux)
-      real   (ns-publics 'uncomplicate.neanderthal.real)
-      native (ns-publics 'uncomplicate.neanderthal.native)]
-  (doseq [[sym var] core] (when-not (real sym) (var-alias var sym)))
-  (doseq [ns [aux real native] [sym var] ns] (var-alias var sym)))
+(let [pub #(-> (str 'uncomplicate.neanderthal. %) symbol ns-publics)
+      real (-> 'real pub keys set)]
+  (doseq [[sym var] (pub 'core)]
+    (when-not (real sym)
+      (var-alias var sym)))
+  (doseq [ns '[aux real native vect-math]
+          [sym var] (pub ns)]
+    (var-alias var sym)))
