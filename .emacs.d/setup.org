@@ -578,6 +578,7 @@ this applies to all language-specific modes which offers the options.
             ("" "rotating" nil)
             ("normalem" "ulem" t)
             ("" "amsmath" t)
+            ("" "amssymb" t)
             ("" "hyperref" nil)))
     (unbind-keys org-mode-map "M-h" "M-a" "M-e" "M-{" "M-}")
     (bind-keys :map org-mode-map
