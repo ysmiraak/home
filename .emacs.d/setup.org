@@ -522,7 +522,7 @@ this applies to all language-specific modes which offers the options.
 ** r
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'inferior-ess-mode-hook #'smartparens-mode)
-  (with-eval-after-load 'ess
+  (with-eval-after-load 'ess-mode
     (def-eval-dwim eval-dwim:ess ess-eval-region ess-eval-line)
     (bind-keys :map ess-mode-map
                ("M-RET" . eval-dwim:ess)
