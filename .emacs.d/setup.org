@@ -238,6 +238,7 @@ they encourage recklessness.
 #+END_SRC
 *** project
 #+BEGIN_SRC emacs-lisp
+  (cset 'projectile-keymap-prefix (kbd "C-c p"))
   (projectile-mode 1)
   (delight 'projectile-mode '(:eval (format " [%s]" (projectile-project-name))) 'projectile)
   (cset 'projectile-switch-project-action 'projectile-dired
@@ -539,6 +540,7 @@ this applies to all language-specific modes which offers the options.
 ** tex
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'LaTeX-mode-hook
+             #'flyspell-mode
              #'flycheck-mode
              #'LaTeX-math-mode
              #'latex-preview-pane-enable

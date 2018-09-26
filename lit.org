@@ -47,6 +47,7 @@
 | 2011 | kostecki                  | intro topos                                                  |
 | 2013 | spivak                    | intro science                                                |
 | 2014 | goldblatt                 | topos                                                        |
+| 2014 | riehl                     | intro context                                                |
 | 2016 | leinster                  | intro basic                                                  |
 | 2016 | schulman                  | logic                                                        |
 | 2016 | smith                     | intro gentle                                                 |
@@ -140,3 +141,4 @@
 | 2008 | oury_swierstra            | power of pi                                                  |
 | 2010 | altenkirch_               | pi sigma                                                     |
 | 2013 | univalent                 | homotopy type theory                                         |
+| 2016 | cohen_                    | cubical                                                      |
