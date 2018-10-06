@@ -199,6 +199,7 @@ they encourage recklessness.
              ("M-'" . ivy-avy))
   (which-key-mode 1)
   (delight 'which-key-mode nil 'which-key)
+  (global-eldoc-mode 1)
   (delight 'eldoc-mode nil 'eldoc)
 #+END_SRC
 *** buffer
@@ -440,9 +441,7 @@ this applies to all language-specific modes which offers the options.
 * lang
 ** elisp
 #+BEGIN_SRC emacs-lisp
-  (--each '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook)
-    (add-hook it #'eldoc-mode))
-  (add-hooks 'eval-expression-minibuffer-setup-hook #'eldoc-mode #'smartparens-mode)
+  (add-hooks 'eval-expression-minibuffer-setup-hook #'smartparens-mode)
   (def-eval-dwim eval-dwim:elisp eval-region eval-last-sexp)
   (bind-keys :map emacs-lisp-mode-map
              ("M-RET" . eval-dwim:elisp)
@@ -453,8 +452,8 @@ this applies to all language-specific modes which offers the options.
 #+END_SRC
 ** clojure
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'clojure-mode-hook    #'eldoc-mode #'clj-refactor-mode)
-  (add-hooks 'cider-repl-mode-hook #'eldoc-mode #'clj-refactor-mode)
+  (add-hooks 'clojure-mode-hook    #'clj-refactor-mode)
+  (add-hooks 'cider-repl-mode-hook #'clj-refactor-mode)
   (with-eval-after-load 'cider
     (cset 'cider-font-lock-dynamically    t
           'cider-repl-use-pretty-printing t
@@ -490,14 +489,12 @@ this applies to all language-specific modes which offers the options.
 #+END_SRC
 ** idris
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'idris-mode-hook #'eldoc-mode)
   (with-eval-after-load 'idris-mode
     (bind-keys :map idris-mode-map ("C-c C-q" . idris-quit)))
 #+END_SRC
 ** rust
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'rust-mode-hook
-             #'eldoc-mode
              #'flycheck-mode
              #'flycheck-rust-setup
              #'cargo-minor-mode
