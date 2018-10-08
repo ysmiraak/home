@@ -142,7 +142,7 @@ they encourage recklessness.
 #+BEGIN_SRC emacs-lisp
   (unbind-key "C-z")
   (when (display-graphic-p) (defalias 'suspend-frame #'eshell))
-  (add-hooks 'eshell-mode-hook #'smartparens-mode #'company-diable-idle)
+  (add-hooks 'eshell-mode-hook #'smartparens-mode #'company-disable-idle)
   (cset 'eshell-preoutput-filter-functions '(ansi-color-apply))
 #+END_SRC
 ** theme
@@ -245,6 +245,7 @@ they encourage recklessness.
   (cset 'projectile-switch-project-action 'projectile-dired
         'projectile-completion-system     'ivy)
   (bind-keys ("C-x g" . magit-status))
+  (cset 'magit-auto-revert-mode nil)
 #+END_SRC
 *** history
 #+BEGIN_SRC emacs-lisp
@@ -362,8 +363,8 @@ with revised symmetrical bindings.
   (global-company-mode 1)
   (company-quickhelp-mode 1)
   (delight 'company-mode nil 'company)
-  (defun company-diable-idle ()
-    "diable idle completion."
+  (defun company-disable-idle ()
+    "disable idle completion."
     (interactive)
     (unless (local-variable-p 'company-idle-delay)
       (make-local-variable 'company-idle-delay))
@@ -452,8 +453,9 @@ this applies to all language-specific modes which offers the options.
 #+END_SRC
 ** clojure
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'clojure-mode-hook    #'clj-refactor-mode)
+  (add-hooks 'cider-mode-hook      #'clj-refactor-mode #'eldoc-mode)
   (add-hooks 'cider-repl-mode-hook #'clj-refactor-mode)
+  (delight 'clj-refactor-mode nil 'clj-refactor)
   (with-eval-after-load 'cider
     (cset 'cider-font-lock-dynamically    t
           'cider-repl-use-pretty-printing t
@@ -502,10 +504,15 @@ this applies to all language-specific modes which offers the options.
 #+END_SRC
 ** python
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'python-mode-hook #'elpy-mode (-partial #'highlight-indentation-mode -1))
   (with-eval-after-load 'python
     (cset 'python-shell-interpreter "python3"
-          'elpy-shell-use-project-root nil)
+          'elpy-shell-use-project-root nil
+          'elpy-modules
+          '(elpy-module-sane-defaults
+            elpy-module-company
+            elpy-module-eldoc
+            elpy-module-pyvenv
+            elpy-module-yasnippet))
     (def-eval-dwim eval-dwim:python elpy-shell-send-region-or-buffer elpy-shell-send-statement)
     (unbind-keys python-mode-map "DEL")
     (bind-keys :map python-mode-map
@@ -561,6 +568,7 @@ this applies to all language-specific modes which offers the options.
 ** org
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'org-mode-hook #'turn-on-org-cdlatex)
+  (delight 'org-cdlatex-mode nil 'org)
   (with-eval-after-load 'org
     (cset 'org-adapt-indentation                  nil
           'org-log-done                           'time
