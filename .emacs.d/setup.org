@@ -446,10 +446,8 @@ this applies to all language-specific modes which offers the options.
   (def-eval-dwim eval-dwim:elisp eval-region eval-last-sexp)
   (bind-keys :map emacs-lisp-mode-map
              ("M-RET" . eval-dwim:elisp)
-             ("C-M-x" . eval-defun)
              :map lisp-interaction-mode-map
-             ("RET"   . eval-print-last-sexp)
-             ("M-RET" . eval-dwim:elisp))
+             ("M-RET" . eval-print-last-sexp))
 #+END_SRC
 ** clojure
 #+BEGIN_SRC emacs-lisp
@@ -462,9 +460,7 @@ this applies to all language-specific modes which offers the options.
           'cider-repl-print-length        11
           'cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]")
     (def-eval-dwim eval-dwim:clojure cider-eval-region cider-eval-last-sexp)
-    (bind-keys :map cider-mode-map
-               ("M-RET" . eval-dwim:clojure)
-               ("C-M-x" . cider-eval-defun-at-point)))
+    (bind-keys :map cider-mode-map ("M-RET" . eval-dwim:clojure)))
   (with-eval-after-load 'clj-refactor
     (cljr-add-keybindings-with-prefix "C-z"))
 #+END_SRC
@@ -473,9 +469,7 @@ this applies to all language-specific modes which offers the options.
   (with-eval-after-load 'geiser
     (cset 'geiser-active-implementations '(chez))
     (def-eval-dwim eval-dwim:scheme geiser-eval-region geiser-eval-last-sexp)
-    (bind-keys :map scheme-mode-map
-               ("M-RET" . eval-dwim:scheme)
-               ("C-M-x" . geiser-eval-definition)))
+    (bind-keys :map scheme-mode-map ("M-RET" . eval-dwim:scheme)))
 #+END_SRC
 ** prolog
 #+BEGIN_SRC emacs-lisp
