@@ -1,4 +1,4 @@
-(defproject ysmiraak "2018.10.20"
+(defproject ysmiraak "2018.10.25"
   :description "a library of stolen ideas."
   :url "https://github.com/ysmiraak/ysmiraak"
   :license {:name "Eclipse Public License"

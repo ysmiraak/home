@@ -2,36 +2,26 @@
   "extends `clojure.core`. for example, adding some [furcula arrows](https://github.com/rplevy/swiss-arrows)."
   (:require swiss.arrows))
 
-(defn invoke
-  "calls `f` with given arguments."
-  ([^clojure.lang.AFn f] (.invoke f))
-  ([^clojure.lang.AFn f x] (.invoke f x))
-  ([^clojure.lang.AFn f x y] (.invoke f x y))
-  ([^clojure.lang.AFn f x y z] (.invoke f x y z))
-  ([f x y z & args] (apply f x y z args)))
+(def part
+  "((part f a b c) x y z) = (f a b c x y z)"
+  (fn [& abc]
+    (fn [& xyz]
+      (when-let [[f & args] (seq (concat abc xyz))]
+        (apply f args)))))
 
-(defn flip
-  "reverses the order of arguments for function `f`."
-  ([f]
-   (fn ([] (f))
-     ([x] (f x))
-     ([x y] (f y x))
-     ([x y z] (f z y x))
-     ([x y z & args] (apply f (rseq (into [x y z] args))))))
-  ([f x]
-   (fn ([] (f x))
-     ([y] (f y x))
-     ([y z] (f z y x))
-     ([y z & args] (apply f (rseq (into [x y z] args))))))
-  ([f x y]
-   (fn ([] (f y x))
-     ([z] (f z y x))
-     ([z & args] (apply f (rseq (into [x y z] args))))))
-  ([f x y z]
-   (fn ([] (f z y x))
-     ([& args] (apply f (rseq (into [x y z] args))))))
-  ([f x y z & args]
-   (fn [& args'] (apply f (rseq (into (into [x y z] args) args'))))))
+(def lift
+  "((lift x y z) f a b c) = (f a b c x y z)"
+  (fn [& xyz]
+    (fn [& abc]
+      (when-let [[f & args] (seq (concat abc xyz))]
+        (apply f args)))))
+
+(def flip
+  "((flip f a b c) z y x) = (f a b c x y z)"
+  (fn [& abc]
+    (fn [& zyx]
+      (when-let [[f & args] (seq (concat abc (reverse zyx)))]
+        (apply f args)))))
 
 (defn queue
   "creates a new queue containing the `items`."
