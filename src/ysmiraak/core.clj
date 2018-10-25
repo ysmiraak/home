@@ -3,21 +3,21 @@
   (:require swiss.arrows))
 
 (def part
-  "((part f a b c) x y z) = (f a b c x y z)"
+  "`((part f a b c) x y z) = (f a b c x y z)`"
   (fn [& abc]
     (fn [& xyz]
       (when-let [[f & args] (seq (concat abc xyz))]
         (apply f args)))))
 
 (def lift
-  "((lift x y z) f a b c) = (f a b c x y z)"
+  "`((lift x y z) f a b c) = (f a b c x y z)`"
   (fn [& xyz]
     (fn [& abc]
       (when-let [[f & args] (seq (concat abc xyz))]
         (apply f args)))))
 
 (def flip
-  "((flip f a b c) z y x) = (f a b c x y z)"
+  "`((flip f a b c) z y x) = (f a b c x y z)`"
   (fn [& abc]
     (fn [& zyx]
       (when-let [[f & args] (seq (concat abc (reverse zyx)))]
