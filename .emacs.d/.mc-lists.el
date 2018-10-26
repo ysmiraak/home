@@ -100,6 +100,7 @@
 
 (setq mc/cmds-to-run-once
       '(
+        ace-window
         avy-goto-char-2
         cdlatex-dollar
         cider-debug-mode-send-reply

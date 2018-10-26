@@ -11,6 +11,6 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/lib/intel64
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
-if [ -z "$DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
+if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
     exec startx
 fi

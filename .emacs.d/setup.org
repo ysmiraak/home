@@ -22,7 +22,7 @@ packages i use.
    'package-selected-packages
    '(benchmark-init
      suggest dash dash-functional s f bind-key delight
-     exwm exec-path-from-shell
+     exec-path-from-shell
      zenburn-theme powerline rainbow-delimiters
      counsel flx smex which-key
      centered-cursor-mode vimish-fold ace-window avy
@@ -78,35 +78,13 @@ for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
   (require 'server)
   (unless (server-running-p) (server-start))
 #+END_SRC
-[[https://github.com/ch11ng/exwm][emacs x window manager]] for my arch linux.
+todo use xmobar instead
 #+BEGIN_SRC emacs-lisp
   (when (equal "yksarch" (system-name))
     (cset 'menu-bar-mode                     nil
           'display-time-mode                 t
           'display-time-format               "%H:%M %a %y-%m-%d"
-          'display-time-default-load-average nil)
-    (require 'exwm)
-    (add-hooks 'exwm-floating-setup-hook #'exwm-layout-hide-mode-line)
-    (add-hooks 'exwm-update-class-hook (lambda () (exwm-workspace-rename-buffer exwm-class-name)))
-    (defun exwm-shell-command (command)
-      "interactive wrapper for `start-process-shell-command'"
-      (interactive (list (read-shell-command "$ ")))
-      (start-process-shell-command command nil command))
-    (--each `(("s-&" . exwm-shell-command)
-              ("s-0" . ,(lambda () (interactive) (exwm-shell-command "slock")))
-              ("s-1" . ,(lambda () (interactive) (exwm-shell-command "firefox")))
-              ("s-2" . ,(lambda () (interactive) (exwm-shell-command "vlc")))
-              ("s-h" . ,(lambda () (interactive) (enlarge-window-horizontally 28)))
-              ("s-t" . ,(lambda () (interactive) (ansi-term shell-file-name)))
-              ("s-p" . proced)
-              ("s-a" . windmove-left)
-              ("s-s" . windmove-down)
-              ("s-w" . windmove-up)
-              ("s-d" . windmove-right)
-              ("s-m" . exwm-input-toggle-keyboard)
-              ("s-r" . exwm-reset))
-      (exwm-input-set-key (kbd (car it)) (cdr it)))
-    (exwm-enable))
+          'display-time-default-load-average nil))
 #+END_SRC
 for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see =dired-use-ls-dired=), and fullscreen to work on [[https://www.emacswiki.org/emacs/MacOSTweaks][mac]].
 #+BEGIN_SRC emacs-lisp
@@ -152,6 +130,7 @@ they encourage recklessness.
         'inhibit-startup-screen     t
         'initial-scratch-message    nil
         'tool-bar-mode              nil
+        'menu-bar-mode              nil
         'scroll-bar-mode            nil
         'line-number-mode           t
         'column-number-mode         t
