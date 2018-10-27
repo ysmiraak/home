@@ -78,14 +78,6 @@ for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
   (require 'server)
   (unless (server-running-p) (server-start))
 #+END_SRC
-todo use xmobar instead
-#+BEGIN_SRC emacs-lisp
-  (when (equal "yksarch" (system-name))
-    (cset 'menu-bar-mode                     nil
-          'display-time-mode                 t
-          'display-time-format               "%H:%M %a %y-%m-%d"
-          'display-time-default-load-average nil))
-#+END_SRC
 for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see =dired-use-ls-dired=), and fullscreen to work on [[https://www.emacswiki.org/emacs/MacOSTweaks][mac]].
 #+BEGIN_SRC emacs-lisp
   (when (equal 'ns window-system)
