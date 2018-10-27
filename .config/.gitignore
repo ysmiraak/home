@@ -1,0 +1,11 @@
+/QtProject.conf
+/Trolltech.conf
+/aurman
+/autostart
+/dconf
+/gtk-*
+/htop
+/inkscape
+/pulse
+/systemd
+/vlc

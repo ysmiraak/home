@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+ln -rs .xinitrc    ~/.xinitrc
+ln -rs .xserverrc  ~/.xserverrc
+ln -rs .Xresources ~/.Xresources
