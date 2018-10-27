@@ -14,6 +14,7 @@
 /.xserverrc
 
 # on mac
+/.MacOSX
 /Applications
 /Documents
 /Library
@@ -33,6 +34,8 @@
 tmp
 
 # misc
+/.anyconnect
+/.cisco
 /.dbus
 /.esd_auth
 /.gnupg
