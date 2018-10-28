@@ -1,5 +1,6 @@
 import qualified System.IO as IO
 import qualified XMonad as XMonad
+import qualified XMonad.Actions.SpawnOn as SpawnOn
 import qualified XMonad.Config.Desktop as Desktop
 import qualified XMonad.Hooks.DynamicLog as DynamicLog
 import qualified XMonad.Hooks.ManageDocks as ManageDocks
@@ -15,6 +16,14 @@ main = do
     , XMonad.layoutHook =
         Tabbed.simpleTabbed     -- add a fullscreen tabbed layout
         XMonad.||| XMonad.layoutHook Desktop.desktopConfig
+    , XMonad.manageHook =
+        SpawnOn.manageSpawn     -- react on spawned process
+        XMonad.<+> XMonad.manageHook Desktop.desktopConfig
+    , XMonad.startupHook = do
+        XMonad.startupHook Desktop.desktopConfig
+        SpawnOn.spawnOn "9" "emacs"
+        SpawnOn.spawnOn "8" "firefox"
+        SpawnOn.spawnOn "7" "vlc"
     , XMonad.logHook =          -- stdin for xmobar
         DynamicLog.dynamicLogWithPP DynamicLog.xmobarPP
         { DynamicLog.ppOutput = IO.hPutStrLn xmproc
@@ -24,10 +33,5 @@ main = do
         , DynamicLog.ppTitle = id -- vanilla title
         }
     } `EZConfig.additionalKeysP`
-    [ ("M-S-t", XMonad.sendMessage ManageDocks.ToggleStruts)
+    [ ("M-f", XMonad.sendMessage ManageDocks.ToggleStruts)
     ]
-
--- todo auto workspaces
--- 9 emacs firefox
--- 8 vlc
--- 1 xterm
