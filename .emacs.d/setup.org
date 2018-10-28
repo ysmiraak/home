@@ -373,6 +373,7 @@ with revised symmetrical bindings.
   (add-hooks 'before-save-hook #'whitespace-cleanup)
   (global-hungry-delete-mode 1)
   (delight 'hungry-delete-mode " d" 'hungry-delete)
+  (cset 'require-final-newline t)
 #+END_SRC
 *** indentation
 #+BEGIN_SRC emacs-lisp

@@ -1,1 +1,11 @@
 XTerm.vt100.reverseVideo: true
+! make alt meta
+XTerm.vt100.metaSendsEscape: true
+! make backspace send ^? instead of ^H
+XTerm.vt100.backarrowKey: false
+XTerm.ttyModes: erase ^?
+! make copy and paste behave normal
+XTerm.vt100.selectToClipboard: true
+XTerm.vt100.translations: #override \n\
+    Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n\
+    Ctrl Shift <Key>V: insert-selection(CLIPBOARD)
