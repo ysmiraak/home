@@ -105,6 +105,7 @@
         cdlatex-dollar
         cider-debug-mode-send-reply
         counsel-M-x
+        counsel-find-file
         describe-key
         ediprolog-dwim
         end-of-buffer
@@ -116,6 +117,7 @@
         markdown-preview
         mouse-set-region
         multiple-cursors-mode
+        org-export-dispatch
         org-table-copy-down
         projectile-global-mode
         python-nav-backward-block
