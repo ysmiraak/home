@@ -1,12 +1,26 @@
 * arch
 
-** aurman
+** pacman/aurman
 
-aurman -Syu
+=-Syu= install
 
-aurman -Rns
+=-Rns= uninstall
 
-aurman -Qe
+=-S --asdeps= install as deps, do not use together with =-Syu=
+
+=-D --asdeps= and =-D --asexplicit= change installation reason
+
+=-Qqe= list explicitly installed packages
+
+=-Qtdq= list orphans
+
+=-Sc= cleanup cache
+
+*** downgrade
+
+- find the older version in =/var/cache/pacman/pkg=
+- =pacman -U=
+- edit =/etc/pacman.conf= under =IgnorePkg=
 
 ** mkinitcpio
 
