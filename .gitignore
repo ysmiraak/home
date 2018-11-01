@@ -42,7 +42,6 @@ tmp
 /.mozilla
 /.nv
 
-/.clojure
 /.java
 /.lein-failures
 /.m2
