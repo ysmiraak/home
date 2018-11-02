@@ -28,7 +28,7 @@ main = do
         DynamicLog.dynamicLogWithPP DynamicLog.xmobarPP
         { DynamicLog.ppOutput = IO.hPutStrLn xmproc
         , DynamicLog.ppOrder = \(ws:l:t:_) -> [ws,t] -- only show workspaces and title
-        , DynamicLog.ppSep = "  "                    -- separated by two spaces
+        , DynamicLog.ppSep = "   "                   -- separated by spaces
         , DynamicLog.ppCurrent = DynamicLog.wrap "[" "]" -- wrap current workspace
         , DynamicLog.ppTitle = id -- vanilla title
         }
