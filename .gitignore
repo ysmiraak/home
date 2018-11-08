@@ -36,6 +36,7 @@ tmp
 # misc
 /.anyconnect
 /.cisco
+/.cups
 /.dbus
 /.esd_auth
 /.gnupg
@@ -43,10 +44,12 @@ tmp
 /.nordvpn-config
 /.nv
 
+/.clojure
 /.java
 /.lein-failures
 /.m2
 /.nrepl-port
+/.oracle_jre_usage
 /target
 
 /.ipython
