@@ -54,6 +54,7 @@ tmp
 /.ipython
 /.jupyter
 /.keras
+/.matplotlib
 /.visdom
 /nltk_data
 /scikit_learn_data
