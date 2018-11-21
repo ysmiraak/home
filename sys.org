@@ -32,6 +32,11 @@ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=UR
 
 grub-mkconfig -o /boot/grub/grub.cfg
 
+** misc
+
+udisksctl mount -b /dev/sdc1
+udisksctl unmount -b /dev/sdc1
+
 * mac
 
 #+BEGIN_SRC

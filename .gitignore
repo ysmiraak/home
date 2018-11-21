@@ -9,6 +9,7 @@
 
 # on arch
 /.Xauthority
+/.Xmodmap
 /.Xresources
 /.xinitrc
 /.xserverrc

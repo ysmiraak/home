@@ -3,3 +3,4 @@
 ln -rs .xinitrc    ~/.xinitrc
 ln -rs .xserverrc  ~/.xserverrc
 ln -rs .Xresources ~/.Xresources
+ln -rs .Xmodmap    ~/.Xmodmap
