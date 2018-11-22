@@ -3,6 +3,7 @@
 /aurman
 /autostart
 /dconf
+/git
 /gtk-*
 /htop
 /inkscape

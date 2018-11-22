@@ -475,10 +475,13 @@ this applies to all language-specific modes which offers the options.
           'elpy-shell-use-project-root nil
           'elpy-modules
           '(elpy-module-sane-defaults
+            ;; elpy-module-flymake
+            ;; elpy-module-highlight-indentation
+            ;; elpy-module-pyvenv
+            ;; elpy-module-django
+            elpy-module-yasnippet
             elpy-module-company
-            elpy-module-eldoc
-            elpy-module-pyvenv
-            elpy-module-yasnippet))
+            elpy-module-eldoc))
     (def-eval-dwim eval-dwim:python elpy-shell-send-region-or-buffer elpy-shell-send-statement)
     (unbind-keys python-mode-map "DEL")
     (bind-keys :map python-mode-map
