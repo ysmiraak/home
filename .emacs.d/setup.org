@@ -107,10 +107,12 @@ they encourage recklessness.
         'dired-recursive-copies  'always)
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
-=suspend-frame= is only useful on text terminals.
-=C-z= often interferes with =C-c C-z=.  stick to =C-x C-z= instead.
+=suspend-frame= is only useful on text terminals;
+alias to =eshell= otherwise.
+and stick to =C-x C-z= only;
+let =C-z= instead show what i wanna kill.
 #+BEGIN_SRC emacs-lisp
-  (unbind-key "C-z")
+  (bind-keys ("C-z" . list-processes))
   (when (display-graphic-p) (defalias 'suspend-frame #'eshell))
   (add-hooks 'eshell-mode-hook #'smartparens-mode #'company-disable-idle)
   (cset 'eshell-preoutput-filter-functions '(ansi-color-apply))
@@ -434,7 +436,7 @@ this applies to all language-specific modes which offers the options.
     (def-eval-dwim eval-dwim:clojure cider-eval-region cider-eval-last-sexp)
     (bind-keys :map cider-mode-map ("M-RET" . eval-dwim:clojure)))
   (with-eval-after-load 'clj-refactor
-    (cljr-add-keybindings-with-prefix "C-z"))
+    (cljr-add-keybindings-with-prefix "C-c C-m"))
 #+END_SRC
 ** scheme
 #+BEGIN_SRC emacs-lisp
@@ -655,7 +657,7 @@ meta does but i do not need those bindings yet.
 | w       | kill-region                          | kill-ring-save                                               | append-next-kill                                             |
 | x       | [C-x-]                               | ~counsel-M-x~ +execute-extended-command+                     | eval-defun                                                   |
 | y       | yank                                 | yank-pop                                                     | ~browse-kill-ring~                                           |
-| z       | ~cljr~ +suspend-frame+               | ~zzz-to-char~ +zap-to-char+                                  | ~vimish-fold-delete~                                         |
+| z       | ~list-processes~ +suspend-frame+     | ~zzz-to-char~ +zap-to-char+                                  | ~vimish-fold-delete~                                         |
 prefixed bindings, incomplete.
 | <12>         | <60>                                                         |
 | C-h i        | info                                                         |
