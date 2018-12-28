@@ -3,6 +3,7 @@ import qualified XMonad as XMonad
 import qualified XMonad.Actions.SpawnOn as SpawnOn
 import qualified XMonad.Config.Desktop as Desktop
 import qualified XMonad.Hooks.DynamicLog as DynamicLog
+import qualified XMonad.Hooks.FadeInactive as FadeInactive
 import qualified XMonad.Util.Run as Run
 
 main = do
@@ -10,6 +11,7 @@ main = do
   XMonad.xmonad $ Desktop.desktopConfig
     { XMonad.logHook = mconcat
       [ XMonad.logHook Desktop.desktopConfig
+      , FadeInactive.fadeInactiveLogHook 0.8
       , DynamicLog.dynamicLogWithPP DynamicLog.xmobarPP
         { DynamicLog.ppOutput  = IO.hPutStrLn xmproc
         , DynamicLog.ppOrder   = \(ws:l:t:_) -> [ws,t]
