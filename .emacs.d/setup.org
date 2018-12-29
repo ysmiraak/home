@@ -120,7 +120,7 @@ let =C-z= instead show what i wanna kill.
 ** theme
 - simpler style
 #+BEGIN_SRC emacs-lisp
-  (cset 'uniquify-buffer-name-style 'forward
+  (cset 'uniquify-buffer-name-style 'post-forward
         'inhibit-startup-screen     t
         'initial-scratch-message    nil
         'tool-bar-mode              nil
@@ -128,6 +128,7 @@ let =C-z= instead show what i wanna kill.
         'scroll-bar-mode            nil
         'line-number-mode           t
         'column-number-mode         t
+        'fringe-mode                4
         'ring-bell-function         'ignore)
 #+END_SRC
 - fancier face on graphic devices
@@ -136,8 +137,10 @@ let =C-z= instead show what i wanna kill.
     (add-hooks 'prog-mode-hook #'rainbow-delimiters-mode-enable)
     (load-theme 'zenburn t)
     (powerline-center-theme)
-    (set-face-attribute 'region nil :background "#242424")
+    (cset 'powerline-display-hud nil)
     (set-face-attribute 'cursor nil :background "#DAA520")
+    (set-face-attribute 'region nil :background "#242424")
+    (set-face-attribute 'vertical-border nil :foreground "#656555")
     (global-hl-line-mode 1))
 #+END_SRC
 - cursor style
