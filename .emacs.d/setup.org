@@ -567,6 +567,8 @@ this applies to all language-specific modes which offers the options.
                ("M-p"     . org-backward-sentence)
                ("C-M-n"   . org-forward-element)
                ("C-M-p"   . org-backward-element)))
+  (with-eval-after-load 'ox-beamer
+    (defalias 'org-beamer-bold 'org-latex-bold))
   (--each '((org-beamer-outline-frame-title . "outline")
             (org-emphasis-alist             . nil))
     (push it safe-local-variable-values))
