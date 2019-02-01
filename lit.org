@@ -128,6 +128,7 @@
 | 1999 | flatt_                    | pl as os                                                     |
 | 2002 | graham                    | roots                                                        |
 | 2007 | change_knauth_greeman     | type systems as macros                                       |
+| 2018 | friedman_christiansen     | the little typer                                             |
 * ling
 |  <4> | <25>                      | <60>                                                         |
 | 1999 | blackburn_bos.1           | computational semantics                                      |
