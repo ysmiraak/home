@@ -1,5 +1,7 @@
-personal_ws-1.1 en 544 
+personal_ws-1.1 en 556 
+logit
 hashmap
+orthogonally
 Magnus
 Dragonguard
 Kirkbride
@@ -57,6 +59,7 @@ Morag
 parallelizability
 ÚFAL
 PSJJJJ
+unicode
 subtypes
 MLPs
 naacl
@@ -73,12 +76,14 @@ undusted
 cuz
 companding
 lexicalize
+grayscale
 formalisms
 noitemsep
 agglutinative
 env
 HYAET
 SEHTI
+logits
 smallskip
 NHST
 dilations
@@ -127,6 +132,7 @@ isomorphism
 BLEU
 Dagon
 Noormoc
+todo
 TODO
 lcccccc
 htb
@@ -147,6 +153,7 @@ haskell
 preprocessed
 iso
 Vvardenfell
+mae
 intension
 async
 factive
@@ -218,6 +225,7 @@ unassociated
 Lambek
 lessoning
 quantized
+mse
 pdf
 lccccc
 paddings
@@ -229,8 +237,8 @@ GHARTOK
 Muatra
 intensional
 beamer
-Almalexia
 sinusoids
+Almalexia
 dagoth
 emacsclient
 footnotesize
@@ -242,6 +250,7 @@ urlcolor
 injectivity
 bottomrule
 componentwise
+glyphs
 BPTT
 init
 num
@@ -257,15 +266,15 @@ tokenized
 morphism
 Utta's
 Ayem
-c'mon
 AVSs
+c'mon
 rgb
 initializers
 subsequence
 SHEOG
 POS
-RET
 pre
+RET
 tokenizer
 stopwords
 MHARA
@@ -282,7 +291,6 @@ html
 reasonings
 sgd
 postprocessing
-Postprocessing
 sep
 clojure
 homotopy
@@ -296,8 +304,8 @@ tokenization
 combinatory
 computable
 Sil
-QUD
 RNN
+QUD
 treebank
 Trinimac
 http
@@ -306,8 +314,8 @@ parameterization
 Baayen
 Buryat
 Voryn
-UAS
 tex
+UAS
 Functors
 functor's
 orthonormal
@@ -328,8 +336,8 @@ discriminative
 Lexically
 allcolors
 compositionality
-toc
 vec
+toc
 ngram
 bijection
 Goettingen
@@ -352,6 +360,7 @@ convolutional
 tensorflow
 TensorFlow
 overfit
+xent
 colorlinks
 Veloth
 texttt
@@ -447,6 +456,7 @@ lc
 Kh
 overfitted
 scriptsize
+topos
 dired
 RKHT
 implicatures
@@ -469,6 +479,7 @@ lcccc
 midrule
 sinusoid
 Sofroniev
+yoneda
 parataxis
 keras
 LISt
@@ -534,6 +545,7 @@ usepackage
 quantiles
 HDIs
 detokenized
+presheaves
 Kruschke
 ccc
 conventionalism
