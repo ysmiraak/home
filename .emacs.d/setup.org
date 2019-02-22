@@ -34,7 +34,7 @@ packages i use.
      geiser ediprolog pasp-mode haskell-mode idris-mode
      rust-mode cargo flycheck-rust racer
      elpy js2-mode rainbow-mode ess csv-mode htmlize
-     markdown-mode latex-preview-pane cdlatex company-auctex))
+     markdown-mode auctex cdlatex company-auctex))
 #+END_SRC
 to install those packages, change =:tangle no= to =:tangle yes= for this code block, or manually execute the commands.
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -365,6 +365,7 @@ with revised symmetrical bindings.
   (bind-keys ("M-$" . flyspell-mode))
   (with-eval-after-load 'flyspell
     (delight 'flyspell-mode " $" 'flyspell)
+    (unbind-keys flyspell-mode-map "C-M-i")
     (bind-keys :map flyspell-mode-map ("C-;" . flyspell-correct-word-before-point))
     (cset 'ispell-program-name "aspell"))
 #+END_SRC
@@ -520,24 +521,22 @@ this applies to all language-specific modes which offers the options.
   (add-hooks 'LaTeX-mode-hook
              #'flyspell-mode
              #'flycheck-mode
-             #'LaTeX-math-mode
-             #'latex-preview-pane-enable
              #'turn-on-cdlatex
-             #'turn-on-reftex
-             (-partial #'set 'TeX-command-default "xelatexmk"))
+             #'turn-on-reftex)
   (with-eval-after-load 'tex
-    (push '("xelatexmk"
-            "latexmk -pdf -pdflatex='xelatex -interaction=nonstopmode -shell-escape' %s"
-            TeX-run-TeX nil t :help "run xelatexmk on file")
+    (push '("pdflatexmk" "latexmk -pdf -pdflatex='pdflatex -interaction=nonstopmode -shell-escape' %s"
+            TeX-run-TeX nil t :help "run latexmk on file with pdflatex")
           TeX-command-list)
-    (cset 'TeX-engine              'xetex
-          'TeX-auto-save           t
+    (push '("xelatexmk" "latexmk -pdf -pdflatex='xelatex -interaction=nonstopmode -shell-escape' %s"
+            TeX-run-TeX nil t :help "run latexmk on file with xelatex")
+          TeX-command-list)
+    (cset 'TeX-auto-save           t
           'TeX-parse-self          t
           'reftex-plug-into-AUCTeX t)
     (with-eval-after-load 'company
       (company-auctex-init)))
   (with-eval-after-load 'cdlatex
-    (unbind-keys cdlatex-mode-map "<" "(" "[" "{"))
+    (unbind-keys cdlatex-mode-map "(" "{" "[" "|" "<"))
 #+END_SRC
 ** org
 #+BEGIN_SRC emacs-lisp
@@ -546,21 +545,13 @@ this applies to all language-specific modes which offers the options.
   (with-eval-after-load 'org
     (cset 'org-adapt-indentation                  nil
           'org-log-done                           'time
+          'org-src-fontify-natively               t
+          'org-latex-hyperref-template            nil
           'org-latex-create-formula-image-program 'imagemagick
           'org-latex-listings                     'minted
-          'org-src-fontify-natively               t
-          'org-latex-with-hyperref                nil
-          'org-latex-default-packages-alist
-          '(("" "fontspec" t)
-            ("" "graphicx" t)
-            ("" "longtable" nil)
-            ("" "float" nil)
-            ("" "wrapfig" nil)
-            ("" "rotating" nil)
-            ("normalem" "ulem" t)
-            ("" "amsmath" t)
-            ("" "amssymb" t)
-            ("" "hyperref" nil)))
+          'org-latex-pdf-process '("latexmk -pdf -pdflatex='xelatex -interaction=nonstopmode -shell-escape' %f")
+          'org-latex-compiler "xelatex")
+    (push '("" "fontspec" t ("xelatex")) org-latex-default-packages-alist)
     (unbind-keys org-mode-map "M-h" "M-a" "M-e" "M-{" "M-}")
     (bind-keys :map org-mode-map
                ("M-n"     . org-forward-sentence)
@@ -568,10 +559,8 @@ this applies to all language-specific modes which offers the options.
                ("C-M-n"   . org-forward-element)
                ("C-M-p"   . org-backward-element)))
   (with-eval-after-load 'ox-beamer
-    (defalias 'org-beamer-bold 'org-latex-bold))
-  (--each '((org-beamer-outline-frame-title . "outline")
-            (org-emphasis-alist             . nil))
-    (push it safe-local-variable-values))
+    (defalias 'org-beamer-bold 'org-latex-bold)
+    (cset 'org-beamer-outline-frame-title "outline"))
 #+END_SRC
 * summary
 ctrl does not work with uppercase on text terminals.

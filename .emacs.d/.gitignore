@@ -1,7 +1,8 @@
-/eshell
-/elpa
 /custom.el
+/elpa
+/eshell
 /projectile-bookmarks.eld
 /setup.el
 /smex-items
 /tramp
+/transient
