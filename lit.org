@@ -30,8 +30,8 @@
 | 2013 | hyland                    | lambda calculus                                              |
 | 2014 | slepak_shivers_manolios   | apl rank polymorphism                                        |
 | 2016 | gibbons                   | apl naperian functors                                        |
-| 2017 | milewski                  | intro                                                        |
 | 2017 | yanofsky                  | theoretical computer science                                 |
+| 2018 | milewski                  | intro                                                        |
 * arch_ling
 |  <4> | <25>                      | <60>                                                         |
 | 1958 | lambek                    | pregroup grammar                                             |
