@@ -1,4 +1,4 @@
-personal_ws-1.1 en 556 
+personal_ws-1.1 en 565 
 logit
 hashmap
 orthogonally
@@ -11,6 +11,7 @@ eval
 github
 DCG
 punctuations
+semigroup
 khajiit
 https
 Akaviri
@@ -22,6 +23,7 @@ Joakim
 manticore
 PROIEL
 infusible
+regularizer
 ggmcmc
 approximator
 trigrams
@@ -58,14 +60,15 @@ psychopomp
 Morag
 parallelizability
 ÚFAL
-PSJJJJ
 unicode
+PSJJJJ
 subtypes
 MLPs
 naacl
 Reductionism
 vivec's
 csv
+boolean
 sublayers
 ysmiraak
 LaTeX
@@ -133,7 +136,6 @@ BLEU
 Dagon
 Noormoc
 todo
-TODO
 lcccccc
 htb
 frontend
@@ -152,8 +154,8 @@ uint
 haskell
 preprocessed
 iso
-Vvardenfell
 mae
+Vvardenfell
 intension
 async
 factive
@@ -186,6 +188,7 @@ Zipfian
 EACL
 IJCNLP
 chronography
+coproduct
 composable
 textwidth
 unigrams
@@ -223,9 +226,9 @@ textsuperscript
 MOR
 unassociated
 Lambek
+mse
 lessoning
 quantized
-mse
 pdf
 lccccc
 paddings
@@ -237,8 +240,8 @@ GHARTOK
 Muatra
 intensional
 beamer
-sinusoids
 Almalexia
+sinusoids
 dagoth
 emacsclient
 footnotesize
@@ -262,19 +265,20 @@ png
 overfitting
 Padhome
 Mehrunes
+invertibility
 tokenized
 morphism
 Utta's
 Ayem
-AVSs
 c'mon
+AVSs
 rgb
 initializers
 subsequence
 SHEOG
 POS
-pre
 RET
+pre
 tokenizer
 stopwords
 MHARA
@@ -304,8 +308,8 @@ tokenization
 combinatory
 computable
 Sil
-RNN
 QUD
+RNN
 treebank
 Trinimac
 http
@@ -314,8 +318,8 @@ parameterization
 Baayen
 Buryat
 Voryn
-tex
 UAS
+tex
 Functors
 functor's
 orthonormal
@@ -336,8 +340,8 @@ discriminative
 Lexically
 allcolors
 compositionality
-vec
 toc
+vec
 ngram
 bijection
 Goettingen
@@ -375,7 +379,9 @@ Utta
 categorial
 Tübingen
 tsv
+semilattice
 backpropagation
+unitality
 Chemua
 lorkhan
 repl
@@ -450,6 +456,7 @@ perceptron
 i'm
 emph
 Balto
+bitwise
 Uyghur
 printbibliography
 lc
@@ -491,6 +498,7 @@ reified
 equalities
 modelling
 ALTADOON
+nullary
 ensp
 accuracies
 th
@@ -520,6 +528,7 @@ implicature
 yu
 Daedroth
 exponentiating
+coproducts
 intensionally
 Narsis
 elisp
