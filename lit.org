@@ -135,6 +135,7 @@
 | 1999 | blackburn_bos.2           | computational semantics                                      |
 | 2002 | baker                     | continuation quantification                                  |
 | 2005 | müller                    | grammatical theory                                           |
+| 2014 | baker                     | continuation in natural language                             |
 * math
 |  <4> | <25>                      | <60>                                                         |
 | 2001 | hatcher                   | algebraic topology                                           |
