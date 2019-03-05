@@ -1,4 +1,4 @@
-personal_ws-1.1 en 565 
+personal_ws-1.1 en 577 
 logit
 hashmap
 orthogonally
@@ -17,6 +17,7 @@ https
 Akaviri
 Dat
 encodings
+underfitting
 GULGA
 Armigers
 Joakim
@@ -79,6 +80,7 @@ undusted
 cuz
 companding
 lexicalize
+Kleene
 grayscale
 formalisms
 noitemsep
@@ -128,6 +130,7 @@ vocoder
 tibrol
 netchimen
 hoc
+logographic
 RKHET
 Steedman
 Hom
@@ -159,6 +162,7 @@ Vvardenfell
 intension
 async
 factive
+postulatory
 Indoril
 datasets
 polymorphism
@@ -187,8 +191,8 @@ wang
 Zipfian
 EACL
 IJCNLP
-chronography
 coproduct
+chronography
 composable
 textwidth
 unigrams
@@ -232,6 +236,7 @@ quantized
 pdf
 lccccc
 paddings
+combinatorially
 HPSG
 Pavel
 Velothi
@@ -240,8 +245,8 @@ GHARTOK
 Muatra
 intensional
 beamer
-Almalexia
 sinusoids
+Almalexia
 dagoth
 emacsclient
 footnotesize
@@ -270,15 +275,15 @@ tokenized
 morphism
 Utta's
 Ayem
-c'mon
 AVSs
+c'mon
 rgb
 initializers
 subsequence
 SHEOG
 POS
-RET
 pre
+RET
 tokenizer
 stopwords
 MHARA
@@ -308,8 +313,10 @@ tokenization
 combinatory
 computable
 Sil
-QUD
+underfit
 RNN
+QUD
+subword
 treebank
 Trinimac
 http
@@ -318,8 +325,8 @@ parameterization
 Baayen
 Buryat
 Voryn
-UAS
 tex
+UAS
 Functors
 functor's
 orthonormal
@@ -340,8 +347,8 @@ discriminative
 Lexically
 allcolors
 compositionality
-toc
 vec
+toc
 ngram
 bijection
 Goettingen
@@ -352,6 +359,7 @@ hyperparameters
 teleport
 alandro
 exponentiate
+discretization
 morphisms
 autoregressively
 str
@@ -386,6 +394,7 @@ Chemua
 lorkhan
 repl
 repo
+monospaced
 Sami
 natbib
 Vershu
@@ -403,6 +412,7 @@ sublanguage
 tokenizers
 hapax
 cartesian
+connectionist
 bilinear
 Yehoshua
 sublanguages
@@ -424,6 +434,7 @@ subtyping
 symbolist
 Dres
 modifiability
+subglyph
 trigram
 ysmiraak's
 de
@@ -434,6 +445,7 @@ strided
 Resdaynia
 Barfok
 adam
+denoising
 modus
 subfield
 Enantiomorph
