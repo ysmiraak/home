@@ -1,4 +1,4 @@
-personal_ws-1.1 en 577 
+personal_ws-1.1 en 593 
 logit
 hashmap
 orthogonally
@@ -15,6 +15,7 @@ semigroup
 khajiit
 https
 Akaviri
+unsampled
 Dat
 encodings
 underfitting
@@ -70,6 +71,7 @@ Reductionism
 vivec's
 csv
 boolean
+centroid
 sublayers
 ysmiraak
 LaTeX
@@ -122,6 +124,7 @@ destructuring
 iff
 spectrogram
 hir
+autoencoders
 enumii
 linkcolor
 toprule
@@ -135,7 +138,9 @@ RKHET
 Steedman
 Hom
 isomorphism
+Kullback
 BLEU
+segmentations
 Dagon
 Noormoc
 todo
@@ -235,10 +240,11 @@ lessoning
 quantized
 pdf
 lccccc
-paddings
 combinatorially
+paddings
 HPSG
 Pavel
+Leibler
 Velothi
 Indo
 GHARTOK
@@ -263,9 +269,11 @@ BPTT
 init
 num
 Sorbian
+iteratively
 HERMA
 homunculi
 disjunction
+lowerbound
 png
 overfitting
 Padhome
@@ -380,18 +388,21 @@ subvectors
 regexpr
 lccccccccc
 evoker
-relu
 ReLU
+relu
 transdimensional
 Utta
 categorial
 Tübingen
 tsv
 semilattice
+reparameterization
 backpropagation
+variational
 unitality
 Chemua
 lorkhan
+reparametrization
 repl
 repo
 monospaced
@@ -406,9 +417,11 @@ Fenja
 evaluator
 subspaces
 whitespace
+whitespaces
 pretrained
 domo
 sublanguage
+connectionism
 tokenizers
 hapax
 cartesian
@@ -427,6 +440,7 @@ Kurmanji
 emacs
 gilled
 generalizable
+centroids
 Triune
 darkblue
 AE
@@ -459,6 +473,7 @@ bigram
 Seht
 maxout
 incrementing
+autoencoder
 fusional
 nordic
 hapaxes
@@ -528,6 +543,7 @@ autoloaded
 draughts
 nolistsep
 processings
+affine
 CoNLL
 pygmentize
 ze
