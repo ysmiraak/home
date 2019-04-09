@@ -185,7 +185,8 @@ let =C-z= instead show what i wanna kill.
   (cset 'ibuffer-saved-filter-groups
         '(("ysmiraak"
            ("emacs" (or (name . "^\\*scratch\\*$")
-                        (name . "^\\*Messages\\*$")))
+                        (name . "^\\*Messages\\*$")
+                        (name . "^\\*Process List\\*$")))
            ("exwm"      (mode . exwm-mode))
            ("cider" (or (name . "^\\*cider")
                         (name . "^\\*nrepl")))
