@@ -1,6 +1,6 @@
 * arch
 
-** pacman/aurman
+** pacman
 
 =-Syu= install
 
