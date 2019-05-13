@@ -1,4 +1,4 @@
-personal_ws-1.1 en 593 
+personal_ws-1.1 en 600 
 logit
 hashmap
 orthogonally
@@ -153,9 +153,11 @@ normalizations
 boethiah
 STFT
 vehk
+parallelization
 lcc
 runtime
 vocoders
+underperform
 CHIM
 hyperparameter
 uint
@@ -193,6 +195,7 @@ alandro's
 teleports
 Boet
 wang
+performant
 Zipfian
 EACL
 IJCNLP
@@ -233,6 +236,7 @@ Dwemeri
 Ysmir
 textsuperscript
 MOR
+deterministically
 unassociated
 Lambek
 mse
@@ -246,6 +250,7 @@ HPSG
 Pavel
 Leibler
 Velothi
+NMT
 Indo
 GHARTOK
 Muatra
@@ -254,6 +259,7 @@ beamer
 sinusoids
 Almalexia
 dagoth
+parallelizable
 emacsclient
 footnotesize
 arborescence
@@ -266,6 +272,7 @@ bottomrule
 componentwise
 glyphs
 BPTT
+scalable
 init
 num
 Sorbian

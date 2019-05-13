@@ -14,6 +14,7 @@
 | 2000 | healy                     | neural modeling and graphical representations                |
 | 2002 | plotkin_power.1           | effects and operations                                       |
 | 2002 | plotkin_power.2           | computation determine monads                                 |
+| 2002 | ramsey_pfeffer            | stochastic lambda calculus and monads of probability dist    |
 | 2007 | hyland_power              | universal algebra lawvere theories and monads                |
 | 2007 | mcbride                   | clowns jokers                                                |
 | 2008 | mcbride_paterson          | applicative                                                  |
@@ -27,6 +28,7 @@
 | 2011 | mcbride                   | kleisli arrows                                               |
 | 2012 | hinze                     | generic programming with adjunctions                         |
 | 2012 | hinze_                    | sorting                                                      |
+| 2012 | hinze.2                   | kan extensions for program optimisation                      |
 | 2013 | hyland                    | lambda calculus                                              |
 | 2014 | slepak_shivers_manolios   | apl rank polymorphism                                        |
 | 2016 | gibbons                   | apl naperian functors                                        |
@@ -62,6 +64,7 @@
 | 2011 | kostecki                  | intro topos                                                  |
 | 2013 | spivak                    | intro science                                                |
 | 2014 | goldblatt                 | topos                                                        |
+| 2014 | marsden                   | string diagrams                                              |
 | 2014 | riehl                     | intro context                                                |
 | 2016 | leinster                  | intro basic                                                  |
 | 2016 | schulman                  | logic                                                        |
@@ -140,6 +143,7 @@
 |  <4> | <25>                      | <60>                                                         |
 | 2001 | hatcher                   | algebraic topology                                           |
 | 2004 | cheng                     | morality                                                     |
+| 2010 | hulpke                    | computational group theory                                   |
 | 2017 | gallier_quaintance        | algebra topology differential optimization                   |
 * type_cs_math
 |  <4> | <25>                      | <60>                                                         |
