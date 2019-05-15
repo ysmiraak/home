@@ -479,7 +479,6 @@ this applies to all language-specific modes which offers the options.
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'python
     (cset 'python-shell-interpreter "python3"
-          'elpy-shell-use-project-root nil
           'elpy-modules
           '(elpy-module-sane-defaults
             ;; elpy-module-flymake
