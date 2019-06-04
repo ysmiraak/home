@@ -86,6 +86,8 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
     (cset 'insert-directory-program (executable-find "gls"))
     (bind-keys ("<C-s-f>" . toggle-frame-fullscreen) ("<C-s-268632070>" . toggle-frame-fullscreen))
     (toggle-frame-fullscreen))
+  (with-eval-after-load 'tramp-sh
+    (push 'tramp-own-remote-path tramp-remote-path))
 #+END_SRC
 ** safety
 to prevent custom from editing my =user-init-file=.
