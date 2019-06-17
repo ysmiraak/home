@@ -6,14 +6,14 @@
   :dependencies [[com.rpl/specter "1.1.3-SNAPSHOT"]
                  [criterium "0.4.5"]
                  [org.clojure/clojure "1.10.1"]
-                 [org.clojure/core.async "0.4.490"]
+                 [org.clojure/core.async "0.4.500"]
                  [org.clojure/core.logic "0.8.11"]
                  [org.clojure/core.match "0.3.0"]
                  [org.clojure/data.csv "0.1.4"]
                  [org.clojure/test.check "0.10.0-alpha4"]
                  [swiss-arrows "1.0.0"]
                  [uncomplicate/fluokitten "0.9.1"]
-                 [uncomplicate/neanderthal "0.24.0"
+                 [uncomplicate/neanderthal "0.25.0"
                   :exclusions [org.jcuda/jcublas
                                org.jocl/jocl-blast
                                uncomplicate/clojurecl
