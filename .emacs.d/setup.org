@@ -33,7 +33,7 @@ packages i use.
      clojure-mode cider clj-refactor
      geiser ediprolog pasp-mode haskell-mode idris-mode
      rust-mode cargo flycheck-rust racer
-     elpy js2-mode rainbow-mode ess csv-mode htmlize
+     elpy indium rjsx-mode pug-mode rainbow-mode ess csv-mode htmlize
      markdown-mode auctex cdlatex company-auctex))
 #+END_SRC
 to install those packages, change =:tangle no= to =:tangle yes= for this code block, or manually execute the commands.
@@ -499,7 +499,18 @@ this applies to all language-specific modes which offers the options.
 #+END_SRC
 ** javascript
 #+BEGIN_SRC emacs-lisp
-  (push '("\\.js\\'" . js2-mode) auto-mode-alist)
+  (push '("\\.json\\'" . json-mode) auto-mode-alist)
+  (push '("\\.js\\'"   . rjsx-mode) auto-mode-alist)
+  (add-hooks 'js-mode-hook #'indium-interaction-mode)
+  (with-eval-after-load 'rjsx-mode
+    (unbind-keys rjsx-mode-map "C-d"))
+  (with-eval-after-load 'indium
+    (def-eval-dwim eval-dwim:js indium-eval-region indium-eval-last-node)
+    (bind-keys :map indium-interaction-mode-map
+               ("M-RET"   . eval-dwim:js)
+               ("C-c M-j" . indium-launch)
+               :map indium-repl-mode-map
+               ("C-c M-o" . indium-repl-clear-output)))
 #+END_SRC
 ** r
 #+BEGIN_SRC emacs-lisp

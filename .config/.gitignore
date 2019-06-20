@@ -1,6 +1,7 @@
 /QtProject.conf
 /Trolltech.conf
 /autostart
+/configstore
 /dconf
 /git
 /gtk-*

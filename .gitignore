@@ -64,6 +64,8 @@ tmp
 /nltk_data
 /scikit_learn_data
 
+/.npm
+
 /R
 
 /.cargo
