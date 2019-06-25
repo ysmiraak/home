@@ -501,11 +501,11 @@ this applies to all language-specific modes which offers the options.
 #+BEGIN_SRC emacs-lisp
   (push '("\\.json\\'" . json-mode) auto-mode-alist)
   (push '("\\.js\\'"   . rjsx-mode) auto-mode-alist)
-  (add-hooks 'js-mode-hook #'indium-interaction-mode)
   (with-eval-after-load 'rjsx-mode
-    (unbind-keys rjsx-mode-map "C-d"))
-  (with-eval-after-load 'indium
+    (require 'indium)
     (def-eval-dwim eval-dwim:js indium-eval-region indium-eval-last-node)
+    (add-hooks 'rjsx-mode-hook #'indium-interaction-mode)
+    (unbind-keys rjsx-mode-map "C-d")
     (bind-keys :map indium-interaction-mode-map
                ("M-RET"   . eval-dwim:js)
                ("C-c M-j" . indium-launch)
