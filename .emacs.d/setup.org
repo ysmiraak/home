@@ -33,7 +33,7 @@ packages i use.
      clojure-mode cider clj-refactor
      geiser ediprolog pasp-mode haskell-mode idris-mode
      rust-mode cargo flycheck-rust racer
-     elpy indium rjsx-mode pug-mode rainbow-mode ess csv-mode htmlize
+     elpy indium rjsx-mode json-mode pug-mode rainbow-mode ess csv-mode htmlize
      markdown-mode auctex cdlatex company-auctex))
 #+END_SRC
 to install those packages, change =:tangle no= to =:tangle yes= for this code block, or manually execute the commands.
