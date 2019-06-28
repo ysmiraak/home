@@ -33,7 +33,8 @@ packages i use.
      clojure-mode cider clj-refactor
      geiser ediprolog pasp-mode haskell-mode idris-mode
      rust-mode cargo flycheck-rust racer
-     elpy indium rjsx-mode json-mode pug-mode rainbow-mode ess csv-mode htmlize
+     js2-mode indium json-mode pug-mode
+     elpy rainbow-mode ess csv-mode htmlize
      markdown-mode auctex cdlatex company-auctex))
 #+END_SRC
 to install those packages, change =:tangle no= to =:tangle yes= for this code block, or manually execute the commands.
@@ -144,6 +145,15 @@ let =C-z= instead show what i wanna kill.
     (set-face-attribute 'region nil :background "#242424")
     (set-face-attribute 'vertical-border nil :foreground "#656555")
     (global-hl-line-mode 1))
+#+END_SRC
+- [[https://www.emacswiki.org/emacs/delight-powerline.el][delight-powerline]]
+#+BEGIN_SRC emacs-lisp
+  (defadvice powerline-major-mode (around delight-powerline-major-mode activate)
+    "Ensure that powerline's major mode names are delighted.
+
+  See `delight-major-mode'."
+    (let ((inhibit-mode-name-delight nil))
+      ad-do-it))
 #+END_SRC
 - cursor style
 #+BEGIN_SRC emacs-lisp
@@ -500,12 +510,13 @@ this applies to all language-specific modes which offers the options.
 ** javascript
 #+BEGIN_SRC emacs-lisp
   (push '("\\.json\\'" . json-mode) auto-mode-alist)
-  (push '("\\.js\\'"   . rjsx-mode) auto-mode-alist)
-  (with-eval-after-load 'rjsx-mode
+  (push '("\\.js\\'"   .  js2-mode) auto-mode-alist)
+  (add-hooks 'js2-mode-hook #'indium-interaction-mode)
+  (with-eval-after-load 'js2-mode
+    (delight 'js2-mode "JS" :major)
+    (delight 'indium-interaction-mode nil 'indium-interaction)
     (require 'indium)
     (def-eval-dwim eval-dwim:js indium-eval-region indium-eval-last-node)
-    (add-hooks 'rjsx-mode-hook #'indium-interaction-mode)
-    (unbind-keys rjsx-mode-map "C-d")
     (bind-keys :map indium-interaction-mode-map
                ("M-RET"   . eval-dwim:js)
                ("C-c M-j" . indium-launch)
