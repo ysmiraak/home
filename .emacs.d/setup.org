@@ -53,6 +53,8 @@ modern [[https://github.com/magnars/dash.el#installation][list]], [[https://gith
 [[https://www.emacswiki.org/emacs/DelightedModes][delight]] keeps the mode-line clean.
 #+BEGIN_SRC emacs-lisp
   (mapc #'require '(s f dash dash-functional bind-key delight))
+  (ad-disable-advice 'format-mode-line 'around 'delighted-modes-are-glum)
+  (ad-activate 'format-mode-line)
   (dash-enable-font-lock)
   (defun cset (&rest sym-vals)
     "customize each symbol to value in SYM-VALS."
@@ -145,15 +147,6 @@ let =C-z= instead show what i wanna kill.
     (set-face-attribute 'region nil :background "#242424")
     (set-face-attribute 'vertical-border nil :foreground "#656555")
     (global-hl-line-mode 1))
-#+END_SRC
-- [[https://www.emacswiki.org/emacs/delight-powerline.el][delight-powerline]]
-#+BEGIN_SRC emacs-lisp
-  (defadvice powerline-major-mode (around delight-powerline-major-mode activate)
-    "Ensure that powerline's major mode names are delighted.
-
-  See `delight-major-mode'."
-    (let ((inhibit-mode-name-delight nil))
-      ad-do-it))
 #+END_SRC
 - cursor style
 #+BEGIN_SRC emacs-lisp
