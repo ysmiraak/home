@@ -310,7 +310,7 @@ with revised symmetrical bindings.
              ("l" . downcase-region)
              ("m" . mc/mark-all-in-region) ("M" . vr/mc-mark)
              ("n" . mc/edit-lines)
-             ("r" . replace-string)        ("R" . vr/replace)
+             ("r" . vr/replace)            ("R" . replace-string)
              ("s" . sort-lines)
              ("u" . upcase-region)
              ("w" . kill-ring-save))
@@ -318,7 +318,8 @@ with revised symmetrical bindings.
 *** batched
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-M-\\" . mc/mark-more-like-this-extended)
-             ("C-M-%"  . vr/query-replace))
+             ("M-%"    . vr/query-replace)
+             ("C-M-%"  . query-replace))
   (when (display-graphic-p)
     (with-eval-after-load 'multiple-cursors
       (set-face-attribute 'mc/cursor-bar-face nil :background "#DAA520" :foreground "#242424")))
@@ -626,7 +627,7 @@ meta does but i do not need those bindings yet.
 | @       | set-mark-command                     | ~sp-select-next-thing~ +mark-word+                           | ~sp-select-previous-thing-exchange~  +mark-sexp+             |
 | #       | []                                   | ~linum-mode~                                                 |                                                              |
 | $       | []                                   | ~flyspell-mode~ +ispell-word+                                |                                                              |
-| %       | []                                   | query-replace                                                | ~vr/query-replace~ +query-replace-regexp+                    |
+| %       | []                                   | ~vr/query-replace~ +query-replace+                           | ~query-replace~ +query-replace-regexp+                       |
 | ^       |                                      | delete-indentation                                           |                                                              |
 | &       | []                                   | async-shell-command                                          |                                                              |
 | *       | []                                   | ~sp-convolute-sexp~                                          |                                                              |
