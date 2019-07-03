@@ -30,7 +30,7 @@ packages i use.
      smartparens expand-region region-bindings-mode visual-regexp multiple-cursors
      company company-quickhelp yasnippet flycheck flycheck-pos-tip
      hungry-delete aggressive-indent drag-stuff fix-word zzz-to-char
-     clojure-mode cider clj-refactor
+     clojure-mode cider inf-clojure clj-refactor
      geiser ediprolog pasp-mode haskell-mode idris-mode
      rust-mode cargo flycheck-rust racer
      js2-mode indium json-mode pug-mode
@@ -434,17 +434,31 @@ this applies to all language-specific modes which offers the options.
              ("M-RET" . eval-print-last-sexp))
 #+END_SRC
 ** clojure
+[[https://cider.readthedocs.io][cider]] for clojure with [[https://leiningen.org/][leiningen]].
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'cider-mode-hook      #'clj-refactor-mode #'eldoc-mode)
-  (add-hooks 'cider-repl-mode-hook #'clj-refactor-mode)
-  (delight 'clj-refactor-mode nil 'clj-refactor)
   (with-eval-after-load 'cider
-    (cset 'cider-font-lock-dynamically    t
-          'cider-repl-use-pretty-printing t
-          'cider-repl-print-length        11
+    (cset 'cider-font-lock-dynamically t
           'cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]")
-    (def-eval-dwim eval-dwim:clojure cider-eval-region cider-eval-last-sexp)
-    (bind-keys :map cider-mode-map ("M-RET" . eval-dwim:clojure)))
+    (def-eval-dwim eval-dwim:cider cider-eval-region cider-eval-last-sexp)
+    (bind-keys :map cider-mode-map ("M-RET" . eval-dwim:cider)))
+#+END_SRC
+[[https://github.com/clojure-emacs/inf-clojure][inf-clojure]] for clojurescript with [[https://github.com/anmonteiro/lumo][lumo]].
+#+BEGIN_SRC emacs-lisp
+  (add-hooks 'clojurescript-mode-hook #'inf-clojure-minor-mode)
+  (with-eval-after-load 'inf-clojure
+    (cset 'inf-clojure-project-type "generic"
+          'inf-clojure-generic-cmd  "lumo -i .lumo -d -r")
+    (def-eval-dwim eval-dwim:inf-clojure inf-clojure-eval-region inf-clojure-eval-last-sexp)
+    (bind-keys :map inf-clojure-minor-mode-map ("M-RET" . eval-dwim:inf-clojure)
+               :map inf-clojure-mode-map ("C-c C-z" . ace-window))
+    (unbind-keys inf-clojure-minor-mode-map "C-c C-m")
+    (unbind-keys inf-clojure-mode-map       "C-c C-m"))
+#+END_SRC
+[[https://github.com/clojure-emacs/clj-refactor.el][clj-refactor]] for both.
+#+BEGIN_SRC emacs-lisp
+  (--each '(clojure-mode-hook cider-repl-mode-hook inf-clojure-mode-hook)
+    (add-hooks it #'clj-refactor-mode))
+  (delight 'clj-refactor-mode nil 'clj-refactor)
   (with-eval-after-load 'clj-refactor
     (cljr-add-keybindings-with-prefix "C-c C-m"))
 #+END_SRC
@@ -452,8 +466,8 @@ this applies to all language-specific modes which offers the options.
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'geiser
     (cset 'geiser-active-implementations '(chez))
-    (def-eval-dwim eval-dwim:scheme geiser-eval-region geiser-eval-last-sexp)
-    (bind-keys :map scheme-mode-map ("M-RET" . eval-dwim:scheme)))
+    (def-eval-dwim eval-dwim:geiser geiser-eval-region geiser-eval-last-sexp)
+    (bind-keys :map scheme-mode-map ("M-RET" . eval-dwim:geiser)))
 #+END_SRC
 ** prolog
 #+BEGIN_SRC emacs-lisp
@@ -493,11 +507,11 @@ this applies to all language-specific modes which offers the options.
             elpy-module-yasnippet
             elpy-module-company
             elpy-module-eldoc))
-    (def-eval-dwim eval-dwim:python elpy-shell-send-region-or-buffer elpy-shell-send-statement)
-    (unbind-keys python-mode-map "DEL")
+    (def-eval-dwim eval-dwim:elpy elpy-shell-send-region-or-buffer elpy-shell-send-statement)
     (bind-keys :map python-mode-map
-               ("M-RET" . eval-dwim:python)
+               ("M-RET" . eval-dwim:elpy)
                ("C-M-x" . elpy-shell-send-group))
+    (unbind-keys python-mode-map "DEL")
     (elpy-enable))
 #+END_SRC
 ** javascript
@@ -509,9 +523,9 @@ this applies to all language-specific modes which offers the options.
     (delight 'js2-mode "JS" :major)
     (delight 'indium-interaction-mode nil 'indium-interaction)
     (require 'indium)
-    (def-eval-dwim eval-dwim:js indium-eval-region indium-eval-last-node)
+    (def-eval-dwim eval-dwim:indium indium-eval-region indium-eval-last-node)
     (bind-keys :map indium-interaction-mode-map
-               ("M-RET"   . eval-dwim:js)
+               ("M-RET"   . eval-dwim:indium)
                ("C-c M-j" . indium-launch)
                :map indium-repl-mode-map
                ("C-c M-o" . indium-repl-clear-output)))
