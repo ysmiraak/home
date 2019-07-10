@@ -6,3 +6,5 @@
 (library :clojure*)
 (library :specter)
 (library :fluokitten)
+
+(require '[ysmiraak.tensor :refer :all])
