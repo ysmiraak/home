@@ -1,95 +1,122 @@
 (ns ysmiraak.tensor)
 
-(defn map*
-  ([n k]
-   (if (pos? n)
-     (recur (dec n) (partial mapv k))
-     k))
-  ([n k tsr]
-   ((map* n k) tsr))
-  ([n k tsr & tsrs]
-   (apply (map* n k) tsr tsrs)))
+(defn mapx
+  ([r f]
+   (if (pos? r)
+     (recur (dec r) (partial mapv f))
+     f))
+  ([r f x]
+   ((mapx r f) x))
+  ([r f x & xs]
+   (apply (mapx r f) x xs)))
 
-(defn shape
-  [tsr]
-  (loop [shape [] tsr tsr]
-    (if (vector? tsr)
-      (recur (conj shape (count tsr)) (peek tsr))
-      shape)))
+(defn- fit-dims
+  [n ds]
+  (let [[as m] (reduce-kv (fn [[as m] i d] (if (= -1 d) [(conj as i) m] [as (* d m)])) [[] 1] ds)
+        ds' (reduce (partial apply assoc) ds (map vector as (repeat (if (zero? m) 0 (quot n m)))))]
+    (cond ; todo find a better way to implement the logic
+      (and (zero?  m) (< 0 (count as))) (throw (ex-info "ambiguous -1 when 0 present" {:dims ds}))
+      (and (not= n m) (< 1 (count as))) (throw (ex-info "multiple ambiguous unknowns" {:dims ds}))
+      (not= n (reduce * ds'))           (throw (ex-info "incompatible dims"   {:size n :dims ds}))
+      :else ds')))
 
-(defn slice
-  ;; i         i
-  ;; [     ]   :
-  ;; [i    ]  i:
-  ;; [i j  ]  i:j
-  ;; [i j k]  i:j:k
-  ([tsr] tsr)
-  ([tsr & idxs]
-   (loop [[idx & idxs] idxs, [d & ds] (shape tsr), axis 0, tsr tsr]
-     (let [pos (fn [i] (if (neg? i) (+ d i) i))
-           tsr (if (integer? idx)
-                 (as-> (pos idx) i
-                   (if (= (dec d) i) peek #(nth % i))
-                   (map* axis i tsr))
-                 (as-> idx [i j k :as idx]
-                   [(pos (or i 0)) (pos (or j d)) (or k 1)]
-                   (if-not (= [0 d 1] idx)
-                     (map* axis
-                           (cond
-                             (=  1 k) #(subvec % i j)
-                             (= -1 k) #(vec (rseq (subvec % i j)))
-                             (pos? k) #(vec (take-nth k (subvec % i j)))
-                             :else (as-> (vec (range i j k)) idxs
-                                     (fn [v] (mapv #(nth v %) idxs))))
-                           tsr)
-                     tsr)))]
-       (if idxs
-         (recur idxs ds (+ axis (if (integer? idx) 0 1)) tsr)
-         tsr)))))
+(defn- nat
+  [d i]
+  (if (neg? i)
+    (+ i d)
+    i))
 
-(def _ nil)
+(declare rank size dims dimx flax flix subx)
 
-(defn reshape
-  ([tsr] (reshape tsr [-1]))
-  ([tsr dims]
-   (let [dim$ (shape tsr)
-         siz$ (reduce * dim$)
-         fill (keep-indexed (fn [i d] (if (neg? d) i)) dims)
-         fill (if (and (< 1 (count fill)) (not (zero? siz$)))
-                (throw (ex-info "multiple unknown dimensions" {:dims dims}))
-                (first fill))
-         size (reduce * (cond-> dims fill (assoc fill 1)))
-         dim' (cond-> dims fill (assoc fill (if (zero? size) 0 (quot siz$ size))))
-         size (reduce * dim')
-         dims (if-not (= siz$ size)
-                (throw (ex-info "incompatible shapes" {:old dim$ :new dims}))
-                dim')]
-     (if-not (= dim$ dims)
-       (if (zero? size)
-         (if-not (= dim$ (take (count dim$) dims))
-           (reduce (fn [v d] (vec (repeat d v))) [] (reverse (take-while pos? dims)))
-           tsr)
-         (as-> tsr tsr
-           ((->> (partial apply concat)
-                 (repeat (dec (count dim$)))
-                 (apply comp vec)) tsr)
-           (if (< 1 (count dims))
-             ((->> (next dims)
-                   (map (partial partial partition))
-                   (interleave (repeat (partial map vec)))
-                   (apply comp vec)) tsr)
-             tsr)))
-       tsr))))
+(defn rank
+  ([x] (rank x 0))
+  ([x r]
+   (if (vector? x)
+     (recur (peek x) (inc r))
+     r)))
 
-(defn transpose
-  ([tsr] (apply mapv vector tsr))
-  ([tsr perm]
-   (loop [tsr tsr idx (vec (sort-by perm (range (count perm))))]
+(defn size
+  ([x] (reduce * (dims x)))
+  ([x a]
+   (as-> (dims x a) d
+     (if-not (integer? d)
+       (reduce * d)
+       d))))
+
+(defn dims
+  ([x]
+   (loop [ds (transient []), x x]
+     (if (vector? x)
+       (recur (conj! ds (count x)) (peek x))
+       (persistent! ds))))
+  ([x a] (subx (dims x) a)))
+
+(defn dimx
+  ([x] (flax x))
+  ([x ds]
+   (let [ds' (dims x), n (reduce * ds'), ds (fit-dims n ds)]
+     (cond
+       (= ds' ds) x
+       (zero? n) (reduce (fn [v d] (vec (repeat d v))) [] (reverse (take-while pos? ds)))
+       :else (cond-> (flax x (count ds'))
+               (< 1 (count ds))
+               ((->> (next ds)
+                     (map (partial partial partition))
+                     (interleave (repeat (partial map vec)))
+                     (apply comp vec))))))))
+
+(defn flax
+  ([x] (flax x (rank x)))
+  ([x r]
+   ((->> (partial apply concat)
+         (repeat (dec r))
+         (apply comp vec))
+    x)))
+
+(defn flix
+  ([x] (apply mapv vector x))
+  ([x perm]
+   (loop [x x idx (vec (sort-by perm (range (count perm))))]
      (if-let [[[a i j]] (seq (drop-while (fn [[a i j]] (< i j)) (map vector (range) idx (next idx))))]
-       (recur (map* a transpose tsr) (assoc idx (inc a) i a j))
-       tsr))))
+       (recur (mapx a flix x) (assoc idx (inc a) i a j))
+       x)))
+  ([x a b & abs]
+   (as-> (list* a b abs) abs
+     (mapv (partial nat (rank x)) abs)
+     (reduce (fn [x [a b]] (assoc x a (x b) b (x a)))
+             (->> abs (reduce max) inc range vec)
+             (partition 2 abs))
+     (flix x abs))))
+
+(defn subx
+  ([x] x)
+  ([x & subs] ; sub : int | {i j k} | [int] | [bool]
+   (loop [[sub & subs] subs, x x, [d & ds] (dims x), r 0]
+     (as-> x x
+       (cond
+         (integer? sub) (as-> (nat d sub) i (mapx r #(nth % i) x))
+         (map? sub) (as-> sub {:keys [i j k] :as sub}
+                      {:i (nat d (or i 0))
+                       :j (nat d (or j d))
+                       :k        (or k 1)}
+                      (if-not (= {:i 0 :j d :k 1} sub)
+                        (mapx r (cond
+                                  (=  1 k) #(subvec % i j)
+                                  (= -1 k) #(vec (rseq (subvec % i j)))
+                                  (pos? k) #(vec (take-nth k (subvec % i j)))
+                                  :else (as-> (vec (range i j k)) idxs #(mapv % idxs)))
+                              x)
+                        x))
+         :else (as-> sub idxs
+                 (cond-> idxs (boolean? (first idxs)) (keep-indexed (fn [i x] (if x i))))
+                 (mapv (partial nat d) idxs)
+                 (mapx r #(mapv % idxs) x)))
+       (if subs
+         (recur subs x ds (if (integer? sub) r (inc r)))
+         x)))))
 
 ;; todo
-;; - index gather
-;; - boolean mask
-;; - np.where
+;; - tests
+;; - broadcasting
+;; - tf.where tf.gather tf.boolean_mask
+;; - tensor product & contraction
