@@ -115,8 +115,38 @@
          (recur subs x ds (if (integer? sub) r (inc r)))
          x)))))
 
+(defn unify-dims
+  ([ds] ds)
+  ([ds ds']
+   (as-> (sort-by count [ds ds']) [ds ds']
+     (mapv (fn [d d'] (if (or (= 1 d) (= 1 d') (= d d')) (max d d')))
+           (concat (repeat (- (count ds') (count ds)) 1) ds)
+           ds')))
+  ([ds ds' & more] (reduce unify-dims (unify-dims ds ds') more)))
+
+(defn broadcast
+  [ds x]
+  (let [ds' (dims x), pad (- (count ds) (count ds'))]
+    (if (or (< pad 0) (some not (map (fn [d d'] (and d (or (= d d') (= -1 d) (= 1 d')))) (rseq ds) (rseq ds'))))
+      (throw (ex-info "cannot broadcast dims" {:old ds' :new ds})))
+    (loop [r (dec (count ds))
+           [d  & ds ] (rseq ds)
+           [d' & ds'] (concat (rseq ds') (repeat pad 1))
+           x (nth (iterate vector x) pad)]
+      (if (<= 0 r)
+        (recur (dec r) ds ds'
+               (cond->> x
+                 (and (not= d d') (pos? d))
+                 (mapx r (comp vec (partial repeat d) peek))))
+        x))))
+
+(defn mapx-1
+  ([a f x] (mapx (inc (nat (rank x) a)) f x))
+  ([a f x & xs]
+   (let [xs (cons x xs), ds (apply unify-dims (map dims xs))]
+     (apply mapx (inc (nat (count ds) a)) f (map (partial broadcast ds) xs)))))
+
 ;; todo
 ;; - tests
-;; - broadcasting
 ;; - tf.where tf.gather tf.boolean_mask
 ;; - tensor product & contraction
