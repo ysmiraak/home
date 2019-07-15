@@ -441,7 +441,9 @@ this applies to all language-specific modes which offers the options.
     (cset 'cider-font-lock-dynamically t
           'cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]")
     (def-eval-dwim eval-dwim:cider cider-eval-region cider-eval-last-sexp)
-    (bind-keys :map cider-mode-map ("M-RET" . eval-dwim:cider)))
+    (unbind-keys cider-mode-map "C-M-i")
+    (bind-keys :map cider-mode-map ("M-RET" . eval-dwim:cider)
+               :map cider-repl-mode-map ("C-c M-o" . cider-repl-clear-buffer)))
 #+END_SRC
 [[https://github.com/clojure-emacs/inf-clojure][inf-clojure]] for clojurescript with [[https://github.com/anmonteiro/lumo][lumo]].
 #+BEGIN_SRC emacs-lisp

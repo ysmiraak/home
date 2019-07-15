@@ -1,4 +1,4 @@
-(defproject ysmiraak "2019.06.26"
+(defproject ysmiraak "2019.07.15"
   :description "a library of stolen ideas."
   :url "https://github.com/ysmiraak/ysmiraak"
   :license {:name "Eclipse Public License"
@@ -10,10 +10,10 @@
                  [org.clojure/core.logic "0.8.11"]
                  [org.clojure/core.match "0.3.0"]
                  [org.clojure/data.csv "0.1.4"]
-                 [org.clojure/test.check "0.10.0-alpha4"]
+                 [org.clojure/test.check "0.10.0-RC1"]
                  [swiss-arrows "1.0.0"]
                  [uncomplicate/fluokitten "0.9.1"]
-                 [uncomplicate/neanderthal "0.25.1"
+                 [uncomplicate/neanderthal "0.25.3"
                   :exclusions [org.jcuda/jcublas
                                org.jocl/jocl-blast
                                uncomplicate/clojurecl
