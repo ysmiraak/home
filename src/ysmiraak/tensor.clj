@@ -7,7 +7,7 @@
   is treated as a rank-0 tensor, aka a scalar of sorts.
 
   the first argument *r* is a non-negative integer, which is the rank
-  of the tensors to which it applies the function *f* across.
+  of the tensors where the function *f* applies.
 
   ```clojure
   (mapx 2 inc [[0 1] [2 3]])               => [[1 2] [3 4]]
@@ -29,7 +29,8 @@
 
   note that the arity-2 case does not produce a transducer, since it
   operates on vectors and not lazy sequences.  instead it produces a
-  partial function.
+  partial function.  in general `(mapx 0 f)` is equivalent to `f`
+  and `(partial mapx 1)` equivalent to `mapv`.
 
   see [[plux]] for a similar function which supports negative indexing
   and broadcasting semantics.  also see [[mulx]] and [[trax]] for
@@ -44,6 +45,39 @@
    ((mapx r f) x))
   ([r f x & xs]
    (apply (mapx r f) x xs)))
+
+(defn inat
+  "ensures that integer *i* is positive.  used for implementing negative
+  indexing.  works under the condition that `-d-1 < i < d`.  see
+  [[jnat]] for an inclusive variant."
+  [d i]
+  (if (< (bit-not d) i d)
+    (mod i d)
+    (throw (ex-info "index out of bound" {:index i :bound d}))))
+
+(defn jnat
+  "like [[inat]] but inclusive, namely `-d-1 <= i <= d`.  used for
+  implementing negative slicing."
+  [d i]
+  (if (<= (bit-not d) i d)
+    (mod i (inc d))
+    (throw (ex-info "slice out of bound" {:slice i :bound d}))))
+
+(defn rank
+  "returns the rank `(: Nat)` of tensor *x*, or changes its rank to *r*
+  by flattening or wrapping the outer-most axes."
+  ([x]
+   (loop [r 0  x x]
+     (if (vector? x)
+       (recur (inc r) (peek x))
+       r)))
+  ([r x] ; negative r changes the inner-most axes?
+   (let [r' (rank x)  d (- r' r)]
+     ((cond
+        (pos? d) (do (if (<= r' d) (throw (ex-info "illegal rank" {:rank r})))
+                     (apply comp vec (repeat    d (partial apply concat))))
+        (neg? d)     (apply comp     (repeat (- d) vector))
+        :else identity) x))))
 
 (defn dims
   "returns the shape `(: Vect r Nat)` of tensor *x*, or reshapes it to
@@ -66,17 +100,17 @@
   dimensions fill the size perfectly.
 
   for other common ndarray manipulations, see [[rank]] for
-  transposition, [[size]] for broadcasting, and [[subx]] for slicing
-  and indexing.
+  flattening, [[size]] for broadcasting, [[flix]] for transposition,
+  and [[subx]] for slicing and indexing.
 
   "
   ([x]
-   (loop [ds (transient []), x x]
+   (loop [ds (transient [])  x x]
      (if (vector? x)
        (recur (conj! ds (count x)) (peek x))
        (persistent! ds))))
   ([ds x]
-   (let [dx (dims x), m (reduce * dx)
+   (let [dx (dims x)  m (reduce * dx)
          [n q aqs] (reduce-kv
                     (fn [[n q aqs] i d]
                       (if (neg? d)
@@ -90,36 +124,22 @@
                        (reduce #(vec (repeat %2 %1)) [] (reverse (take-while pos? ds)))
                        (throw (ex-info "old dims has size 0 but not new dims" {:old dx :new ds})))
            (= (reduce * ds') m)
-           , (cond-> ((->> (partial apply concat)
-                           (repeat (dec (count dx)))
-                           (apply comp vec)) x)
-               (< 1 (count ds'))
-               ((->> (next ds')
-                     (map (partial partial partition))
-                     (interleave (repeat (partial map vec)))
-                     (apply comp vec))))
+           , (as-> (rank 1 x) x
+               (case (count ds')
+                 0 (peek x)  1 x
+                 ((->> (next ds')
+                       (mapv (partial partial partition))
+                       (interleave (repeat (partial mapv vec)))
+                       (apply comp vec))
+                  x)))
            :else (throw (ex-info "incompatible dims" {:old dx :new ds}))))))
-
-(defn rank
-  "returns the rank `(: Nat)` of tensor *x*, or changes the ordering of
-  its axes according to *perm*, aka transposition."
-  ([x]
-   (loop [r 0, x x]
-     (if (vector? x)
-       (recur (inc r) (peek x))
-       r)))
-  ([perm x] ; todo support negative indexing here ???? and sanity check perm
-   (loop [sidx (vec (sort-by perm (range (count perm)))), x x]
-     (if-let [[[r i j]] (seq (drop-while (fn [[r i j]] (< i j)) (map vector (range) sidx (next sidx))))]
-       (recur (assoc sidx (inc r) i r j) (mapx r (partial apply mapv vector) x))
-       x))))
 
 (defn size
   "returns the size `(: Nat)` of tensor *x*, or changes its size by
   broadcasting to shape *ds*, if the broadcasting logic is satisfied."
   ([x] (reduce * (dims x)))
   ([ds x]
-   (let [ds' (dims x), pad (- (count ds) (count ds'))]
+   (let [ds' (dims x)  pad (- (count ds) (count ds'))]
      (if (or (< pad 0) (some not (map (fn [d d'] (and d (or (= 1 d') (= d d') (= -1 d)))) (rseq ds) (rseq ds'))))
        (throw (ex-info "cannot broadcast old dims to new dims" {:old ds' :new ds})))
      (loop [r (dec (count ds))
@@ -133,22 +153,28 @@
                   (mapx r (comp vec (partial repeat d) peek))))
          x)))))
 
-(defn inat
-  "ensures that integer *i* is positive.  used for implementing negative
-  indexing.  works under the condition that `-d-1 < i < d`.  see
-  [[jnat]] for an inclusive variant."
-  [d i]
-  (if (< (bit-not d) i d)
-    (mod i d)
-    (throw (ex-info "index out of bound" {:index i :bound d}))))
+(defn flix
+  "for transposition.  the first case swaps the 2 outer-most axes.
+  the second case performs the specified permutation.  the third case
+  takes an even number of axes and consecutively swaps each two.
 
-(defn jnat
-  "like [[inat]] but inclusive, namely `-d-1 <= i <= d`.  used for
-  implementing negative slicing."
-  [d i]
-  (if (<= (bit-not d) i d)
-    (mod i (inc d))
-    (throw (ex-info "slice out of bound" {:slice i :bound d}))))
+  "
+  ([x] (apply mapv vector x))
+  ([perm x]
+   (let [r (count perm)  perm (mapv (partial inat r) perm)]
+     (if (not= (set perm) (set (range r)))
+       (throw (ex-info "invalid permutation" {:perm perm})))
+     (loop [sidx (vec (sort-by perm (range r)))  x x]
+       (if-let [[[r i j]] (seq (drop-while (fn [[r i j]] (< i j)) (map vector (range) sidx (next sidx))))]
+         (recur (assoc sidx (inc r) i r j) (mapx r flix x))
+         x))))
+  ([x a b & abs]
+   (as-> (list* a b abs) abs
+     (mapv (partial inat (rank x)) abs)
+     (reduce (fn [x [a b]] (assoc x a (x b) b (x a)))
+             (->> abs (reduce max) inc range vec)
+             (partition 2 abs))
+     (flix abs x))))
 
 (defn subx
   "for subscripting.  each *sub* can be one of the following.
@@ -174,12 +200,11 @@
   negative indices are supported in all cases where integers are used.
   but index-out-of-bound errors are not tolerated.  the *subs* are
   applied consequetively from the outer-most axis to the inner-most.
-  use `{}` to leave some axis untouched.
 
   "
   ([x] x)
   ([x & subs]
-   (loop [[sub & subs] subs, x x, [d & ds] (dims x), r 0]
+   (loop [[sub & subs] subs  x x  [d & ds] (dims x)  r 0]
      (as-> x x
        (cond
          (integer? sub) (as-> (inat d sub) i (mapx r #(nth % i) x))
@@ -207,33 +232,62 @@
          x)))))
 
 (defn plux
-  "like [[mapx]] but supported broadcasting and negative indexing."
+  "like [[mapx]] but supports broadcasting and negative indexing.
+
+  this function can be used to broadcast tensors together.
+  ```clojure
+  (as-> (plux 0 vector x y z) [x y z] ... )
+  ```
+
+  "
   ([r f x] (mapx (jnat (rank x) r) f x))
   ([r f x & xs]
-   (let [xs (cons x xs)      dss (map dims xs)
-         rs (map count dss)  pad (vec (repeat (reduce max rs) 1))
-         ds (apply mapv (fn [& ds] (as-> (reduce max ds) d (if (every? #(or (= 1 %) (= d %)) ds) d)))
-                   (map (fn [ds r] (into (subvec pad r) ds)) dss rs))]
+   (let [xs (cons x xs)       dss (mapv dims xs)
+         rs (mapv count dss)  pad (vec (repeat (reduce max rs) 1))
+         ds (apply mapv max (mapv (fn [ds r] (into (subvec pad r) ds)) dss rs))]
      (apply mapx (jnat (count ds) r) f
-            (map (partial size ds) xs)))))
+            (mapv (partial size ds) xs)))))
 
 (defn mulx
-  "tensor product.  except that only axes above rank *r* are affected."
-  [r f x & xs] ; todo spare the first r ranks as documented
-  (let [xs (vec (cons x xs))
-        rs (map rank xs), m (reduce max rs), n (- m (jnat m r))
-        rs (mapv #(max 0 (- % n)) rs)
-        [r & ps] (->> rs rseq (reductions + 0) next reverse)]
-    (->> (-> (fn [x r p] (mapx r (apply comp (repeat p vector)) x))
-             (mapv xs rs ps)
-             (conj (peek xs)))
+  "tensor product.
+
+  - if *r* is negative, only axes up to rank *r* are tensored over.
+  the dimensions of axes above *r* for all input tensors have to be
+  compatible for broadcasting.
+
+  - otherwise it's the opposite.  only axes above rank *r* are
+  tensored over.  as a result `r = 0` and `r = -1` are equivalent.
+
+  in both cases *f* is applied across the final tensored axis, which
+  when `-1 <= r` is always the final axis.
+
+  "
+  [r f x & xs] ; the negative usage is obsolete given trax
+  (let [xs (cons x xs)  dss (mapv dims xs)  rs (mapv count dss)  [ss js ks r]
+        , (if (neg? r)
+            (let [r' (reduce max rs)  r' (- r' (jnat r' r))
+                  ts (mapv #(max (- % r') 0) rs)
+                  [r & js] (->> ts rseq (reductions + 0) vec rseq)]
+              [ts js (repeat 0) r])
+            (let [qs (mapv #(- % r) rs)
+                  ps (mapv #(max (- %) 0) qs)
+                  ts (mapv #(max    %  0) qs)
+                  js (->> ts (reductions + 0) (mapv + ps))
+                  ks (->> ts rseq (reductions + 0) vec rseq next)]
+              [(repeat r) js ks -1]))]
+    (->> (mapv (fn [x s j k ds]
+                 (as-> ds ds
+                   (as-> (split-at s ds) [d0 d1]
+                     (concat d0 (repeat j 1) d1 (repeat k 1)))
+                   (dims (vec ds) x)))
+               xs ss js ks dss)
          (apply plux r f))))
 
 (defn trax
   "trace, or tensor contraction.
 
   ```
-  f : (Vect n s) ^ m -> t
+  f : (Tsor q s)  ^{m} -> t
   a : (Vect q (Vect m int))
   x : (Tsor r s)
    -> (Tsor ((r - q) * m) t)
@@ -249,20 +303,25 @@
   just an integer, which however may point to different axes for different
   tensors, should it be a negative index.
 
+  the following *f* can be used for the usual numeric tensor dot.
+  ```clojure
+  (comp (partial reduce +) (partial rank 1) (partial plux -1 *))
+  ```
+
   "
-  [f a x & xs]
-  (let [xs (cons x xs)    dss (map dims xs)    rs (mapv count dss)
-        a  (size [-1 (count rs)] a)    q (nth (dims a) 0)
-        [r & ps] (->> rs rseq (map #(- % q)) (reductions + 0) reverse)]
-    (->> (rank [1 0] a)
-         (map (fn [x r p ds a]
-                (let [a1 (mapv (partial inat r) a)
-                      a0 (filterv (complement (set a1)) (range r))]
-                  (-> (mapv ds a0)
-                      (into (repeat p 1))
-                      (conj (reduce * (map ds a1)))
-                      (dims (rank (into a0 a1) x)))))
-              xs rs ps dss)
+  [f a x & xs] ; a = [] should perform tensor product?
+  (let [xs (cons x xs)  dss (mapv dims xs)  rs (mapv count dss)
+        a  (size [-1 (count rs)] a)         q  (nth (dims a) 0)
+        [r & ps] (->> rs rseq (mapv #(- % q)) (reductions + 0) vec rseq)]
+    (->> (mapv (fn ([x r p ds a]
+                    (let [a1 (mapv (partial inat r) a)
+                          a0 (filterv (complement (set a1)) (range r))]
+                      (dims (-> (mapv ds a0)
+                                (into (repeat p 1))
+                                ;; (conj (reduce * (mapv ds a1)))
+                                (into (mapv ds a1)))
+                            (flix (into a0 a1) x)))))
+               xs rs ps dss (flix a))
          (apply plux r f))))
 
 
@@ -270,4 +329,5 @@
 
 ;; todo
 ;; - tests
+;; - merge mulx and trax, like einsum?
 ;; - where gather boolean_mask
