@@ -33,8 +33,7 @@
   and `(partial mapx 1)` equivalent to `mapv`.
 
   see [[plux]] for a similar function which supports negative indexing
-  and broadcasting semantics.  also see [[mulx]] and [[trax]] for
-  tensor algebra operations.
+  and broadcasting semantics.
 
   "
   ([r f]
@@ -248,86 +247,93 @@
      (apply mapx (jnat (count ds) r) f
             (mapv (partial size ds) xs)))))
 
-(defn mulx
-  "tensor product.
-
-  - if *r* is negative, only axes up to rank *r* are tensored over.
-  the dimensions of axes above *r* for all input tensors have to be
-  compatible for broadcasting.
-
-  - otherwise it's the opposite.  only axes above rank *r* are
-  tensored over.  as a result `r = 0` and `r = -1` are equivalent.
-
-  in both cases *f* is applied across the final tensored axis, which
-  when `-1 <= r` is always the final axis.
-
-  "
-  [r f x & xs] ; the negative usage is obsolete given trax
-  (let [xs (cons x xs)  dss (mapv dims xs)  rs (mapv count dss)  [ss js ks r]
-        , (if (neg? r)
-            (let [r' (reduce max rs)  r' (- r' (jnat r' r))
-                  ts (mapv #(max (- % r') 0) rs)
-                  [r & js] (->> ts rseq (reductions + 0) vec rseq)]
-              [ts js (repeat 0) r])
-            (let [qs (mapv #(- % r) rs)
-                  ps (mapv #(max (- %) 0) qs)
-                  ts (mapv #(max    %  0) qs)
-                  js (->> ts (reductions + 0) (mapv + ps))
-                  ks (->> ts rseq (reductions + 0) vec rseq next)]
-              [(repeat r) js ks -1]))]
-    (->> (mapv (fn [x s j k ds]
-                 (as-> ds ds
-                   (as-> (split-at s ds) [d0 d1]
-                     (concat d0 (repeat j 1) d1 (repeat k 1)))
-                   (dims (vec ds) x)))
-               xs ss js ks dss)
-         (apply plux r f))))
-
-(defn trax
-  "trace, or tensor contraction.
+(defn tenx
+  "tensor manipulation by axis annotation.
 
   ```
-  f : (Tsor q s)  ^{m} -> t
-  a : (Vect q (Vect m int))
+  f : (Tsor q s) -> t
+  t : (Vect q _)
   x : (Tsor r s)
-   -> (Tsor ((r - q) * m) t)
+  a : (Vect r _)
+   -> (Tsor (r - q) t)
   ```
 
-  *a* for axis is a rank-`[0,2]` tensor broadcastable to `[q m]` where
-  *q* is the number of axes being contracted simultanously and *m* the
-  number of input tensors.  each row in *a* specifies the axes of
-  contraction for all input tensors.
+  each rank-r tensor *x* is followed by a dim-r vector *a* which
+  annotates its axes with tags.  an annotation tag is an arbitrary
+  value, but must be unique within each annotation vector.  across
+  annotation vectors, the same tag identifies the axes to be aligned.
+  those axes must have broadcastable dimensions.
 
-  when *a* is a vector of integers, by broadcasting logic, only one
-  axis is contracted from each tensor.  the same applies when it's
-  just an integer, which however may point to different axes for different
-  tensors, should it be a negative index.
+  *t* contains tags for extracting axes to which *f* applies.  those
+  tags need not be unique, but only the last occurrence matters.  they
+  may also be new tags, in which case dummy axes are created.
 
-  the following *f* can be used for the usual numeric tensor dot.
+  if some axes survive extraction, their tags are included in the
+  metadata of the resulting tensor under the `:axes` key.
+
+  assuming the definition of those tensors in the following examples.
   ```clojure
-  (comp (partial reduce +) (partial rank 1) (partial plux -1 *))
+  (def x (dims [4 3 2] (vec (range 24))))
+  (def y (dims [4 3  ] (vec (range 12))))
+  (def z (dims [  3 2] (vec (range  6))))
+  ```
+
+  - tensor product
+  ```clojure
+  (def xyz (tenx * [] x [:x0 :x1 :x2] y [:y0 :y1] z [:z0 :z1]))
+  (dims xyz) => [4 3 2 4 3 3 2]
+  (meta xyz) => {:axes [:x0 :x1 :x2 :y0 :y1 :z0 :z1]}
+  ```
+
+  - tensor contraction
+  ```clojure
+  (def dot (comp (partial reduce +) (partial map *)))
+  (dims (tenx dot [3] x [4 3 2] y [4 3] z [3 2])) => [4 2]
+  ```
+
+  - broadcasting
+  ```clojure
+  (let [[x' e] (tenx list [4 3 2] x [4 3 2] 0 [])]
+    (assert (= (dims x') (dims e)))
+    (assert (identical? x' x)))
+  ```
+
+  - transposition
+  ```clojure
+  (dims (tenx identity [2 1 0] x [0 1 2])) => [2 3 4]
+  ```
+
+  - operation along axis
+  ```clojure
+  (def sum (partial reduce +))
+  (dims (tenx sum [1] x [0 1 2])) => [4 2]
+  ```
+
+  - or this
+  ```clojure
+  (tenx identity [0 1 2 3] 0 []) => [[[[0]]]]
   ```
 
   "
-  [f a x & xs] ; a = [] should perform tensor product?
-  (let [xs (cons x xs)  dss (mapv dims xs)  rs (mapv count dss)
-        a  (size [-1 (count rs)] a)         q  (nth (dims a) 0)
-        [r & ps] (->> rs rseq (mapv #(- % q)) (reductions + 0) vec rseq)]
-    (->> (mapv (fn ([x r p ds a]
-                    (let [a1 (mapv (partial inat r) a)
-                          a0 (filterv (complement (set a1)) (range r))]
-                      (dims (-> (mapv ds a0)
-                                (into (repeat p 1))
-                                ;; (conj (reduce * (mapv ds a1)))
-                                (into (mapv ds a1)))
-                            (flix (into a0 a1) x)))))
-               xs rs ps dss (flix a))
-         (apply plux r f))))
+  [f t x a & xa*]
+  (let [[x+ a+] (apply mapv vector (partition 2 (list* x a xa*)))
+        h (loop [a* (seq (remove (set t) (apply concat a+))) h {}]
+            (if-let [[a & a*] a*]
+              (recur a* (if (h a) h (assoc h a (count h))))
+              (vec (sort-by h (keys h)))))
+        ht (zipmap (concat h t) (range))
+        p+ (mapv #(vec (sort-by (comp ht %) (range (count %)))) a+)
+        ht (mapv key (sort-by val ht))
+        d+ (mapv (fn [x a] (as-> (zipmap a (dims x)) ad (mapv #(or (ad %) 1) ht))) x+ a+)
+        d' (apply mapv max d+)]
+    (as-> x+ x+
+      (mapv (fn [x p d] (->> x (flix p) (dims d) (size d'))) x+ p+ d+)
+      (apply mapx (count h) f x+)
+      (cond-> x+ (seq h) (with-meta {:axes h})))))
 
 
 
 
 ;; todo
 ;; - tests
-;; - merge mulx and trax, like einsum?
 ;; - where gather boolean_mask
