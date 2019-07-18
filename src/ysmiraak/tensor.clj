@@ -291,6 +291,12 @@
   (dims (tenx dot [3] x [4 3 2] y [4 3] z [3 2])) => [4 2]
   ```
 
+  - operation along axis
+  ```clojure
+  (def sum (partial reduce +))
+  (dims (tenx sum [1] x [0 1 2])) => [4 2]
+  ```
+
   - broadcasting
   ```clojure
   (let [[x' e] (tenx list [4 3 2] x [4 3 2] 0 [])]
@@ -301,12 +307,6 @@
   - transposition
   ```clojure
   (dims (tenx identity [2 1 0] x [0 1 2])) => [2 3 4]
-  ```
-
-  - operation along axis
-  ```clojure
-  (def sum (partial reduce +))
-  (dims (tenx sum [1] x [0 1 2])) => [4 2]
   ```
 
   - or this
