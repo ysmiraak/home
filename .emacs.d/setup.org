@@ -392,8 +392,6 @@ with revised symmetrical bindings.
 #+BEGIN_SRC emacs-lisp
   (global-aggressive-indent-mode 1)
   (delight 'aggressive-indent-mode " i" 'aggressive-indent)
-  (--each '(idris-mode haskell-mode)
-    (push it aggressive-indent-excluded-modes))
   (cset 'indent-tabs-mode nil)
   (bind-keys :map smartparens-mode-map ("C-j" . newline-and-indent))
 #+END_SRC
@@ -486,6 +484,7 @@ this applies to all language-specific modes which offers the options.
 #+END_SRC
 ** idris
 #+BEGIN_SRC emacs-lisp
+  (push 'idris-mode aggressive-indent-excluded-modes)
   (with-eval-after-load 'idris-mode
     (bind-keys :map idris-mode-map ("C-c C-q" . idris-quit)))
 #+END_SRC
@@ -496,6 +495,15 @@ this applies to all language-specific modes which offers the options.
              #'flycheck-rust-setup
              #'cargo-minor-mode
              #'racer-mode)
+#+END_SRC
+** r
+#+BEGIN_SRC emacs-lisp
+  (add-hooks 'inferior-ess-mode-hook #'smartparens-mode)
+  (with-eval-after-load 'ess-mode
+    (def-eval-dwim eval-dwim:ess ess-eval-region ess-eval-line)
+    (bind-keys :map ess-mode-map
+               ("M-RET" . eval-dwim:ess)
+               ("C-M-x" . ess-eval-paragraph)))
 #+END_SRC
 ** python
 #+BEGIN_SRC emacs-lisp
@@ -533,14 +541,10 @@ this applies to all language-specific modes which offers the options.
                :map indium-repl-mode-map
                ("C-c M-o" . indium-repl-clear-output)))
 #+END_SRC
-** r
+** pug
 #+BEGIN_SRC emacs-lisp
-  (add-hooks 'inferior-ess-mode-hook #'smartparens-mode)
-  (with-eval-after-load 'ess-mode
-    (def-eval-dwim eval-dwim:ess ess-eval-region ess-eval-line)
-    (bind-keys :map ess-mode-map
-               ("M-RET" . eval-dwim:ess)
-               ("C-M-x" . ess-eval-paragraph)))
+  (push 'pug-mode aggressive-indent-excluded-modes)
+  (cset 'pug-tab-width 4)
 #+END_SRC
 ** markdown
 #+BEGIN_SRC emacs-lisp
