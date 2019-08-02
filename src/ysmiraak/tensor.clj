@@ -70,7 +70,7 @@
      (if (vector? x)
        (recur (inc r) (peek x))
        r)))
-  ([r x] ; negative r changes the inner-most axes?
+  ([r x] ; todo negative r changes the inner-most axes?
    (let [r' (rank x)  d (- r' r)]
      ((cond
         (pos? d) (do (if (<= r' d) (throw (ex-info "illegal rank" {:rank r})))
@@ -153,9 +153,9 @@
          x)))))
 
 (defn flix
-  "for transposition.  the first case swaps the 2 outer-most axes.
+  "for transposition.  the first case flips the 2 outer-most axes.
   the second case performs the specified permutation.  the third case
-  takes an even number of axes and consecutively swaps each two.
+  takes an even number of axes and consecutively flips each two.
 
   "
   ([x] (apply mapv vector x))
@@ -251,11 +251,11 @@
   "tensor manipulation by axis annotation.
 
   ```
-  f : (Tsor q s) -> t
-  t : (Vect q _)
-  x : (Tsor r s)
-  a : (Vect r _)
-   -> (Tsor (r - q) t)
+  f : Tsor s q -> t
+  t : Vect _ q
+  x : Tsor s r
+  a : Vect _ r
+   -> Tsor t (r - q)
   ```
 
   each rank-r tensor *x* is followed by a dim-r vector *a* which
@@ -331,9 +331,38 @@
       (apply mapx (count h) f x+)
       (cond-> x+ (seq h) (with-meta {:axes h})))))
 
+(defn fibx
+  "tensor fiber.
 
+  consider tensor type `Tsor (k : Type) (r : Nat) (d : Vect Nat r)`
+  equivalently expressed as `fmap FinSet d -> k`; its fiber (inverse
+  image) function type is `k -> PowSet (fmap FinSet d -> k)`; or
+  ```
+  Tsor k r = Vect Nat r -> k
+  k -> Vect (Vect Nat r) ?
+  ```
+  with some simplification.
 
+  now consider only truthy and falsey values of `k`, this function
+  returns the truthy fiber, aka indices of truthy values in tensor *x*
+  where each index is a vector of *r* natural numbers corresponding to
+  the axes.  note that *0* and *0.0* are considered truthy.
 
-;; todo
-;; - tests
-;; - where gather boolean_mask
+  it is then possible to retrieve the fiber of arbitrary values by
+  converting the values to booleans with [[plux]] or [[mapx]].
+
+  "
+  [x]
+  (loop [dest (transient [])
+         idxs (->> (interleave (map (comp vec range) (dims x))
+                               (map vector (range)))
+                   (apply tenx vector [])
+                   (rank 2))
+         mask (seq (rank 1 x))]
+    (if mask
+      (let [[m & mask] mask
+            [i & idxs] idxs]
+        (recur (cond-> dest m (conj! i)) idxs mask))
+      (persistent! dest))))
+
+;; todo tests
