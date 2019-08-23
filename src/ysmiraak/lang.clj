@@ -22,8 +22,8 @@
 
 (defn forms->term
   "merges multiple forms into a single term"
-  [forms]
-  (loop [forms (seq forms)  expr []  vars #{}]
+  [& forms]
+  (loop [forms forms  expr []  vars #{}]
     (if-let [[form & forms] forms]
       (if (term? form)
         (recur forms (conj expr (:expr form)) (into vars (:vars form)))
@@ -40,20 +40,50 @@
 
 (defn beta
   "beta reduces a term whose expr has a Forall as head"
-  [{[{:keys [expr args]} & vals] :expr vars :vars}]
-  (let [nval (count vals)  env (zipmap args vals)]
-    (case (compare (count args) nval)
-      1 (Term. (Forall. (subst env expr) (subvec args nval)) (reduce disj vars (keys env)))
-      0 (Term.          (subst env expr)                     (reduce disj vars (keys env)))
-      (throw (ex-info "arity error" {:args args :vals vals})))))
+  [{:keys [expr vars] :as term}]
+  (if (and (seq? expr) (forall? (first expr)))
+    (let [[{:keys [expr args]} & vals] expr  nval (count vals)  env (zipmap args vals)]
+      (case (compare (count args) nval)
+        1 (Term. (Forall. (subst env expr) (subvec args nval)) (reduce disj vars (keys env)))
+        0 (Term.          (subst env expr)                     (reduce disj vars (keys env)))
+        (throw (ex-info "arity error" {:args args :vals vals}))))
+    term))
+
+(defn ev [expr]
+  ;; todo this approach breaks when lists are used as data
+  ;; - different types of expr for data and code
+  ;; - manual recursive ev
+  (eval expr))
+
+(defn ?%
+  "takes a term and interleaving var-terms and values, (partially)
+  evaluates the term according to the binding.
+
+  similar to let, this can be seen as performing a lambda-abstraction
+  immediately followed by a beta reduction (a left-left lambda).
+
+  ```
+  ((fn [a b] phi) x y)
+  (let [a x b y] phi)
+  (?% phi a x b y)
+  (? (% phi a b) x y)
+  ```
+
+  "
+  ([{:keys [expr vars] :as term}]
+   (if (seq vars) term (ev expr)))
+  ([{:keys [expr vars]} & {:as envt}]
+   (let [args (map :expr (keys envt))
+         expr (subst (zipmap args (vals envt)) expr)
+         vars (reduce disj vars args)]
+     (?% (Term. expr vars)))))
 
 (defn ?
   "funcall, the counit of product-exponential adjunction"
-  ([& forms]
-   (as-> (forms->term forms) {:keys [expr vars] :as term}
-     (cond-> term (forall? (first expr)) beta)
-     (if (seq vars) term (eval expr))))
-  ([]))
+  [form & forms]
+  (-> (apply forms->term form forms)
+      beta
+      ?%))
 
 (defn %
   "forall"
@@ -71,29 +101,6 @@
   "produces a fresh or named var term"
   ([name] (Term. name #{name}))
   ([] (! (gensym "!"))))
-
-(defn ?%
-  "takes a term and interleaving var-terms and values, (partially)
-  evaluates the term according to the binding.
-
-  similar to let, this can be seen as performing a lambda-abstraction
-  immediately followed by a beta reduction (a left-left lambda).
-
-  ```
-  ((fn [a b] phi) x y)
-  (let [a x b y] phi)
-  (?% phi a x b y)
-  (? (% phi a b) x y)
-  ```
-
-  "
-  [{:keys [expr vars]} & {:as envt}]
-  (let [args (map :expr (keys envt))
-        expr (subst (zipmap args (vals envt)) expr)
-        vars (reduce disj vars args)]
-    (if (seq vars)
-      (Term. expr vars)
-      (eval  expr))))
 
 (comment
 
