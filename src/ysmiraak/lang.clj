@@ -1,5 +1,4 @@
-(ns ysmiraak.lang
-  (:require [clojure.core.match :refer [match]]))
+(ns ysmiraak.lang)
 
 ;; goals
 ;; 1. unify terms and types (basic constructors shared by types and data)
@@ -13,16 +12,20 @@
 ;; form = expr | term
 ;; term = expr & vars
 ;; vars = set var
+;; args = vec var
 
 (defrecord Term   [expr vars])
 (defrecord Forall [expr args])
+
+(defn term?   [x] (instance? Term   x))
+(defn forall? [x] (instance? Forall x))
 
 (defn forms->term
   "merges multiple forms into a single term"
   [forms]
   (loop [forms (seq forms)  expr []  vars #{}]
     (if-let [[form & forms] forms]
-      (if (instance? Term form) ; build expr & collect vars
+      (if (term? form)
         (recur forms (conj expr (:expr form)) (into vars (:vars form)))
         (recur forms (conj expr        form)        vars))
       (Term. (seq expr) vars))))
@@ -30,41 +33,38 @@
 (defn subst
   "substitutes all keys in expr to vals in env"
   [env expr]
-  (cond ; todo use a better data structure (lens?) for this
-    (seq? expr)             (map (partial subst env) expr)
-    (instance? Forall expr) (assoc expr :expr (subst (reduce dissoc env (:args expr)) (:expr expr)))
-    :else                   (env expr expr)))
+  (cond ; consider using a better data structure (lens?) for this
+    (seq?    expr) (map (partial subst env) expr)
+    (forall? expr) (assoc expr :expr (subst (reduce dissoc env (:args expr)) (:expr expr)))
+    :else          (env expr expr)))
 
 (defn beta
   "beta-reduces a term whose expr has a Forall as head"
   [{[{:keys [expr args]} & vals] :expr vars :vars}]
-  (loop [rgs (seq args)  als (seq vals)  env {}]
-    (match [rgs als]
-           [nil nil] (Term. (subst env expr) (reduce disj vars (keys env)))
-           [_   nil] (Term. (Forall. (subst env expr) rgs) (reduce disj vars (keys env)))
-           [nil   _] (throw (ex-info "arity error" {:args args :vals vals}))
-           :else (let [[a & rgs] rgs
-                       [v & als] als]
-                   (recur rgs als (assoc env a v))))))
+  (let [nval (count vals)  env (zipmap args vals)]
+    (case (compare (count args) nval)
+      1 (Term. (Forall. (subst env expr) (subvec args nval)) (reduce disj vars (keys env)))
+      0 (Term.          (subst env expr)                     (reduce disj vars (keys env)))
+      (throw (ex-info "arity error" {:args args :vals vals})))))
 
 (defn ?
   "funcall, the counit of product-exponential adjunction"
   ([& forms]
    (as-> (forms->term forms) {:keys [expr vars] :as term}
-     (cond-> term (instance? Forall (first expr)) beta)
+     (cond-> term (forall? (first expr)) beta)
      (if (seq vars) term (eval expr))))
   ([]))
 
 (defn %
   "forall"
   [form & args] ; currently args can only be var terms
-  (let [term (if (instance? Term form) form (Term. form #{}))
+  (let [term (if (term? form) form (Term. form #{}))
         expr (:expr term)
-        args (map :expr args)]
+        args (mapv :expr args)]
     (Term.
-     (if (instance? Forall expr)
-       (Forall. (:expr expr) (concat args (:args expr)))
-       (Forall.        expr          args))
+     (if (forall? expr)
+       (Forall. (:expr expr) (into args (:args expr)))
+       (Forall.        expr        args))
      (reduce disj (:vars term) args))))
 
 (defn !
@@ -141,8 +141,7 @@
 
   )
 
-;; todo goal 1
-(comment
+(comment ; todo goal 1
 
   ;; let
   ;; - A B C be types
