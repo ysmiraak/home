@@ -31,7 +31,7 @@
       (Term. (seq expr) vars))))
 
 (defn subst
-  "substitutes all keys in expr to vals in env"
+  "substitutes all keys in expr to vals in env (: map var val)"
   [env expr]
   (cond ; consider using a better data structure (lens?) for this
     (seq?    expr) (map (partial subst env) expr)
@@ -39,7 +39,7 @@
     :else          (env expr expr)))
 
 (defn beta
-  "beta-reduces a term whose expr has a Forall as head"
+  "beta reduces a term whose expr has a Forall as head"
   [{[{:keys [expr args]} & vals] :expr vars :vars}]
   (let [nval (count vals)  env (zipmap args vals)]
     (case (compare (count args) nval)
@@ -71,6 +71,29 @@
   "produces a fresh or named var term"
   ([name] (Term. name #{name}))
   ([] (! (gensym "!"))))
+
+(defn ?%
+  "takes a term and interleaving var-terms and values, (partially)
+  evaluates the term according to the binding.
+
+  similar to let, this can be seen as performing a lambda-abstraction
+  immediately followed by a beta reduction (a left-left lambda).
+
+  ```
+  ((fn [a b] phi) x y)
+  (let [a x b y] phi)
+  (?% phi a x b y)
+  (? (% phi a b) x y)
+  ```
+
+  "
+  [{:keys [expr vars]} & {:as envt}]
+  (let [args (map :expr (keys envt))
+        expr (subst (zipmap args (vals envt)) expr)
+        vars (reduce disj vars args)]
+    (if (seq vars)
+      (Term. expr vars)
+      (eval  expr))))
 
 (comment
 
