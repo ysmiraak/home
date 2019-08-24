@@ -15,30 +15,28 @@
 ;; vars = set var
 ;; args = vec var
 
-;; term = form | var | val
+;; term =  val | form
 ;; form = expr & vars
-;; expr = beta | forall
+;; expr =  var | beta | forall
 ;;
-;; expr are always wrapped in form
-;; vars only reduces during evaluation
+;; expr must be wrapped in form, otherwise it is treated as val
+;; binding a var to a form changes everything
 ;;
 ;; val    => val
-;; var    => val | var
-;; form   => form | var | val
-;; beta   => form | beta | var | val
-;; forall => forall
+;; var    => val | form *
+;; form   => val | form
+;; beta   => val | form *
+;; forall => form forall
 
-(defrecord Var    [name])         (defn var?    [x] (instance?  Var    x))
 (defrecord Form   [expr vars])    (defn form?   [x] (instance?  Form   x))
+(defrecord Var    [name])         (defn var?    [x] (instance?  Var    x))
 (defrecord Beta   [sexp])         (defn beta?   [x] (instance?  Beta   x))
 (defrecord Forall [term args])    (defn forall? [x] (instance?  Forall x))
 (defprotocol Expr)                (defn expr?   [x] (satisfies? Expr   x))
-(extend-protocol Expr Beta Forall)
+(extend-protocol Expr Var Beta Forall)
 
 (defprotocol Term
   "
-
-  fv
 
   ev
 
@@ -46,36 +44,30 @@
   - beta reduces a term whose expr has a Forall as head
 
   "
-  (fv [this])
-  (ev [this env]))
+  (ev [this vars env]))
 
 (extend-protocol Term
 
-  Var
-  (fv [this] #{this})
-  (ev [this env] (env this this))
-
   Form
-  (fv [this] (:vars this))
-  (ev [{:keys [expr vars]} env]
-    (let [;; evaluates expr if necessary
-          term (if (some vars (keys env)) (ev expr env) expr)
-          vars (if (form? term) (:vars term) (reduce disj vars (keys env)))
-          term (if (form? term) (:expr term) term)
-          ;; now term is not a form
-          term (if (and (beta? term) (empty? vars))
-                 (as-> (:sexp term) [head & body]
-                   (apply head body))
-                 term)]
-      (if (expr? term)
-        (Form. term vars)
-        term)))
+  ;; - val if its content reduces to val
+  ;; - form * with newly collected free vars
+  ;; todo guard from ev
+  (ev [{:keys [expr vars]} vars env]
+    (ev expr (reduce disj vars (keys env)) env))
+
+  Var
+  ;; - val
+  ;; - form *
+  (ev [this _ env] (env this this))
 
   Beta
-  (ev [this env]
-    (as-> (:sexp this) [head & body :as sexp]
-      ;; evalutes sexp if necessary
-      (cond->> sexp (seq env) (map #(ev % env)))
+  ;; - val
+  ;; - form *
+  (ev [{sexp :sexp} vars env]
+    (let [;; evalutes sexp if necessary
+          ;; env (select-keys env vars)
+          [head & body :as sexp] (cond->> sexp (seq env) (map #(ev % vars env)))
+          vars (reduce disj vars (keys env))]
       (if (and (form? head) (forall? (:expr head)))
         (let [{:keys [expr vars]} head
               {:keys [term args]} expr
@@ -83,33 +75,35 @@
               num (count body)]
           (case (compare (count args) num)
             ;; curry
-            1 (-> (ev term env)
+            1 (-> (ev term vars env)
                   (Forall. (subvec args num))
                   (Form. (reduce disj vars (keys env))))
             ;; beta-reduce
-            0 (as-> (ev term env) term
+            0 (as-> (ev term vars env) term
                 (if (expr? term)
                   (Form. term (reduce disj vars (keys env)))
                   term))
             (throw (ex-info "arity error" {:args args :vals body}))))
-        (Beta. sexp))))
+        (if (seq vars)
+          (Form. (Beta. sexp) vars)
+          (apply head body)))))
 
   Forall
-  (ev [{:keys [term args]} env]
+  ;; - form forall
+  (ev [{:keys [term args]} vars env]
     (let [env  (reduce dissoc env args) ; evalutes term if necessary
-          term (cond-> term (seq env) (ev env))]
-      (if (and (form? term) (forall? (:expr term)))
-        (as-> (:expr term) expr ; uncurries
-          (assoc expr :args (into args (:args expr))))
-        (Forall. term args))))
+          term (cond-> term (seq env) (ev vars env))]
+      (if (form? term)
+        (if (forall? (:expr term))
+          ;; uncurries
+          (as-> term [{{:keys [term args']} :expr vars :vars}]
+            (Form. (Forall. term (into args args'))
+                   (reduce disj vars args)))
+          (Form. (Forall. term args) (reduce disj (:vars term) args)))
+        (Form. (Forall. term args) #{}))))
 
-  Object
-  (fv [this] #{})
-  (ev [this env] this)
-
-  nil
-  (fv [this] #{})
-  (ev [this env] this))
+  Object (ev [this _ _] this)
+  nil    (ev [this _ _] this))
 
 (defn ?%
   "takes a term and interleaving var-terms and values, (partially)
@@ -127,24 +121,22 @@
 
   "
   [term & {:as env}]
-  (ev term env))
+  (ev term #{} env))
 
 (defn ?
   "funcall, the counit of product-exponential adjunction"
   ([& terms]
-   (as-> (ev (Beta. terms) {}) term
-     (if (beta? term)
-       (ev (Form. term (apply clojure.set/union (map fv terms))) {})
-       term)))
+   (let [terms (for [t terms] (if (var? t) (Form. t #{t}) t))
+         vars (apply clojure.set/union (map :vars (filter form? terms)))]
+     (ev (Beta. terms) vars {})))
   ([]))
 
 (defn %
   "forall"
   ([term & args] ; currently args can only be vars
-   (-> (Forall. term (vec args))
-       (ev {})
-       (Form. (reduce disj (if (form? term) (:vars term) #{}) args))
-       (ev {})))
+   (ev (Forall. term (vec args))
+       (reduce disj (if (form? term) (:vars term) #{}) args)
+       {}))
   ([term] term))
 
 (defn !
@@ -240,4 +232,5 @@
   )
 
 ;; todo
+;; - fix (keys env)
 ;; - test how to replace var using env
