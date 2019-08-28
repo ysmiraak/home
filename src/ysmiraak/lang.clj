@@ -1,10 +1,6 @@
 (ns ysmiraak.lang)
 
-;; goals
-;; 1. unify exprs and types (basic constructors shared by types and data)
-;; 2. unify composition and application (????)
-;; 3. compositional lambda calculus (variables and their evaluation rules)
-;; 4. asap beta reduction (partial evaluation)
+;; https://ncatlab.org/nlab/show/pure+type+system
 
 (defrecord V [name])            (defn v? [x] (instance? V x))
 (defrecord A [vars form])       (defn a? [x] (instance? A x))
@@ -53,7 +49,7 @@
                   (ev expr dict)
                   (subvec args size))
             (throw (ex-info "arity error" {:args args :vals body}))))
-        (let [vars (reduce disj vars (keys dict))]
+        (let [vars (apply clojure.set/union (map fv form))]
           (if (seq vars) ; defer application
             (A. vars form)
             (apply head body))))))
@@ -127,6 +123,8 @@
   (= 4 (? (% (? apply ? chi [2]) a) 2))
 
   ;; swap var
+  (= (% (? psi b c) b c)
+     (% (? + b c) b c))
   (= (?% (? + a b) a b)
      (? + b b))
 
@@ -142,57 +140,5 @@
      (% (? ? a a) a))
 
   ;; todo test recursion
-
-  )
-
-(comment ; todo goal 1
-
-  ;; let
-  ;; - A B C be types
-  ;; - a b c be variables
-  ;; - x y z be values
-
-  ;; types all the way down
-  ($ Type A x nil)
-
-  ;; A -> B
-  ($ Type
-     (%'   A       B)
-     (% ($ A a) ($ B (... a ...)))
-     nil)
-
-  ;; forall (a : A) . C(a)
-  ($ Type
-     (%'   A       Type)
-     (% ($ A a)    (C a))
-     (% ($ A a) ($ (C a) (... a ...)))
-     nil)
-
-  ;; forall (a : A , b : B) . C(a)
-  ($ Type
-     (%'   A       Type    Type)
-     (% ($ A a)    B       (C a))
-     (% ($ A a) ($ B b) ($ (C a) (... a ... b ...)))
-     nil)
-
-  ;; exists (a : A , b : B) . C(a)
-  ($ Type
-     (&'   A       Type    Type)
-     (& ($ A a)    B       (C a))
-     (& ($ A x) ($ B y) ($ (C x) (... x ... y ...)))
-     nil)
-
-  ;; exists (a : A) . C(a)
-  ($ Type
-     (&'   A       Type)
-     (& ($ A a)    (C a))
-     (& ($ A x) ($ (C x) (... x ...)))
-     nil)
-
-  ;; (A, B)
-  ($ Type
-     (&    A       B)
-     (& ($ A x) ($ B y))
-     nil)
 
   )
