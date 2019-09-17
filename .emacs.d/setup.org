@@ -513,7 +513,7 @@ this applies to all language-specific modes which offers the options.
           '(elpy-module-sane-defaults
             ;; elpy-module-flymake
             ;; elpy-module-highlight-indentation
-            ;; elpy-module-pyvenv
+            elpy-module-pyvenv
             ;; elpy-module-django
             elpy-module-yasnippet
             elpy-module-company
