@@ -41,11 +41,12 @@ tmp
 /.dbus
 /.esd_auth
 /.gnupg
+/.mh_profile
 /.mozilla
 /.nordvpn-config
 /.nv
+/.pki
 /.thunderbird
-/.mh_profile
 /Mail
 
 /.clojure

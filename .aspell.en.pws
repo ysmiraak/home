@@ -1,4 +1,4 @@
-personal_ws-1.1 en 600 
+personal_ws-1.1 en 615 
 logit
 hashmap
 orthogonally
@@ -30,8 +30,10 @@ ggmcmc
 approximator
 trigrams
 Parameterize
+sentencepiece
 restitutive
 Tsaesci
+BOS
 dev
 voryn's
 citecolor
@@ -90,6 +92,7 @@ agglutinative
 env
 HYAET
 SEHTI
+EOS
 logits
 smallskip
 NHST
@@ -152,8 +155,8 @@ JIL
 normalizations
 boethiah
 STFT
-vehk
 parallelization
+vehk
 lcc
 runtime
 vocoders
@@ -163,6 +166,7 @@ hyperparameter
 uint
 haskell
 preprocessed
+autoencoding
 iso
 mae
 Vvardenfell
@@ -183,6 +187,7 @@ autoload
 Szabolcsi
 sentential
 resampling
+autoencode
 Lim
 azura
 Shaie
@@ -256,10 +261,10 @@ GHARTOK
 Muatra
 intensional
 beamer
-sinusoids
 Almalexia
-dagoth
+sinusoids
 parallelizable
+dagoth
 emacsclient
 footnotesize
 arborescence
@@ -278,6 +283,8 @@ num
 Sorbian
 iteratively
 HERMA
+backpropagates
+wordpiece
 homunculi
 disjunction
 lowerbound
@@ -290,15 +297,15 @@ tokenized
 morphism
 Utta's
 Ayem
-AVSs
 c'mon
+AVSs
 rgb
 initializers
 subsequence
 SHEOG
 POS
-pre
 RET
+pre
 tokenizer
 stopwords
 MHARA
@@ -329,8 +336,8 @@ combinatory
 computable
 Sil
 underfit
-RNN
 QUD
+RNN
 subword
 treebank
 Trinimac
@@ -340,8 +347,8 @@ parameterization
 Baayen
 Buryat
 Voryn
-tex
 UAS
+tex
 Functors
 functor's
 orthonormal
@@ -362,8 +369,8 @@ discriminative
 Lexically
 allcolors
 compositionality
-vec
 toc
+vec
 ngram
 bijection
 Goettingen
@@ -389,14 +396,15 @@ TensorFlow
 overfit
 xent
 colorlinks
+UNK
 Veloth
 texttt
 subvectors
 regexpr
 lccccccccc
 evoker
-ReLU
 relu
+ReLU
 transdimensional
 Utta
 categorial
@@ -476,6 +484,7 @@ Hatoor
 softmax
 dimensionality
 WaveNet
+FI
 bigram
 Seht
 maxout
@@ -515,6 +524,7 @@ dwemer
 Advisor
 LIBLINEAR
 rjags
+NL
 intra
 lcccc
 midrule
@@ -524,6 +534,7 @@ yoneda
 parataxis
 keras
 LISt
+backpropagate
 initializer
 autoregressive
 ET'ADA
@@ -540,7 +551,9 @@ lcccccccccccc
 quadratically
 UI
 LocalWords
+pretraining
 versa
+SV
 sexp
 compositional
 Molag
@@ -570,6 +583,7 @@ elisp
 Atreides
 Bal
 sharmat
+pretrain
 nbsp
 Subcategorization
 companded
@@ -599,3 +613,4 @@ Wulfharth
 includegraphics
 lookahead
 Wikipedias
+interlingua
