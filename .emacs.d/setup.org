@@ -33,7 +33,7 @@ packages i use.
      clojure-mode cider inf-clojure clj-refactor
      geiser ediprolog pasp-mode haskell-mode idris-mode
      rust-mode cargo flycheck-rust racer
-     js2-mode indium json-mode pug-mode
+     js2-mode indium json-mode pug-mode web-mode
      elpy rainbow-mode ess csv-mode htmlize
      markdown-mode auctex cdlatex company-auctex))
 #+END_SRC
@@ -541,8 +541,10 @@ this applies to all language-specific modes which offers the options.
                :map indium-repl-mode-map
                ("C-c M-o" . indium-repl-clear-output)))
 #+END_SRC
-** pug
+** web
 #+BEGIN_SRC emacs-lisp
+  (push '("\\.html?\\'" . web-mode) auto-mode-alist)
+  (cset 'web-mode-markup-indent-offset 2)
   (push 'pug-mode aggressive-indent-excluded-modes)
   (cset 'pug-tab-width 4)
 #+END_SRC

@@ -66,6 +66,7 @@
         quack-insert-opening-bracket
         quack-insert-opening-paren
         replace-string
+        sgml-slash
         sh-assignment
         sp-absorb-sexp
         sp-backward-delete-char

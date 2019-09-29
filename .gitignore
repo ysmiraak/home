@@ -75,3 +75,6 @@ tmp
 /.cabal
 /.ghc
 /.idris
+
+/.dbshell
+/.mongorc.js
