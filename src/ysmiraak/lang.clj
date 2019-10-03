@@ -3,11 +3,11 @@
 ;; https://ncatlab.org/nlab/show/pure+type+system
 
 (defrecord V [name])            (defn v? [x] (instance? V x))
-(defrecord A [vars form])       (defn a? [x] (instance? A x))
+(defrecord A [vars expr args])  (defn a? [x] (instance? A x))
 (defrecord F [vars expr pars])  (defn f? [x] (instance? F x))
 ;; vars : Set V
 ;; pars : Vec V
-;; form : Vec Expr
+;; args : Vec Expr
 
 (defprotocol Expr
   "an expression satisfies the following protocol.
@@ -26,11 +26,13 @@
   (fv [this])
   (ev [this dict]))
 
-(defn- fv- [pars expr & exprs]
-  (loop [exprs exprs  vars (transient (fv expr))]
-    (if-let [[expr & exprs] exprs]
-      (recur exprs (reduce conj! vars (fv expr)))
-      (persistent! (reduce disj! vars pars)))))
+(defn- ff [expr pars]
+  (-> (reduce disj (fv expr) pars)
+      (F. expr (vec pars))))
+
+(defn- aa [expr args]
+  (-> (reduce into (fv expr) (map fv args))
+      (A. expr (vec args))))
 
 (extend-protocol Expr
   F
@@ -42,38 +44,42 @@
         ;; F without pars evals to its expr
         (empty? pars) expr
         ;; uncurries immediately nested F
-        (f? expr) (F. (fv- pars expr) (:expr expr) (into pars (:pars expr)))
-        :else     (F. (fv- pars expr)        expr        pars))))
+        (f? expr) (ff (:expr expr) (into pars (:pars expr)))
+        :else     (ff        expr        pars))))
   A
   (fv [this] (:vars this))
-  (ev [{:keys [vars form]} dict]
+  (ev [{:keys [vars expr args]} dict]
     (let [dict (select-keys dict vars)
-          [func & args :as form] (cond->> form (seq dict) (mapv #(ev % dict)))]
-      (if (f? func)
+          mbev #(cond-> % (some (fv %) (keys dict)) (ev dict))
+          expr (mbev expr)]
+      (if (f? expr)
         ;; asap beta-reduces val/var args
-        (let [{:keys [pars expr]} func
+        (let [{:keys [pars expr]} expr
+              ;; todo
+              ;; - eval args in parallel
+              ;; - skip eval if par not in fv
+              ;; - skip eval if par is overwritten
               [args pars dict]
               , (loop [args (seq args)  args' []
                        pars (seq pars)  pars' []
                        dict {}]
-                  (if-let   [[arg & args] args]
-                    (if-let [[par & pars] pars]
-                      (if (or (empty? (fv arg)) (v? arg))
-                        (recur args       args'      pars       pars'      (assoc  dict par arg))
-                        (recur args (conj args' arg) pars (conj pars' par) (dissoc dict par)))
-                      (throw (ex-info "arity error" {:form form})))
+                  (if-let [[arg & args] args]
+                    (let [arg (mbev arg)]
+                      (if-let [[par & pars] pars]
+                        (if (or (v? arg) (empty? (fv arg))) ; todo or when par is used only once in expr
+                          (recur args       args'      pars       pars'      (assoc  dict par arg))
+                          (recur args (conj args' arg) pars (conj pars' par) (dissoc dict par)))
+                        [(into (conj args' arg) (map mbev args)) pars' dict]))
                     [args' (into pars' pars) (reduce dissoc dict pars)]))
-              func (-> (fv- pars expr)
-                       (F.  expr pars)
+              expr (-> (ff expr pars)
                        (ev dict))]
           (if (seq args)
-            (A. (apply fv- [] func args) (into [func] args))
-            func))
-        ;; defers application or applies primitive func
-        (let [vars (apply fv- [] form)]
-          (if (seq vars)
-            (A. vars form)
-            (apply func args))))))
+            (aa expr args)
+            expr))
+        ;; defers application or applies primitive expr
+        (let [args (pmap mbev args)]
+          ((if (some (comp seq fv) (cons expr args)) aa apply)
+           expr args)))))
   V
   (fv [this] #{this})
   (ev [this dict] (dict this this))
@@ -98,19 +104,15 @@
 
 (defn ?
   "funcall, the counit of product-exponential adjunction"
-  ([& form]
-   (-> (apply fv- [] form)
-       (A. (vec form))
-       (ev {})))
-  ([]))
+  ([expr & args]
+   (-> (aa expr args)
+       (ev {}))))
 
 (defn %
   "forall"
   ([expr & pars] ; currently pars can only be vars
-   (-> (fv- pars expr)
-       (F. expr (vec pars))
-       (ev {})))
-  ([expr] expr))
+   (-> (ff expr pars)
+       (ev {}))))
 
 (defn !
   "produces a fresh or named var"
@@ -159,6 +161,9 @@
   (? (% (? ? a a) a)
      (% (? ? a a) a))
 
-  ;; todo test recursion
+  ;; todo
+  ;; - exception propogation
+  ;; - test recursion
+  ;; - types
 
   )
