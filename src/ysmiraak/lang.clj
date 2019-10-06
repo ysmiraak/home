@@ -5,7 +5,7 @@
 (defrecord V [name])            (defn v? [x] (instance? V x))
 (defrecord A [vars expr args])  (defn a? [x] (instance? A x))
 (defrecord F [vars expr pars])  (defn f? [x] (instance? F x))
-;; vars : Set V
+;; vars : Map (Set V) Pos
 ;; pars : Vec V
 ;; args : Vec Expr
 
@@ -27,18 +27,18 @@
   (ev [this dict]))
 
 (defn- ff [expr pars]
-  (-> (reduce disj (fv expr) pars)
+  (-> (reduce dissoc (fv expr) pars)
       (F. expr (vec pars))))
 
 (defn- aa [expr args]
-  (-> (reduce into (fv expr) (map fv args))
+  (-> (apply merge-with + (fv expr) (map fv args))
       (A. expr (vec args))))
 
 (extend-protocol Expr
   F
   (fv [this] (:vars this))
   (ev [{:keys [vars expr pars]} dict]
-    (let [dict (select-keys dict vars)
+    (let [dict (select-keys dict (keys vars))
           expr (cond-> expr (seq dict) (ev dict))]
       (cond
         ;; F without pars evals to its expr
@@ -49,28 +49,41 @@
   A
   (fv [this] (:vars this))
   (ev [{:keys [vars expr args]} dict]
-    (let [dict (select-keys dict vars)
+    (let [dict (select-keys dict (keys vars))
           mbev #(cond-> % (some (fv %) (keys dict)) (ev dict))
           expr (mbev expr)]
       (if (f? expr)
         ;; asap beta-reduces val/var args
-        (let [{:keys [pars expr]} expr
-              ;; todo
-              ;; - eval args in parallel
-              ;; - skip eval if par not in fv
-              ;; - skip eval if par is overwritten
-              [args pars dict]
-              , (loop [args (seq args)  args' []
-                       pars (seq pars)  pars' []
-                       dict {}]
-                  (if-let [[arg & args] args]
-                    (let [arg (mbev arg)]
-                      (if-let [[par & pars] pars]
-                        (if (or (v? arg) (empty? (fv arg))) ; todo or when par is used only once in expr
-                          (recur args       args'      pars       pars'      (assoc  dict par arg))
-                          (recur args (conj args' arg) pars (conj pars' par) (dissoc dict par)))
-                        [(into (conj args' arg) (map mbev args)) pars' dict]))
-                    [args' (into pars' pars) (reduce dissoc dict pars)]))
+        (let [{:keys [pars expr]} expr  vars (fv expr)
+              ;; disable shadowed pars
+              pars (loop [raps (rseq pars)  rs #{}  res ()]
+                     (if-let [[r & raps] raps]
+                       (recur raps (conj rs r) (cons (and (not (rs r)) r) res))
+                       (vec res)))
+              ;; offset pars & args
+              len (min (count pars) (count args))
+              [pars pars'] (split-at len pars)
+              [args args'] (split-at len args)
+              ;; delay or subst
+              [pars args dict]
+              , (loop [pas (-> (fn [p a]
+                                 (when-let [a (and p (vars p) (mbev a))]
+                                   ;; ev a when p not shadowed and in vars
+                                   (if (or (v? a) (empty? (fv a)) (= 1 (vars p)))
+                                     ;; subst when: a var | a val | p used once
+                                     {p a}
+                                     [p a])))
+                               (pmap pars args)
+                               seq)
+                       pars []  args []  dict {}]
+                  (if-let [[pa & pas] pas]
+                    (cond (vector? pa) (recur pas (conj pars (pa 0)) (conj args (pa 1)) dict)
+                          (map?    pa) (recur pas pars args (into dict pa))
+                          :else        (recur pas pars args dict))
+                    [pars args dict]))
+              pars (into pars pars')
+              args (into args args')
+              ;; subst
               expr (-> (ff expr pars)
                        (ev dict))]
           (if (seq args)
@@ -81,10 +94,10 @@
           ((if (some (comp seq fv) (cons expr args)) aa apply)
            expr args)))))
   V
-  (fv [this] #{this})
+  (fv [this] {this 1})
   (ev [this dict] (dict this this))
-  Object (fv [this] #{}) (ev [this dict] this)
-  nil    (fv [this] #{}) (ev [this dict] this))
+  Object (fv [this] {}) (ev [this dict] this)
+  nil    (fv [this] {}) (ev [this dict] this))
 
 (defn ?%
   "takes a expr and interleaving vars and values, (partially) evaluates
