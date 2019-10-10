@@ -24,7 +24,7 @@ packages i use.
      suggest dash dash-functional s f bind-key delight
      exec-path-from-shell
      zenburn-theme powerline rainbow-delimiters
-     counsel flx smex which-key
+     counsel flx smex which-key flyspell-correct-ivy
      centered-cursor-mode vimish-fold ace-window avy
      projectile magit undo-tree browse-kill-ring ripgrep
      smartparens expand-region region-bindings-mode visual-regexp multiple-cursors
@@ -376,8 +376,9 @@ with revised symmetrical bindings.
   (with-eval-after-load 'flyspell
     (delight 'flyspell-mode " $" 'flyspell)
     (unbind-keys flyspell-mode-map "C-M-i")
-    (bind-keys :map flyspell-mode-map ("C-;" . flyspell-correct-word-before-point))
-    (cset 'ispell-program-name "aspell"))
+    (bind-keys :map flyspell-mode-map ("C-;" . flyspell-correct-wrapper))
+    (cset 'flyspell-correct-interface #'flyspell-correct-ivy
+          'ispell-program-name "aspell"))
 #+END_SRC
 - error
 #+BEGIN_SRC emacs-lisp
@@ -705,7 +706,6 @@ incomplete.
 | C-h f       | ~counsel-describe-function~      | +describe-function+              |
 | C-h i       | info                             |                                  |
 | C-h r       | info-emacs-manual                |                                  |
-| C-h u       | ~counsel-unicode-char~           |                                  |
 | C-h v       | ~counsel-describe-variable~      | +describe-variable+              |
 | C-x C-SPC   | pop-global-mark                  |                                  |
 | C-x C-b     | ~ibuffer~                        | +list-buffers+                   |
