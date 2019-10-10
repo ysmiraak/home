@@ -313,7 +313,7 @@ with revised symmetrical bindings.
              ("l" . downcase-region)
              ("m" . mc/mark-all-in-region) ("M" . vr/mc-mark)
              ("n" . mc/edit-lines)
-             ("r" . vr/replace)            ("R" . replace-string)
+             ("r" . replace-string)        ("R" . vr/replace)
              ("s" . sort-lines)
              ("u" . upcase-region)
              ("w" . kill-ring-save))
@@ -321,7 +321,7 @@ with revised symmetrical bindings.
 *** batched
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-M-\\" . mc/mark-more-like-this-extended)
-             ("M-%"    . vr/query-replace)
+             ("C-M-%"  . vr/query-replace)
              ("C-M-%"  . query-replace))
   (when (display-graphic-p)
     (with-eval-after-load 'multiple-cursors
@@ -639,7 +639,7 @@ meta does but i do not need those bindings yet.
 | @       | set-mark-command                     | ~sp-select-next-thing~ +mark-word+                           | ~sp-select-previous-thing-exchange~  +mark-sexp+             |
 | #       | []                                   | ~linum-mode~                                                 |                                                              |
 | $       | []                                   | ~flyspell-mode~ +ispell-word+                                |                                                              |
-| %       | []                                   | ~vr/query-replace~ +query-replace+                           | ~query-replace~ +query-replace-regexp+                       |
+| %       | []                                   | query-replace                                                | ~vr/query-replace~ +query-replace-regexp+                    |
 | ^       |                                      | delete-indentation                                           |                                                              |
 | &       | []                                   | async-shell-command                                          |                                                              |
 | *       | []                                   | ~sp-convolute-sexp~                                          |                                                              |
@@ -651,7 +651,7 @@ meta does but i do not need those bindings yet.
 | [       | [ESC-]                               | ~sp-down-sexp~                                               | ~sp-backward-up-sexp~                                        |
 | ]       | abort-recursive-edit                 | ~sp-backward-down-sexp~                                      | ~sp-up-sexp~                                                 |
 | ;       | []                                   | comment-dwim                                                 | [M-;]                                                        |
-| '       | []                                   | ~avy-goto-char-2~ +abbrev-prefix-mark+                       | [M-']                                                        |
+| '       | []                                   | ~avy-goto-char-timer~ +abbrev-prefix-mark+                   | [M-']                                                        |
 | \       | toggle-input-method                  | delete-horizontal-space                                      | ~mc/mark-more-like-this-extended~ +indent-region+            |
 | `       | []                                   | tmm-menubar                                                  | [M-`]                                                        |
 | ,       | []                                   | xref-pop-marker-stack                                        | [M-,]                                                        |
@@ -722,6 +722,11 @@ incomplete.
 | M-g g       | ~avy-goto-line~                  | +goto-line+                      |
 | M-x         | ~counsel-M-x~                    | +execute-extended-command+       |
 * todo
-- list projectile commands
-- decide whether to keep vimish-fold
-- rethink ivy swiper counsel bindings
+- list projectile commands (ripgrep)
+- learn to use mark
+  + http://ergoemacs.org/emacs/emacs_jump_to_previous_position.html
+  + counsel-mark-ring
+  + set-mark-command-repeat-pop
+  + C-x r SPC
+  + C-x r j
+- rethink vimish-fold ivy swiper counsel bindings
