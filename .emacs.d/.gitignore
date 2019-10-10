@@ -1,7 +1,9 @@
 /custom.el
 /elpa
+/elpy
 /eshell
 /projectile-bookmarks.eld
+/projectile.cache
 /setup.el
 /smex-items
 /tramp
