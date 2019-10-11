@@ -26,7 +26,7 @@ packages i use.
      zenburn-theme powerline rainbow-delimiters
      counsel flx smex which-key flyspell-correct-ivy
      centered-cursor-mode vimish-fold ace-window avy
-     projectile magit undo-tree browse-kill-ring ripgrep
+     projectile magit undo-tree ripgrep
      smartparens expand-region region-bindings-mode visual-regexp multiple-cursors
      company company-quickhelp yasnippet flycheck flycheck-pos-tip
      hungry-delete aggressive-indent drag-stuff fix-word zzz-to-char
@@ -163,19 +163,17 @@ let =C-z= instead show what i wanna kill.
 ** navigation
 *** symbol
 #+BEGIN_SRC emacs-lisp
-  (ivy-mode 1)
-  (delight 'ivy-mode nil 'ivy)
-  (counsel-mode 1)
-  (delight 'counsel-mode nil 'counsel)
+  (ivy-mode     1)  (delight 'ivy-mode     nil 'ivy)
+  (counsel-mode 1)  (delight 'counsel-mode nil 'counsel)
   (cset 'ivy-re-builders-alist '((t . ivy--regex-fuzzy))
         'ivy-initial-inputs-alist nil
         'ivy-height 13
         'ivy-wrap t)
-  (bind-keys :map ivy-mode-map
-             ("C-M-q"   . swiper-all)
-             ("C-c v"   . ivy-push-view)
-             ("C-c V"   . ivy-pop-view)
-             ("C-c C-r" . ivy-resume)
+  (unbind-keys counsel-mode-map "M-y")
+  (bind-keys :map counsel-mode-map
+             ("C-M-y" . counsel-yank-pop)
+             ("C-M-q" . swiper-all)
+             ("C-M-z" . ivy-resume)
              :map ivy-minibuffer-map
              ("M-n" . ivy-next-line)      ("C-n" . ivy-next-history-element)
              ("M-p" . ivy-previous-line)  ("C-p" . ivy-previous-history-element)
@@ -210,17 +208,28 @@ let =C-z= instead show what i wanna kill.
         'ibuffer-expert t)
 #+END_SRC
 *** position
+|           | set       | get       |
+|-----------+-----------+-----------|
+| mark      | C-SPC     | C-u C-SPC |
+| rectangle | C-x SPC   | C-x r y   |
+| position  | C-x r SPC | C-x r j   |
+| window    | C-x r w   | C-x r j   |
+| bookmark  | C-x r b/m | C-x r l   |
 #+BEGIN_SRC emacs-lisp
   (autoload 'centered-cursor-mode "centered-cursor-mode" nil t)
-  (bind-keys ("C-M-z" . vimish-fold-delete)
-             ("C-x f" . vimish-fold-avy)
-             ("C-x o" . ace-window)
-             ("M-#"    . linum-mode)
+  (unbind-key "C-x v")
+  (bind-keys ("C-x v v" . vimish-fold-avy)
+             ("C-x v d" . vimish-fold-delete)
+             ("C-x v c" . vimish-fold-delete-all)
+             ("C-x v `" . vimish-fold-toggle-all)
+             ("C-x o"   . ace-window)
+             ("M-#"     . linum-mode)
              ("M-g g"   . avy-goto-line)
              ("M-g M-g" . avy-goto-line)
-             ("M-\""  . avy-pop-mark)
-             ("M-'" . avy-goto-char-timer))
-  (cset 'avy-timeout-seconds 0.3)
+             ("M-\""    . avy-pop-mark)
+             ("M-'"     . avy-goto-char-timer))
+  (cset 'set-mark-command-repeat-pop t
+        'avy-timeout-seconds 0.3)
 #+END_SRC
 *** project
 #+BEGIN_SRC emacs-lisp
@@ -234,7 +243,6 @@ let =C-z= instead show what i wanna kill.
 #+END_SRC
 *** history
 #+BEGIN_SRC emacs-lisp
-  (bind-keys ("C-M-y" . browse-kill-ring))
   (global-undo-tree-mode 1)
   (bind-keys :map undo-tree-map ("C--" . undo-tree-undo))
   (delight 'undo-tree-mode nil 'undo-tree)
@@ -306,7 +314,7 @@ with revised symmetrical bindings.
              (";" . comment-or-uncomment-region)
              ("b" . comment-box)
              ("d" . delete-region)
-             ("f" . vimish-fold)
+             ("v" . vimish-fold)
              ("g" . keyboard-quit)
              ("i" . indent-region)
              ("k" . kill-region)
@@ -695,8 +703,8 @@ meta does but i do not need those bindings yet.
 | v       | scroll-up-command                    | scroll-down-command                                          | scroll-other-window                                          |
 | w       | kill-region                          | kill-ring-save                                               | append-next-kill                                             |
 | x       | [C-x-]                               | ~counsel-M-x~ +execute-extended-command+                     | eval-defun                                                   |
-| y       | yank                                 | ~counsel-yank-pop~ +yank-pop+                                | ~browse-kill-ring~                                           |
-| z       | ~list-processes~ +suspend-frame+     | ~zzz-to-char~ +zap-to-char+                                  | ~vimish-fold-delete~                                         |
+| y       | yank                                 | yank-pop                                                     | ~counsel-yank-pop~                                           |
+| z       | ~list-processes~ +suspend-frame+     | ~zzz-to-char~ +zap-to-char+                                  | ~ivy-resume~                                                 |
 ** prefixed
 incomplete.
 | <11>        | <32>                             | <32>                             |
@@ -712,7 +720,7 @@ incomplete.
 | C-x C-f     | ~counsel-find-file~              | +find-file+                      |
 | C-x C-t     | ~sp-transpose-hybrid-sexp~       | +transpose-lines+                |
 | C-x b       | ~ivy-switch-buffer~              | +switch-to-buffer+               |
-| C-x f       | ~vimish-fold-avy~                | +set-fill-column+                |
+| C-x f       | set-fill-column                  |                                  |
 | C-x g       | ~magit-status~                   |                                  |
 | C-x l       | count-lines-page                 |                                  |
 | C-x o       | ~ace-window~                     | +other-window+                   |
@@ -721,12 +729,3 @@ incomplete.
 | C-x z       | repeat                           |                                  |
 | M-g g       | ~avy-goto-line~                  | +goto-line+                      |
 | M-x         | ~counsel-M-x~                    | +execute-extended-command+       |
-* todo
-- list projectile commands (ripgrep)
-- learn to use mark
-  + http://ergoemacs.org/emacs/emacs_jump_to_previous_position.html
-  + counsel-mark-ring
-  + set-mark-command-repeat-pop
-  + C-x r SPC
-  + C-x r j
-- rethink vimish-fold ivy swiper counsel bindings
