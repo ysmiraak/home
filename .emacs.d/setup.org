@@ -556,7 +556,8 @@ this applies to all language-specific modes which offers the options.
 ** web
 #+BEGIN_SRC emacs-lisp
   (push '("\\.html?\\'" . web-mode) auto-mode-alist)
-  (cset 'web-mode-markup-indent-offset 2)
+  (cset 'web-mode-enable-auto-quoting nil
+        'web-mode-markup-indent-offset 2)
   (push 'pug-mode aggressive-indent-excluded-modes)
   (cset 'pug-tab-width 4)
 #+END_SRC
