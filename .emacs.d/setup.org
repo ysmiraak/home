@@ -498,7 +498,12 @@ this applies to all language-specific modes which offers the options.
 #+BEGIN_SRC emacs-lisp
   (push 'idris-mode aggressive-indent-excluded-modes)
   (with-eval-after-load 'idris-mode
-    (bind-keys :map idris-mode-map ("C-c C-q" . idris-quit)))
+    (bind-keys :map idris-mode-map
+               ("M-RET"   . idris-load-file)
+               ("C-c C-q" . idris-quit)
+               :map idris-repl-mode-map
+               ("C-c C-q" . idris-quit)
+               ("C-c C-z" . ace-window)))
 #+END_SRC
 ** rust
 #+BEGIN_SRC emacs-lisp
