@@ -169,7 +169,7 @@ let =C-z= instead show what i wanna kill.
         'ivy-initial-inputs-alist nil
         'ivy-height 13
         'ivy-wrap t)
-  (unbind-keys counsel-mode-map "M-y")
+  (define-key counsel-mode-map [remap yank-pop] nil)
   (bind-keys :map counsel-mode-map
              ("C-M-y" . counsel-yank-pop)
              ("C-M-q" . swiper-all)
