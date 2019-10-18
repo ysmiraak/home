@@ -330,7 +330,7 @@ with revised symmetrical bindings.
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-M-\\" . mc/mark-more-like-this-extended)
              ("C-M-%"  . vr/query-replace)
-             ("C-M-%"  . query-replace))
+             ("M-%"    . query-replace))
   (when (display-graphic-p)
     (with-eval-after-load 'multiple-cursors
       (set-face-attribute 'mc/cursor-bar-face nil :background "#DAA520" :foreground "#242424")))
