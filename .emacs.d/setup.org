@@ -559,11 +559,11 @@ this applies to all language-specific modes which offers the options.
                :map indium-repl-mode-map
                ("C-c M-o" . indium-repl-clear-output)))
 #+END_SRC
-** COMMENT web
+** web
 #+BEGIN_SRC emacs-lisp
   (push '("\\.html?\\'" . web-mode) auto-mode-alist)
-  (unbind-keys web-mode-map "C-M-q")
-  (unbind-keys css-mode-map "C-M-q")
+  (with-eval-after-load 'web-mode (unbind-keys web-mode-map "C-M-q"))
+  (with-eval-after-load 'css-mode (unbind-keys css-mode-map "C-M-q"))
   (cset 'web-mode-enable-auto-quoting nil
         'web-mode-markup-indent-offset 2)
   (push 'pug-mode aggressive-indent-excluded-modes)
