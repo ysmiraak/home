@@ -40,8 +40,10 @@ tmp
 /.cisco
 /.cups
 /.dbus
+/.docker
 /.esd_auth
 /.gnupg
+/.kube
 /.mh_profile
 /.mozilla
 /.nordvpn-config

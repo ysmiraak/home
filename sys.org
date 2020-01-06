@@ -37,6 +37,10 @@ grub-mkconfig -o /boot/grub/grub.cfg
 udisksctl mount -b /dev/sdc1
 udisksctl unmount -b /dev/sdc1
 
+simple-mtpfs --list-devices
+simple-mtpfs --device 1 ~/mnt
+fusermount -u ~/mnt
+
 * mac
 
 #+BEGIN_SRC

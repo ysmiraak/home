@@ -8,3 +8,4 @@
 (library :fluokitten)
 
 (require '[ysmiraak.tensor :refer :all])
+(require '[ysmiraak.sugar  :refer :all])
