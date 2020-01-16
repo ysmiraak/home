@@ -4,6 +4,8 @@
 /chromium
 /configstore
 /dconf
+/enchant
+/fcitx
 /git
 /gtk-*
 /htop
