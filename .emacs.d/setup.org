@@ -40,6 +40,7 @@ packages i use.
 to install those packages, change =:tangle no= to =:tangle yes= for this code block, or manually execute the commands.
 #+BEGIN_SRC emacs-lisp :tangle no
   (package-refresh-contents)
+  (setq package-check-signature nil)
   (package-install-selected-packages)
 #+END_SRC
 some packages are autoloaded, namely only loaded when used.
