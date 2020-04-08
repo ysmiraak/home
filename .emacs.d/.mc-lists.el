@@ -115,6 +115,7 @@
         ido-switch-buffer
         insert-semicolon-at-end-of-line
         magit-section-forward
+        mark-whole-buffer
         markdown-preview
         mouse-set-region
         multiple-cursors-mode

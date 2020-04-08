@@ -89,7 +89,7 @@
   their relative magnitude.
 
   for example with `(dims ? (vec (range 6)))` the shape `[-2 3 -1]`
-  produces a tensor of shape `[2 3 1]`, wheras `[-1 3 -1]` gets an
+  produces a tensor of shape `[2 3 1]`, whereas `[-1 3 -1]` gets an
   exception message.
 
   the purpose of this design is to simplify the logic of the
