@@ -2,6 +2,7 @@
 /Desktop
 /Downloads
 /jorrvaskr
+/public_html
 /topos
 
 /Dropbox
@@ -43,6 +44,7 @@ tmp
 /.docker
 /.esd_auth
 /.gnupg
+/.hunter
 /.kube
 /.mh_profile
 /.mozilla
@@ -50,6 +52,7 @@ tmp
 /.nv
 /.pki
 /.thunderbird
+/.wget-hsts
 /Mail
 
 /.clojure
