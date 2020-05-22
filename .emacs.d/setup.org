@@ -488,6 +488,7 @@ this applies to all language-specific modes which offers the options.
 #+BEGIN_SRC emacs-lisp
   (push '("\\.pl$" . prolog-mode) auto-mode-alist)
   (with-eval-after-load 'prolog
+    (unbind-keys prolog-mode-map "M-a" "M-e")
     (bind-keys :map prolog-mode-map ("M-RET" . ediprolog-dwim)))
 #+END_SRC
 ** haskell

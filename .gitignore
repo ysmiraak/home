@@ -31,7 +31,7 @@
 /data
 
 # transient
-*history
+/.*history*
 /.cache
 /.local
 tmp
