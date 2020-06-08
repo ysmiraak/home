@@ -161,3 +161,7 @@
 | 2010 | altenkirch_               | pi sigma                                                     |
 | 2013 | univalent                 | homotopy type theory                                         |
 | 2016 | cohen_                    | cubical                                                      |
+| 2016 | angiuli_harper_wilson     | cubical 1 abstract cubical realizability                     |
+| 2017 | angiuli_harper            | cubical 2 dependent cubical realizability                    |
+| 2017 | angiuli_hou_harper        | cubical 3 univalent universes and exact equality             |
+| 2018 | cavallo_harper            | cubical 4 inductive types                                    |
