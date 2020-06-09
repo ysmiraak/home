@@ -23,7 +23,7 @@ packages i use.
    '(benchmark-init
      suggest dash dash-functional s f bind-key delight
      exec-path-from-shell
-     zenburn-theme powerline rainbow-delimiters
+     zenburn-theme powerline rainbow-delimiters unicode-fonts
      counsel flx smex which-key flyspell-correct-ivy
      centered-cursor-mode vimish-fold ace-window avy
      projectile magit undo-tree deadgrep
@@ -160,6 +160,11 @@ let =C-z= instead show what i wanna kill.
   (bind-keys ("C-M-_" . toggle-truncate-lines)
              ("C-M--" . toggle-truncate-lines))
   (cset 'truncate-lines t)
+#+END_SRC
+- unicode fonts
+#+BEGIN_SRC emacs-lisp
+  (require 'unicode-fonts)
+  (unicode-fonts-setup)
 #+END_SRC
 ** navigation
 *** symbol
@@ -507,6 +512,12 @@ this applies to all language-specific modes which offers the options.
                :map idris-repl-mode-map
                ("C-c C-q" . idris-quit)
                ("C-c C-z" . ace-window)))
+#+END_SRC
+** agda
+#+BEGIN_SRC emacs-lisp
+  (ignore-errors
+    (load-file (let ((coding-system-for-read 'utf-8))
+                 (shell-command-to-string "agda-mode locate"))))
 #+END_SRC
 ** rust
 #+BEGIN_SRC emacs-lisp
