@@ -10,6 +10,10 @@
         backward-sexp
         beginning-of-buffer
         beginning-of-visual-line
+        c-electric-brace
+        c-electric-paren
+        c-electric-semi&comma
+        c-indent-line-or-region
         cdlatex-math-modify
         cdlatex-math-symbol
         cdlatex-pbb
@@ -95,6 +99,7 @@
         sp-splice-sexp-killing-forward
         sp-split-sexp
         sp-transpose-sexp
+        upcase-region
         wrap-with-parens
         yas-expand
         ))
