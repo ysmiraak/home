@@ -4,6 +4,7 @@ import qualified XMonad.Actions.SpawnOn as SpawnOn
 import qualified XMonad.Config.Desktop as Desktop
 import qualified XMonad.Hooks.DynamicLog as DynamicLog
 import qualified XMonad.Hooks.InsertPosition as InsertPosition
+import qualified XMonad.Hooks.SetWMName as SetWMName
 import qualified XMonad.Layout.NoBorders as NoBorders
 import qualified XMonad.Util.Run as Run
 
@@ -19,7 +20,8 @@ main = do
         , DynamicLog.ppTitle   = id }
       , XMonad.logHook Desktop.desktopConfig ]
     , XMonad.startupHook = mconcat
-      [ SpawnOn.spawnOn "9" "emacs"
+      [ SetWMName.setWMName "LG3D"
+      , SpawnOn.spawnOn "9" "emacs"
       , SpawnOn.spawnOn "8" "firefox"
       , SpawnOn.spawnOn "7" "vlc"
       , XMonad.startupHook Desktop.desktopConfig ]

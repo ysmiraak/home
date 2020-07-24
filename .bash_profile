@@ -13,6 +13,8 @@ export PATH=$HOME/.cabal/bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
 export NODE_PATH=/usr/lib/node_modules
 
+export _JAVA_AWT_WM_NONREPARENTING=1
+
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
 [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx -- -dpi 100
