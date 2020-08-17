@@ -54,8 +54,6 @@ modern [[https://github.com/magnars/dash.el#installation][list]], [[https://gith
 [[https://www.emacswiki.org/emacs/DelightedModes][delight]] keeps the mode-line clean.
 #+BEGIN_SRC emacs-lisp
   (mapc #'require '(s f dash dash-functional bind-key delight))
-  (ad-disable-advice 'format-mode-line 'around 'delighted-modes-are-glum)
-  (ad-activate 'format-mode-line)
   (dash-enable-font-lock)
   (defun cset (&rest sym-vals)
     "customize each symbol to value in SYM-VALS."
