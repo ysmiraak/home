@@ -37,8 +37,7 @@
 tmp
 
 # misc
-/.anyconnect
-/.cisco
+/.authinfo
 /.cups
 /.dbus
 /.docker
@@ -82,5 +81,6 @@ tmp
 /.ghc
 /.idris
 
-/.dbshell
-/.mongorc.js
+/.idea-build
+/.ivy2
+/.sbt
