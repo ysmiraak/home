@@ -453,7 +453,8 @@ this applies to all language-specific modes which offers the options.
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'cider
     (cset 'cider-font-lock-dynamically t
-          'cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]")
+          'cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]"
+          'nrepl-use-ssh-fallback-for-remote-hosts t)
     (def-eval-dwim eval-dwim:cider cider-eval-region cider-eval-last-sexp)
     (unbind-keys cider-mode-map "C-M-i")
     (bind-keys :map cider-mode-map ("M-RET" . eval-dwim:cider)
