@@ -1,3 +1,5 @@
 [user]
 name  = ysmiraak
 email = ysmiraak@gmail.com
+[status]
+showUntrackedFiles = all
