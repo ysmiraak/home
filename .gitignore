@@ -44,6 +44,7 @@ tmp
 /.esd_auth
 /.gnupg
 /.hunter
+/.idea-build
 /.kube
 /.mh_profile
 /.mozilla
@@ -51,6 +52,7 @@ tmp
 /.nv
 /.pki
 /.thunderbird
+/.vscode
 /.wget-hsts
 /Mail
 
@@ -81,6 +83,5 @@ tmp
 /.ghc
 /.idris
 
-/.idea-build
 /.ivy2
 /.sbt

@@ -3,3 +3,5 @@ name  = ysmiraak
 email = ysmiraak@gmail.com
 [status]
 showUntrackedFiles = all
+[pull]
+rebase = false
