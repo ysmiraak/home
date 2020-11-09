@@ -453,15 +453,16 @@ this applies to all language-specific modes which offers the options.
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'cider
     (cset 'cider-font-lock-dynamically t
-          'cider-doc-xref-regexp "\\[\\[\\(.*?\\)\\]\\]"
-          'nrepl-use-ssh-fallback-for-remote-hosts t)
+          'nrepl-use-ssh-fallback-for-remote-hosts t
+          'cljr-suppress-middleware-warnings t
+          'cljr-add-ns-to-blank-clj-files nil)
     (def-eval-dwim eval-dwim:cider cider-eval-region cider-eval-last-sexp)
     (unbind-keys cider-mode-map "C-M-i")
     (bind-keys :map cider-mode-map ("M-RET" . eval-dwim:cider)
                :map cider-repl-mode-map ("C-c M-o" . cider-repl-clear-buffer)))
 #+END_SRC
 [[https://github.com/clojure-emacs/inf-clojure][inf-clojure]] for clojurescript with [[https://github.com/anmonteiro/lumo][lumo]].
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (add-hooks 'clojurescript-mode-hook #'inf-clojure-minor-mode)
   (with-eval-after-load 'inf-clojure
     (cset 'inf-clojure-project-type "generic"
