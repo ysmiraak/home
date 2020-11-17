@@ -30,7 +30,8 @@ packages i use.
      smartparens expand-region region-bindings-mode visual-regexp multiple-cursors
      company company-quickhelp yasnippet flycheck flycheck-pos-tip
      hungry-delete aggressive-indent drag-stuff fix-word zzz-to-char
-     clojure-mode cider inf-clojure clj-refactor
+     eval-sexp-fu cider-eval-sexp-fu
+     clojure-mode cider clj-refactor
      geiser ediprolog pasp-mode haskell-mode idris-mode
      rust-mode cargo flycheck-rust racer
      js2-mode indium json-mode pug-mode web-mode
@@ -447,9 +448,13 @@ this applies to all language-specific modes which offers the options.
              ("M-RET" . eval-dwim:elisp)
              :map lisp-interaction-mode-map
              ("M-RET" . eval-print-last-sexp))
+  (require 'eval-sexp-fu)
+  (cset 'eval-sexp-fu-flash-face       'sp-show-pair-match-face
+        'eval-sexp-fu-flash-error-face 'sp-show-pair-mismatch-face
+        'eval-sexp-fu-flash-error-duration 0.4
+        'eval-sexp-fu-flash-duration       0.4)
 #+END_SRC
 ** clojure
-[[https://cider.readthedocs.io][cider]] for clojure with [[https://leiningen.org/][leiningen]].
 #+BEGIN_SRC emacs-lisp
   (push 'cider-repl-mode aggressive-indent-excluded-modes)
   (with-eval-after-load 'cider
@@ -460,23 +465,9 @@ this applies to all language-specific modes which offers the options.
     (def-eval-dwim eval-dwim:cider cider-eval-region cider-eval-last-sexp)
     (unbind-keys cider-mode-map "C-M-i")
     (bind-keys :map cider-mode-map ("M-RET" . eval-dwim:cider)
-               :map cider-repl-mode-map ("C-c M-o" . cider-repl-clear-buffer)))
-#+END_SRC
-[[https://github.com/clojure-emacs/inf-clojure][inf-clojure]] for clojurescript with [[https://github.com/anmonteiro/lumo][lumo]].
-#+BEGIN_SRC emacs-lisp :tangle no
-  (add-hooks 'clojurescript-mode-hook #'inf-clojure-minor-mode)
-  (with-eval-after-load 'inf-clojure
-    (cset 'inf-clojure-project-type "generic"
-          'inf-clojure-generic-cmd  "lumo -i .lumo -d -r")
-    (def-eval-dwim eval-dwim:inf-clojure inf-clojure-eval-region inf-clojure-eval-last-sexp)
-    (bind-keys :map inf-clojure-minor-mode-map ("M-RET" . eval-dwim:inf-clojure)
-               :map inf-clojure-mode-map ("C-c C-z" . ace-window))
-    (unbind-keys inf-clojure-minor-mode-map "C-c C-m")
-    (unbind-keys inf-clojure-mode-map       "C-c C-m"))
-#+END_SRC
-[[https://github.com/clojure-emacs/clj-refactor.el][clj-refactor]] for both.
-#+BEGIN_SRC emacs-lisp
-  (--each '(clojure-mode-hook cider-repl-mode-hook inf-clojure-mode-hook)
+               :map cider-repl-mode-map ("C-c M-o" . cider-repl-clear-buffer))
+    (require 'cider-eval-sexp-fu))
+  (--each '(clojure-mode-hook cider-repl-mode-hook)
     (add-hooks it #'clj-refactor-mode))
   (delight 'clj-refactor-mode nil 'clj-refactor)
   (with-eval-after-load 'clj-refactor

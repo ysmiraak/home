@@ -1,2 +1,0 @@
-(set! *warn-on-infer* true)
-(set! *print-length* 11)
