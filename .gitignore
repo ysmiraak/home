@@ -13,6 +13,7 @@
 /.Xauthority
 /.Xmodmap
 /.Xresources
+/.bashrc
 /.xinitrc
 /.xserverrc
 
