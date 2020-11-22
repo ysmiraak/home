@@ -1,0 +1,2 @@
+{:aliases {:outdated {:extra-deps {antq/antq {:mvn/version "RELEASE"}}
+                      :main-opts ["-m" "antq.core"]}}}

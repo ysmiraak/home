@@ -126,6 +126,7 @@ let =C-z= instead show what i wanna kill.
 - simpler style
 #+BEGIN_SRC emacs-lisp
   (cset 'uniquify-buffer-name-style 'post-forward
+        'uniquify-min-dir-content   1
         'inhibit-startup-screen     t
         'initial-scratch-message    nil
         'tool-bar-mode              nil
@@ -624,7 +625,7 @@ ctrl does not work with uppercase on text terminals.
 meta does but i do not need those bindings yet.
 - dead on terminal: []
 - forced translate: [target]
-|         | <36>                                 | <60>                                                         | <60>                                                         |
+| <7>     | <36>                                 | <60>                                                         | <60>                                                         |
 | ------- | ------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 |         | C-                                   | M-                                                           | C-M-                                                         |
 |---------+--------------------------------------+--------------------------------------------------------------+--------------------------------------------------------------|
