@@ -258,6 +258,8 @@ with revised symmetrical bindings.
   (require 'smartparens-config)
   (smartparens-global-mode 1)
   (delight 'smartparens-mode nil 'smartparens)
+  (cset 'sp-navigate-reindent-after-up-in-string nil
+        'sp-navigate-reindent-after-up           nil)
   (bind-keys ("M-a"   . beginning-of-buffer)
              ("M-e"   . end-of-buffer)
              ("M-n"   . forward-sentence)
