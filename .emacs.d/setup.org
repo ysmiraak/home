@@ -451,7 +451,8 @@ this applies to all language-specific modes which offers the options.
 #+BEGIN_SRC emacs-lisp
   (push 'cider-repl-mode aggressive-indent-excluded-modes)
   (with-eval-after-load 'cider
-    (cset 'cider-font-lock-dynamically t
+    (cset 'cider-doc-xref-regexp "\\[\\[\\(?1:[^[:space:]]+\\)]]"
+          'cider-font-lock-dynamically t
           'nrepl-use-ssh-fallback-for-remote-hosts t
           'cljr-suppress-middleware-warnings t
           'cljr-add-ns-to-blank-clj-files nil)
