@@ -21,7 +21,7 @@ packages i use.
   (customize-set-variable
    'package-selected-packages
    '(benchmark-init
-     suggest dash dash-functional s f bind-key delight
+     suggest dash s f bind-key delight
      exec-path-from-shell
      zenburn-theme powerline rainbow-delimiters unicode-fonts
      selectrum prescient selectrum-prescient  which-key
@@ -54,7 +54,7 @@ modern [[https://github.com/magnars/dash.el#installation][list]], [[https://gith
 [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] simplifies mode-map management with =bind-keys=, =unbind-key=, and =describe-personal-keybindings=.
 [[https://www.emacswiki.org/emacs/DelightedModes][delight]] keeps the mode-line clean.
 #+BEGIN_SRC emacs-lisp
-  (mapc #'require '(s f dash dash-functional bind-key delight))
+  (mapc #'require '(s f dash bind-key delight))
   (dash-enable-font-lock)
   (defun cset (&rest sym-vals)
     "customize each symbol to value in SYM-VALS."
@@ -119,7 +119,7 @@ let =C-z= instead show what i wanna kill.
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-z" . list-processes))
   (when (display-graphic-p) (defalias 'suspend-frame #'eshell))
-  (add-hooks 'eshell-mode-hook #'smartparens-mode #'company-disable-idle)
+  (add-hooks 'eshell-mode-hook #'smartparens-mode #'company-idle-disable)
   (cset 'eshell-preoutput-filter-functions '(ansi-color-apply))
 #+END_SRC
 ** theme
@@ -162,7 +162,7 @@ let =C-z= instead show what i wanna kill.
   (cset 'truncate-lines t)
 #+END_SRC
 - unicode fonts
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (require 'unicode-fonts)
   (unicode-fonts-setup)
 #+END_SRC
@@ -235,7 +235,6 @@ let =C-z= instead show what i wanna kill.
   (cset 'projectile-switch-project-action 'projectile-dired
         'projectile-completion-system     'default)
   (bind-keys ("C-x g" . magit-status))
-  (cset 'magit-auto-revert-mode nil)
 #+END_SRC
 *** history
 #+BEGIN_SRC emacs-lisp
@@ -355,12 +354,10 @@ with revised symmetrical bindings.
   (global-company-mode 1)
   (company-quickhelp-mode 1)
   (delight 'company-mode nil 'company)
-  (defun company-disable-idle ()
+  (defun company-idle-disable ()
     "disable idle completion."
     (interactive)
-    (unless (local-variable-p 'company-idle-delay)
-      (make-local-variable 'company-idle-delay))
-    (setq company-idle-delay nil))
+    (setq-local company-idle-delay nil))
   (cset 'company-idle-delay                0.2
         'company-minimum-prefix-length     2
         'company-tooltip-align-annotations t
@@ -446,6 +443,10 @@ this applies to all language-specific modes which offers the options.
         'eval-sexp-fu-flash-error-face 'sp-show-pair-mismatch-face
         'eval-sexp-fu-flash-error-duration 0.4
         'eval-sexp-fu-flash-duration       0.4)
+  (defun eval-sexp-fu-flash-mode-disable ()
+    "disable idle completion."
+    (interactive)
+    (setq-local eval-sexp-fu-flash-mode nil))
 #+END_SRC
 ** clojure
 #+BEGIN_SRC emacs-lisp
@@ -499,7 +500,7 @@ this applies to all language-specific modes which offers the options.
                ("C-c C-z" . ace-window)))
 #+END_SRC
 ** agda
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (ignore-errors
     (load-file (let ((coding-system-for-read 'utf-8))
                  (shell-command-to-string "agda-mode locate"))))
@@ -523,6 +524,7 @@ this applies to all language-specific modes which offers the options.
 #+END_SRC
 ** python
 #+BEGIN_SRC emacs-lisp
+  (add-hooks 'elpy-mode-hook #'eval-sexp-fu-flash-mode-disable)
   (with-eval-after-load 'python
     (cset 'python-shell-interpreter "python3"
           'elpy-modules
