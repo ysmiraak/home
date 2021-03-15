@@ -38,7 +38,6 @@ mdadm
 nano
 netctl
 pacman
-pacman-contrib
 patch
 pciutils
 perl
@@ -125,6 +124,7 @@ grub
 htop
 linux-headers
 os-prober (for grub)
+pacman-contrib
 reflector (for mirrorlist)
 rsync (for reflector)
 tmux

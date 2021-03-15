@@ -14,23 +14,13 @@
 
 =-Qtdq= list orphans
 
-=-Sc= cleanup cache
+=paccache -r= prune cache
 
 *** downgrade
 
 - find the older version in =/var/cache/pacman/pkg=
 - =pacman -U=
 - edit =/etc/pacman.conf= under =IgnorePkg=
-
-** mkinitcpio
-
-mkinitcpio -p linux
-
-** grub
-
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=UR
-
-grub-mkconfig -o /boot/grub/grub.cfg
 
 ** misc
 
