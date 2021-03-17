@@ -23,7 +23,6 @@ main = do
       [ SetWMName.setWMName "LG3D"
       , SpawnOn.spawnOn "9" "emacs"
       , SpawnOn.spawnOn "8" "firefox"
-      , SpawnOn.spawnOn "7" "vlc"
       , XMonad.startupHook Desktop.desktopConfig ]
     , XMonad.manageHook = mconcat
       [ InsertPosition.insertPosition InsertPosition.End InsertPosition.Newer
