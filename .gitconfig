@@ -5,3 +5,5 @@ email = ysmiraak@gmail.com
 showUntrackedFiles = all
 [pull]
 rebase = false
+[init]
+defaultBranch = main
