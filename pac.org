@@ -59,6 +59,44 @@ vi
 which
 xfsprogs
 
+* system
+
+intel-ucode (for updating processor microcode)
+nvidia
+
+dialog (for wifi-menu with netctl)
+wireless_tools
+wpa_supplicant
+
+pulseaudio
+pulseaudio-alsa
+alsa-tools
+alsa-utils
+
+efibootmgr
+grub
+htop
+linux-headers
+os-prober (for grub)
+pacman-contrib
+reflector (for mirrorlist)
+rsync (for reflector)
+tmux
+wget
+yay
+
+* laptop
+
+bbswitch
+bumblebee
+mesa
+xf86-video-intel
+
+xf86-input-libinput
+
+chrony
+netctl-dispatcher-chrony
+
 * window manager
 
 xmobar
@@ -107,50 +145,6 @@ xorg-xwd
 xorg-xwininfo
 xorg-xwud
 
-* system
-
-nvidia
-
-dialog (for wifi-menu with netctl)
-intel-ucode (for updating processor microcode)
-
-pulseaudio
-pulseaudio-alsa
-alsa-tools
-alsa-utils
-
-efibootmgr
-grub
-htop
-linux-headers
-os-prober (for grub)
-pacman-contrib
-reflector (for mirrorlist)
-rsync (for reflector)
-tmux
-wget
-yay
-
-* tex
-
-biber
-texlive-bibtexextra
-texlive-fontsextra
-texlive-formatsextra
-texlive-games
-texlive-humanities
-texlive-langchinese
-texlive-langcyrillic
-texlive-langextra
-texlive-langgreek
-texlive-langjapanese
-texlive-langkorean
-texlive-music
-texlive-pictures
-texlive-pstricks
-texlive-publishers
-texlive-science
-
 * utility
 
 fcitx
@@ -159,10 +153,6 @@ fcitx-im
 fcitx-rime
 librime
 noto-fonts-cjk
-
-wireless_tools
-wpa_actiond
-wpa_supplicant
 
 gparted
 ntfs-3g
@@ -255,3 +245,21 @@ sbt
 
 python
 python-pip
+
+biber
+texlive-bibtexextra
+texlive-fontsextra
+texlive-formatsextra
+texlive-games
+texlive-humanities
+texlive-langchinese
+texlive-langcyrillic
+texlive-langextra
+texlive-langgreek
+texlive-langjapanese
+texlive-langkorean
+texlive-music
+texlive-pictures
+texlive-pstricks
+texlive-publishers
+texlive-science
