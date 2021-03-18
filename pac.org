@@ -199,10 +199,10 @@ transmission-qt
 vpnc
 youtube-dl
 
-chromium
 dropbox
 emacs
 firefox
+google-chrome
 libreoffice-fresh
 scrot
 thunderbird

@@ -2,11 +2,11 @@
 /QtProject.conf
 /Trolltech.conf
 /autostart
-/chromium
 /configstore
 /dconf
 /enchant
 /git
+/google-chrome
 /gtk-*
 /htop
 /inkscape
