@@ -1,13 +1,13 @@
 Config
-  { template = "  %StdinReader% } ----==|i|==---- { %battery%    %cpu%    %memory%    %date%  "
+  { template = "  %StdinReader% } ----==|i|==---- { %battery%   %cpu%   %memory%   %date%  "
   , commands =
       [ Run StdinReader
       , Run Battery
         [ "--template" , "<acstatus>"
         , "--Low"      , "20"
         , "--High"     , "50"
-        , "--low"      , "red"
         , "--normal"   , "green"
+        , "--low"      , "red"
         , "--"
         , "-o" , "bat <left>% ~<timeleft>"
         , "-O" , "bat <left>% ..."
@@ -27,6 +27,6 @@ Config
         , "--normal"   , "green"
         , "--high"     , "red"
         ] 40
-      , Run Date "%#Z %R  %#a %F" "date" 600
+      , Run Date "%#Z %R %#a %F" "date" 600
       ]
   }
