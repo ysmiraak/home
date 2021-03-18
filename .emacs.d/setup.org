@@ -231,6 +231,8 @@ let =C-z= instead show what i wanna kill.
 #+BEGIN_SRC emacs-lisp
   (cset 'projectile-keymap-prefix (kbd "C-c p"))
   (projectile-mode 1)
+  (defadvice projectile-project-root (around ignore-remote first activate)
+    (unless (file-remote-p default-directory) ad-do-it))
   (delight 'projectile-mode '(:eval (format " [%s]" (projectile-project-name))) 'projectile)
   (cset 'projectile-switch-project-action 'projectile-dired
         'projectile-completion-system     'default)
@@ -434,6 +436,8 @@ this applies to all language-specific modes which offers the options.
 #+BEGIN_SRC emacs-lisp
   (add-hooks 'eval-expression-minibuffer-setup-hook #'smartparens-mode)
   (def-eval-dwim eval-dwim:elisp eval-region eval-last-sexp)
+  (--each '(emacs-lisp-mode-map lisp-interaction-mode-map)
+    (unbind-keys it "C-M-q"))
   (bind-keys :map emacs-lisp-mode-map
              ("M-RET" . eval-dwim:elisp)
              :map lisp-interaction-mode-map
