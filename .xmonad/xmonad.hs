@@ -5,6 +5,9 @@ import qualified XMonad.Config.Desktop as Desktop
 import qualified XMonad.Hooks.DynamicLog as DynamicLog
 import qualified XMonad.Hooks.InsertPosition as InsertPosition
 import qualified XMonad.Hooks.SetWMName as SetWMName
+import qualified XMonad.Layout as Layout
+import qualified XMonad.Layout.Grid as Grid
+import qualified XMonad.Layout.IfMax as IfMax
 import qualified XMonad.Layout.NoBorders as NoBorders
 import qualified XMonad.Util.Run as Run
 
@@ -29,8 +32,13 @@ main = do
       , SpawnOn.manageSpawn
       , XMonad.manageHook Desktop.desktopConfig ]
     , XMonad.layoutHook =
-        NoBorders.smartBorders
-        $ XMonad.layoutHook Desktop.desktopConfig
+        Desktop.desktopLayoutModifiers
+        $ NoBorders.smartBorders
+        $ ((Layout.|||)
+           (IfMax.IfMax 3
+             (Layout.Tall 1 (1/36) (1/2))
+             Grid.Grid)
+            Layout.Full)
     , XMonad.borderWidth = 1
     , XMonad.normalBorderColor  = "#4f4f4f"
     , XMonad.focusedBorderColor = "#dcdccc"
