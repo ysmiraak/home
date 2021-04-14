@@ -9,8 +9,8 @@ Config
         , "--normal"   , "green"
         , "--low"      , "red"
         , "--"
-        , "-o" , "bat <left>% ~<timeleft>"
-        , "-O" , "bat <left>% ..."
+        , "-o" , "<left>% ~<timeleft>"
+        , "-O" , "<left>% ..."
         , "-i" , ""
         ] 40
       , Run Cpu
