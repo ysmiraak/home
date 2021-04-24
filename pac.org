@@ -85,6 +85,8 @@ tmux
 wget
 yay
 
+chntpw (for dual boot windows)
+
 * laptop
 
 bbswitch
@@ -167,6 +169,10 @@ zip
 
 dmenu
 gmrun
+
+bluez
+bluez-utils
+pulseaudio-bluetooth
 
 openssh
 mailutils
