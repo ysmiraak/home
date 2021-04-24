@@ -1,0 +1,53 @@
+#!/usr/bin/env -S clojure -M
+
+(defn bool->int [bool]
+  (if bool 1 0))
+
+(defn rand-grid [nrow ncol prob]
+  (->> #(bool->int (< (rand) prob))
+       (partial repeatedly ncol)
+       (repeatedly nrow)))
+
+(defn conv2d [n m ker grid]
+  (for [band (partition n 1 grid)]
+    (for [rect (partition m 1 (apply map vector band))]
+      (ker rect))))
+
+(defn pad3x3 [grid]
+  (letfn [(pad' [p gd] (concat p gd p))]
+    (pad' [(-> grid first count (+ 2) (repeat 0))]
+          (map (partial pad' [0])
+               grid))))
+
+(defn ker3x3 [g3x3]
+  (let [state (second (second g3x3))
+        nbors (reduce + (- state) (apply concat g3x3))]
+    (bool->int
+     (if (zero? state)
+       (== 3 nbors)
+       (<= 2 nbors 3)))))
+
+(defn gol [grid]
+  (iterate (comp (partial conv2d 3 3 ker3x3) pad3x3) grid))
+
+
+(require '[clojure.string :as str])
+
+(defn plot [grid]
+  (->> ([\space \*] cell)
+       (for [cell row])
+       (cons \space)
+       (str/join \space)
+       (for [row grid])
+       (str/join \newline)))
+
+(defn -main [& {:keys [nrow ncol init aeon] :or {nrow 80 ncol 158 init 0.1 aeon 666}}]
+  (let [aeon (max 1 aeon)]
+    (doseq [p (map plot (gol (rand-grid nrow ncol init)))]
+      (Thread/sleep aeon)
+      (print "\033[2J")
+      (println p))))
+
+(->> *command-line-args*
+     (map read-string)
+     (apply -main))

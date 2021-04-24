@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+case $1 in
+    -) bluetoothctl -- power off ;;
+    *) bluetoothctl -- power on && bluetoothctl -- connect C3:50:E1:E7:31:BC ;;
+esac

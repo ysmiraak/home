@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+trap 'openpyn -x' EXIT
+xterm -e 'openpyn de -f'

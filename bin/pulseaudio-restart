@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+pulseaudio -k && pulseaudio --start

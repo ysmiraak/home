@@ -1,0 +1,20 @@
+#!/usr/bin/env -S clojure -M
+
+(def prime
+  (->> (iterate inc 4)
+       (remove (fn [n]
+                 (let [nr (Math/sqrt n)]
+                   (->> prime
+                        (take-while (fn [p] (<= p nr)))
+                        (some (fn [p] (zero? (rem n p))))))))
+       (lazy-cat [2 3])))
+
+(defn -main [& {:keys [aeon] :or {aeon 12}}]
+  (let [aeon (max 1 aeon)]
+    (doseq [p prime]
+      (Thread/sleep aeon)
+      (println p))))
+
+(->> *command-line-args*
+     (map read-string)
+     (apply -main))
