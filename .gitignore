@@ -75,6 +75,8 @@ tmp
 /scikit_learn_data
 
 /.npm
+/.yarn
+/.yarnrc
 
 /R
 
@@ -86,3 +88,5 @@ tmp
 
 /.ivy2
 /.sbt
+
+/go

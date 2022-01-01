@@ -141,6 +141,7 @@ let =C-z= instead show what i wanna kill.
 #+BEGIN_SRC emacs-lisp
   (when (display-graphic-p)
     (add-hooks 'prog-mode-hook #'rainbow-delimiters-mode-enable)
+    ;; (load-theme 'leuven t)
     (load-theme 'zenburn t)
     (powerline-center-theme)
     (cset 'powerline-display-hud nil)
