@@ -183,6 +183,7 @@ git
 imagemagick
 inkscape
 pdf2svg
+rlwrap
 shntool
 
 pandoc
@@ -196,8 +197,9 @@ docker-compose
 
 * app
 
-nordvpn-bin
-openpyn-nordvpn
+v2raya
+v2ray
+
 openvpn
 python-gobject
 tk
@@ -227,7 +229,6 @@ leiningen
 maven
 nodejs
 npm
-rlwrap
 
 chez-scheme
 
@@ -241,13 +242,6 @@ ghc
 ghc-pristine
 ghc-static
 happy
-
-intellij-idea-community-edition
-
-scala
-scala-docs
-scala-sources
-sbt
 
 python
 python-pip
