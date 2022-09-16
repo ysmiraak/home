@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+sudo reflector --protocol https --latest 36 --age 24 --sort rate --save /etc/pacman.d/mirrorlist
