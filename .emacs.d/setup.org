@@ -24,7 +24,7 @@ packages i use.
      suggest dash s f bind-key delight
      exec-path-from-shell
      zenburn-theme powerline rainbow-delimiters unicode-fonts
-     selectrum prescient selectrum-prescient  which-key
+     selectrum prescient selectrum-prescient which-key
      centered-cursor-mode vimish-fold ace-window avy
      projectile magit undo-tree deadgrep
      smartparens expand-region region-bindings-mode visual-regexp multiple-cursors
@@ -33,7 +33,7 @@ packages i use.
      hungry-delete aggressive-indent drag-stuff fix-word zzz-to-char
      eval-sexp-fu cider-eval-sexp-fu
      clojure-mode cider clj-refactor
-     geiser ediprolog pasp-mode haskell-mode idris-mode
+     geiser geiser-chez ediprolog pasp-mode haskell-mode idris-mode
      rust-mode cargo flycheck-rust racer
      js2-mode indium json-mode pug-mode web-mode
      elpy rainbow-mode ess csv-mode htmlize
@@ -89,8 +89,10 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
     (cset 'insert-directory-program (executable-find "gls"))
     (bind-keys ("<C-s-f>" . toggle-frame-fullscreen) ("<C-s-268632070>" . toggle-frame-fullscreen))
     (toggle-frame-fullscreen))
-  (with-eval-after-load 'tramp-sh
+  (with-eval-after-load 'tramp
     (push 'tramp-own-remote-path tramp-remote-path))
+  (with-eval-after-load 'tramp-cache
+    (push '(".*" "locale" "LC_ALL=C") tramp-connection-properties))
 #+END_SRC
 ** safety
 to prevent custom from editing my =user-init-file=.
@@ -478,7 +480,8 @@ this applies to all language-specific modes which offers the options.
 ** scheme
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'geiser
-    (cset 'geiser-active-implementations '(chez))
+    (cset 'geiser-default-implementation 'chez
+          'geiser-chez-binary            "chez")
     (def-eval-dwim eval-dwim:geiser geiser-eval-region geiser-eval-last-sexp)
     (bind-keys :map scheme-mode-map ("M-RET" . eval-dwim:geiser)))
 #+END_SRC

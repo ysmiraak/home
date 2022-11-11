@@ -205,7 +205,7 @@ python-gobject
 tk
 transmission-qt
 vpnc
-youtube-dl
+yt-dlp
 
 dropbox
 emacs
