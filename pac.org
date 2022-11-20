@@ -68,6 +68,7 @@ dialog (for wifi-menu with netctl)
 wireless_tools
 wpa_supplicant
 
+pavucontrol
 pulseaudio
 pulseaudio-alsa
 alsa-tools
