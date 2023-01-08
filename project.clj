@@ -3,17 +3,17 @@
   :url "https://github.com/ysmiraak/ysmiraak"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[com.rpl/specter "1.1.3"]
-                 [criterium "0.4.5"]
-                 [org.clojure/clojure "1.10.2-alpha1"]
-                 [org.clojure/core.async "1.2.603"]
-                 [org.clojure/core.logic "1.0.0"]
-                 [org.clojure/core.match "1.0.0"]
-                 [org.clojure/data.csv "1.0.0"]
-                 [org.clojure/test.check "1.0.0"]
+  :dependencies [[com.rpl/specter "1.1.4"]
+                 [criterium "0.4.6"]
+                 [org.clojure/clojure "1.12.0-alpha1"]
+                 [org.clojure/core.async "1.6.673"]
+                 [org.clojure/core.logic "1.0.1"]
+                 [org.clojure/core.match "1.0.1"]
+                 [org.clojure/data.csv "1.0.1"]
+                 [org.clojure/test.check "1.1.1"]
                  [swiss-arrows "1.0.0"]
                  [uncomplicate/fluokitten "0.9.1"]
-                 [uncomplicate/neanderthal "0.31.0"
+                 [uncomplicate/neanderthal "0.45.0"
                   :exclusions [org.jcuda/jcublas
                                org.jocl/jocl-blast
                                uncomplicate/clojurecl
