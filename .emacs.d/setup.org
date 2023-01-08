@@ -483,6 +483,7 @@ this applies to all language-specific modes which offers the options.
     (cset 'geiser-default-implementation 'chez
           'geiser-chez-binary            "chez")
     (def-eval-dwim eval-dwim:geiser geiser-eval-region geiser-eval-last-sexp)
+    (unbind-keys scheme-mode-map "C-M-q")
     (bind-keys :map scheme-mode-map ("M-RET" . eval-dwim:geiser)))
 #+END_SRC
 ** prolog
