@@ -2,5 +2,5 @@
 
 case $1 in
     -) bluetoothctl -- power off ;;
-    *) bluetoothctl -- power on && bluetoothctl -- connect C3:50:E1:E7:31:BC ;;
+    *) bluetoothctl -- power on && bluetoothctl -- connect 41:42:F3:40:80:92 ;;
 esac

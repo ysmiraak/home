@@ -63,6 +63,7 @@ xfsprogs
 
 intel-ucode (for updating processor microcode)
 nvidia
+nvidia-utils
 
 dialog (for wifi-menu with netctl)
 wireless_tools

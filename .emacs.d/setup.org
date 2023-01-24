@@ -511,10 +511,21 @@ this applies to all language-specific modes which offers the options.
                ("C-c C-z" . ace-window)))
 #+END_SRC
 ** agda
-#+BEGIN_SRC emacs-lisp :tangle no
-  (ignore-errors
-    (load-file (let ((coding-system-for-read 'utf-8))
-                 (shell-command-to-string "agda-mode locate"))))
+#+BEGIN_SRC emacs-lisp
+  (let* ((coding-system-for-read 'utf-8)
+         (agda-mode-path (shell-command-to-string "agda-mode locate")))
+    (when (s-ends-with? "agda2.el" agda-mode-path)
+      (load-file agda-mode-path)
+      (push '("\\.lagda.md\\'" . agda2-mode) auto-mode-alist)
+      (with-eval-after-load 'agda2-highlight
+        (--each '(agda2-highlight-error-face
+                  agda2-highlight-termination-problem-face
+                  agda2-highlight-unsolved-constraint-face
+                  agda2-highlight-unsolved-meta-face)
+          (set-face-attribute it nil
+                              :background "#181818"
+                              :foreground "#A41210"
+                              :weight 'bold)))))
 #+END_SRC
 ** rust
 #+BEGIN_SRC emacs-lisp
