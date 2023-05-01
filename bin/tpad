@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+case $1 in
+    -) xinput disable $(xinput list | grep -oP 'Touchpad.*id=\K[[:digit:]]+') ;;
+    *) xinput  enable $(xinput list | grep -oP 'Touchpad.*id=\K[[:digit:]]+') ;;
+esac

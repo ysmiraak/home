@@ -1,5 +1,6 @@
 Config
-  { template = "  %StdinReader% } ----==|i|==---- { %battery%   %cpu%   %memory%   %date%  "
+  { font = "Noto Sans Mono CJK SC 11"
+  , template = "  %StdinReader% } ----==|i|==---- { %battery%   %cpu%   %memory%   %date%  "
   , commands =
       [ Run StdinReader
       , Run Battery

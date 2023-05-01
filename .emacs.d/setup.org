@@ -517,6 +517,10 @@ this applies to all language-specific modes which offers the options.
     (when (s-ends-with? "agda2.el" agda-mode-path)
       (load-file agda-mode-path)
       (push '("\\.lagda.md\\'" . agda2-mode) auto-mode-alist)
+      (push 'agda2-mode sp-no-reindent-after-kill-modes)
+      (with-eval-after-load 'agda2-mode
+        (def-eval-dwim eval-dwim:agda2 agda2-load agda2-goal-and-context)
+        (bind-keys :map agda2-mode-map ("M-RET" . eval-dwim:agda2)))
       (with-eval-after-load 'agda2-highlight
         (--each '(agda2-highlight-error-face
                   agda2-highlight-termination-problem-face
