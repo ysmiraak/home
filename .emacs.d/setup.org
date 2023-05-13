@@ -143,10 +143,10 @@ let =C-z= instead show what i wanna kill.
 #+BEGIN_SRC emacs-lisp
   (when (display-graphic-p)
     (add-hooks 'prog-mode-hook #'rainbow-delimiters-mode-enable)
-    ;; (load-theme 'leuven t)
     (load-theme 'zenburn t)
     (powerline-center-theme)
     (cset 'powerline-display-hud nil)
+    (set-face-attribute 'default nil :family "Noto Sans Mono")
     (set-face-attribute 'cursor nil :background "#DAA520")
     (set-face-attribute 'region nil :background "#242424")
     (set-face-attribute 'vertical-border nil :foreground "#656555")
@@ -306,7 +306,7 @@ with revised symmetrical bindings.
              ("C-M-@"   . sp-select-previous-thing-exchange))
   (show-smartparens-global-mode 1)
   (set-face-attribute 'sp-show-pair-match-face    nil :background "#181818" :foreground "#A41210" :weight 'bold)
-  (set-face-attribute 'sp-show-pair-mismatch-face nil :background "#161616" :foreground "#003B6F" :weight 'black)
+  (set-face-attribute 'sp-show-pair-mismatch-face nil :background "#161616" :foreground "#003B6F" :weight 'bold)
 #+END_SRC
 *** region-based
 #+BEGIN_SRC emacs-lisp
