@@ -214,8 +214,7 @@ let =C-z= instead show what i wanna kill.
 *** search
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("C-s" . phi-search)          ("C-M-s" . isearch-forward)
-             ("C-r" . phi-search-backward) ("C-M-r" . isearch-backward)
-             ("M-%" . phi-replace-query)   ("C-M-%" . query-replace))
+             ("C-r" . phi-search-backward) ("C-M-r" . isearch-backward))
 #+END_SRC
 *** symbol
 #+BEGIN_SRC emacs-lisp
@@ -705,7 +704,7 @@ meta does but i do not need those bindings yet.
 | @       | set-mark-command                     | ~sp-select-next-thing~ +mark-word+                           | ~sp-select-previous-thing-exchange~  +mark-sexp+             |
 | #       | []                                   | ~linum-mode~                                                 |                                                              |
 | $       | []                                   | ~flyspell-mode~ +ispell-word+                                |                                                              |
-| %       | []                                   | phi-replace-query                                            | query-replace                                                |
+| %       | []                                   | query-replace                                                | query-replace-regexp                                         |
 | ^       |                                      | delete-indentation                                           |                                                              |
 | &       | []                                   | async-shell-command                                          |                                                              |
 | *       | []                                   | ~sp-convolute-sexp~                                          |                                                              |
