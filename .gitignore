@@ -24,6 +24,23 @@
 /Pictures
 /Public
 
+# on windows
+/Adobe
+/CoreAVC.ini
+/JPEXS
+/LibreOffice
+/Macromedia
+/Microsoft
+/Mozilla
+/NVIDIA
+/Web Data
+/Web Data-journal
+/clash_win
+/foobar2000
+/qBittorrent
+/tidalab
+/vlc
+
 # for ml
 /cache
 /data

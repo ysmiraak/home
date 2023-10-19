@@ -4,9 +4,11 @@
 /elpa
 /elpy
 /eshell
+/org-persist
 /projectile-bookmarks.eld
 /projectile.cache
 /rime
+/server
 /setup.el
 /smex-items
 /tramp

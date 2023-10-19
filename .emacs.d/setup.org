@@ -7,6 +7,8 @@ put this in the =user-init-file= to tangle and load this setup.
 #+BEGIN_SRC emacs-lisp :tangle no
   (package-initialize)
   (org-babel-load-file (expand-file-name "setup.org" user-emacs-directory))
+  ;; (byte-recompile-directory package-user-dir nil 'force)
+  ;; (setq package-check-signature nil)
 #+END_SRC
 the [[https://melpa.org/#/][melpa repo]] hosts the most update-to-date packages.
 #+BEGIN_SRC emacs-lisp
@@ -81,7 +83,7 @@ for [[https://www.emacswiki.org/emacs/EmacsClient][emacsclient]].
   (require 'server)
   (unless (server-running-p) (server-start))
 #+END_SRC
-for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see =dired-use-ls-dired=), and fullscreen to work on [[https://www.emacswiki.org/emacs/MacOSTweaks][mac]].
+os supports.
 #+BEGIN_SRC emacs-lisp
   (when (equal 'ns window-system)
     (exec-path-from-shell-initialize)
@@ -89,6 +91,8 @@ for getting [[https://github.com/purcell/exec-path-from-shell][env]], dired (see
     (cset 'insert-directory-program (executable-find "gls"))
     (bind-keys ("<C-s-f>" . toggle-frame-fullscreen) ("<C-s-268632070>" . toggle-frame-fullscreen))
     (toggle-frame-fullscreen))
+  (when (equal 'w32 window-system)
+    (put 'dired-find-alternate-file 'disabled nil))
   (with-eval-after-load 'tramp
     (push 'tramp-own-remote-path tramp-remote-path))
   (with-eval-after-load 'tramp-cache
