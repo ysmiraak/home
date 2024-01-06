@@ -1,0 +1,37 @@
+#!/usr/bin/env bb
+
+(require '[clojure.java.shell :as shell]
+         '[clojure.string :as str])
+
+(defn bisect-right [svec it]
+  (loop [low 0 high (count svec)]
+    (if (< low high)
+      (let [mid (quot (+ low high) 2)]
+        (if (>= 0 (compare (get svec mid) it))
+          ;; (> 0 (compare (get svec mid) it)) ; left
+          (recur (inc mid) high)
+          (recur low mid)))
+      low)))
+
+(defn used-by? [pkgname filename]
+  ;; ?? what if pkgname is a substr of a removed pkg's name:
+  ;; - filename abcde-...
+  ;; - pkgname  abc
+  (str/starts-with? filename pkgname))
+
+(defn useless? [installed filename]
+  (or (str/ends-with? filename ".part")
+      (let [i (bisect-right installed filename)]
+        (or (zero? i)
+            (-> (get installed (dec i))
+                (used-by? filename)
+                not)))))
+
+(let [cache-dir "/var/cache/pacman/pkg/"
+      filenames (->> (shell/sh "ls" cache-dir) :out str/split-lines)
+      installed (->> (shell/sh "pacman" "-Q" ) :out str/split-lines
+                     (map #(first (str/split % #" ")))
+                     sort vec)]
+  (doseq [filename filenames]
+    (if (useless? installed filename)
+      (println (str cache-dir filename)))))

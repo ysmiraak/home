@@ -1,6 +1,7 @@
 /.ssh
 /zero
 /zone
+/ztwo
 
 /Dropbox
 /.dropbox
@@ -72,6 +73,8 @@ tmp
 /.wget-hsts
 /Mail
 
+/.babashka
+/.deps.clj
 /.java
 /.lein-failures
 /.m2

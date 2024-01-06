@@ -224,7 +224,7 @@ kubelogin
 
 * lang
 
-boot
+babashka-bin
 clojure
 jdk-openjdk
 leiningen
